@@ -62,7 +62,9 @@
                                                 <!-- Setting name -->
                                                 <ColumnDefinition Width="200"/>
                                                 <!-- Setting value -->
-                                                <ColumnDefinition Width="300"/>
+                                                <ColumnDefinition/>
+                                                <!-- Padding column -->
+                                                <ColumnDefinition Width="30"/>
                                             </Grid.ColumnDefinitions>
 
                                             <Grid.RowDefinitions>
