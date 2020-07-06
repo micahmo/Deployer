@@ -80,7 +80,7 @@ namespace Deployer
 
         public FileInfo FileInfo { get; }
 
-        public string Description => $"Full path: {FullName}\nSize: {Length} bytes\nLast modified at: {LastModifiedDateTime}";
+        public virtual string Description => $"Full path: {FullName}{Environment.NewLine}Size: {Length} bytes{Environment.NewLine}Last modified at: {LastModifiedDateTime}";
 
         public bool CancelLoad { get; set; }
 

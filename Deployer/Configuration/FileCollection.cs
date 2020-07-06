@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -308,6 +309,33 @@ namespace Deployer
         public bool Overwrite { get; set; }
 
         public bool GetOverwritten { get; set; }
+
+        public override string Description
+        {
+            get
+            {
+                StringBuilder additionalDetails = new StringBuilder();
+
+                if (Excluded)
+                {
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File matches exclusion pattern and will not be copied.");
+                }
+                else if (Other)
+                {
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File exists only on other side.");
+                }
+                else if (Overwrite)
+                {
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File is newer than matching file on other side.");
+                }
+                else if (GetOverwritten)
+                {
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File is older than matching file on other side.");
+                }
+
+                return $"{base.Description}{additionalDetails}";
+            }
+        }
     }
 
     /// <remarks>
