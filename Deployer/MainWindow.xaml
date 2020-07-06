@@ -176,11 +176,10 @@
                                Foreground="Red" FontWeight="Bold" Visibility="{c:Binding DataContext.DeployEncounteredUnhandledError, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
                     <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredUnhandledError and (DataContext.DeployUnhandledErrorDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <ScrollViewer MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                      VerticalScrollBarVisibility="Auto">
-                            <TextBox Text="{Binding DataContext.DeployUnhandledErrorDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                        <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding DataContext.DeployUnhandledErrorDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                  IsReadOnly="True"/>
-                        </ScrollViewer>
                     </Expander>
 
                     <!-- Handled errors -->
@@ -188,11 +187,10 @@
                                Foreground="Red" FontWeight="Bold" Visibility="{c:Binding DataContext.DeployEncounteredHandledErrors, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
                     <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredHandledErrors and (DataContext.DeployHandledErrorsDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <ScrollViewer MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                      VerticalScrollBarVisibility="Auto">
-                            <TextBox Text="{Binding DataContext.DeployHandledErrorsDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                        <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding DataContext.DeployHandledErrorsDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                  IsReadOnly="True"/>
-                        </ScrollViewer>
                     </Expander>
 
                     <ProgressBar IsIndeterminate="{Binding DataContext.IndeterminateProgress, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"

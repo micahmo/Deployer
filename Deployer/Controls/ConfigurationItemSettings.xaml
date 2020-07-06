@@ -90,11 +90,11 @@
                                                 <CheckBox IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}"
                                                           ToolTip="{Binding ExtendedDescription}"/>
 
-                                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" ToolTip="{Binding ExtendedDescription}" 
-                                                              Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}">
                                                     <!-- AcceptsReturn="True" is what makes it a multi-line TextBox -->
-                                                    <TextBox Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"/>
-                                                </ScrollViewer>
+                                                <TextBox Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ExtendedDescription}" 
+                                                         Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}"    
+                                                         ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                                                         AcceptsReturn="True"/>
                                             </Grid>
 
                                         </Grid>
