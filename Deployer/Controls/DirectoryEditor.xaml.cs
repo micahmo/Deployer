@@ -1,14 +1,12 @@
 ﻿#region Usings
 
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Xml.XPath;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -170,6 +168,22 @@ namespace Deployer
             set => Set(nameof(ShowPathWarning), ref _showPathWarning, value);
         }
         private bool _showPathWarning;
+
+        public IEnumerable<string> OtherPaths
+        {
+            get
+            {
+                HashSet<string> otherPaths = new HashSet<string>();
+
+                Configuration.Instance?.ConfigurationItems.ToList().ForEach(c =>
+                {
+                    otherPaths.UnionWith(c.SourceDirectories.Select(d => d.RawPath).Where(s => !string.IsNullOrEmpty(s)));
+                    otherPaths.UnionWith(c.DestinationDirectories.Select(d => d.RawPath).Where(s => !string.IsNullOrEmpty(s)));
+                });
+
+                return otherPaths;
+            }
+        }
     }
 
     public class DirectoryEditorCommands
