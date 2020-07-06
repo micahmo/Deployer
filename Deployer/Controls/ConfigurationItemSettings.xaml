@@ -1,0 +1,103 @@
+﻿<Window x:Class="Deployer.ConfigurationItemSettings"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Deployer"
+        xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+        mc:Ignorable="d"
+        Title="{Binding Name}" Height="550" Width="575">
+
+    <Window.Resources>
+        <local:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="45"/>
+        </Grid.RowDefinitions>
+
+        <ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
+
+            <ItemsControl ItemsSource="{Binding SettingsGroups}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <!-- Settings header -->
+                                <ColumnDefinition Width="25"/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <!-- Spacing -->
+                                <RowDefinition Height="5"/>
+                                <!-- Settings header -->
+                                <RowDefinition Height="25"/>
+                                <!-- Horizontal rule -->
+                                <RowDefinition Height="5"/>
+                                <!-- Spacing -->
+                                <RowDefinition Height="2"/>
+                                <!-- Settings -->
+                                <RowDefinition/>
+                                <!-- Spacing -->
+                                <RowDefinition Height="15"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Column="1" Grid.Row="1" FontWeight="Bold" Text="{Binding Description}"/>
+                            <Canvas Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Background="LightGray"/>
+
+                            <ItemsControl Grid.Column="1" Grid.Row="4" ItemsSource="{Binding Settings}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <!-- Setting name -->
+                                                <ColumnDefinition Width="200"/>
+                                                <!-- Setting value -->
+                                                <ColumnDefinition Width="300"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30"/>
+                                            </Grid.RowDefinitions>
+
+                                            <Grid Grid.Column="0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Description}"/>
+                                            </Grid>
+
+                                            <Grid Grid.Column="1" VerticalAlignment="Center">
+                                                <ComboBox SelectedItem="{Binding Value}" ItemsSource="{Binding PossibleValues}" Visibility="{c:Binding 'SettingType == local:SettingType.List', FalseToVisibility=Collapsed}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <ContentPresenter Content="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+
+                                                <CheckBox IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}" />
+                                            </Grid>
+
+                                        </Grid>
+
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </ScrollViewer>
+
+        <Button Grid.Row="1" Grid.Column="1" Content="Close" Margin="10" IsCancel="True" Click="CloseButton_Click"/>
+    </Grid>
+</Window>

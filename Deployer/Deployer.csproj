@@ -1,0 +1,107 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Images\icon.ico</ApplicationIcon>
+    <Platforms>AnyCPU</Platforms>
+    <LangVersion>8</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\add.png" />
+    <None Remove="Images\alert.png" />
+    <None Remove="Images\alert_white.png" />
+    <None Remove="Images\arrow.png" />
+    <None Remove="Images\arrow_shadow.png" />
+    <None Remove="Images\gear.png" />
+    <None Remove="Images\minus.png" />
+    <None Remove="Images\more.png" />
+    <None Remove="Images\new.png" />
+    <None Remove="Images\paper.png" />
+    <None Remove="Images\plus.png" />
+    <None Remove="Images\refresh.png" />
+    <None Remove="Images\remove.png" />
+    <None Remove="Images\sheet.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CalcBinding" Version="2.5.2" />
+    <PackageReference Include="Costura.Fody" Version="5.0.0-alpha0267">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.2" />
+    <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0-preview.6.20305.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GuiLibraryInterfaces\GuiLibraryInterfaces.csproj" />
+    <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    <ProjectReference Include="..\WindowsGuiLibrary\WindowsGuiLibrary.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\add.png" />
+    <Resource Include="Images\alert.png" />
+    <Resource Include="Images\alert_white.png" />
+    <Resource Include="Images\arrow.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\arrow_shadow.png" />
+    <Resource Include="Images\gear.png" />
+    <Resource Include="Images\minus.png" />
+    <Resource Include="Images\more.png" />
+    <Resource Include="Images\new.png" />
+    <Resource Include="Images\paper.png" />
+    <Resource Include="Images\plus.png" />
+    <Resource Include="Images\refresh.png" />
+    <Resource Include="Images\remove.png" />
+    <Resource Include="Images\sheet.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controls\MyGridSplitter.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Controls\SectionHeader.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Controls\MyGridSplitter.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Controls\SectionHeader.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+
+</Project>

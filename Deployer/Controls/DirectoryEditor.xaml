@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="Deployer.DirectoryEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Deployer"
+             xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+             xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             Height="25" d:DesignWidth="800"
+             ToolTip="{c:Binding 'Path.Length > 0 ? Path : null'}"
+             x:Name="_this">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="80"/>
+        </Grid.ColumnDefinitions>
+
+        <local:MyButton Grid.Column="0" Height="20" Width="20" Margin="5,0,5,0" Command="{Binding ViewModel.Commands.AddDirectoryCommand, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}" CommandParameter="{Binding ElementName=_this}"
+                        Visibility="{c:Binding ViewModel.ShowAddDirectoryButton, FalseToVisibility=Hidden, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}"
+                        ToolTip="Add directory">
+            <StackPanel>
+                <Image Source="..\Images\plus.png"/>
+            </StackPanel>
+        </local:MyButton>
+
+        <local:MyButton Grid.Column="1" Height="20" Width="20" Margin="5,0,5,0" Command="{Binding ViewModel.Commands.RemoveDirectoryCommand, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}" CommandParameter="{Binding ElementName=_this}"
+                        Visibility="{c:Binding ViewModel.ShowRemoveDirectoryButton, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}"
+                        ToolTip="Remove directory">
+            <StackPanel>
+                <Image Source="..\Images\minus.png"/>
+            </StackPanel>
+        </local:MyButton>
+
+        <Grid Grid.Column="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="30"/>
+                <ColumnDefinition Width="22"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0" IsEditable="true"
+                      Text="{Binding RawPath, Delay=500}">
+            </ComboBox>
+
+            <Image Grid.Column="1" Source="..\Images\alert_white.png" ToolTip="Path does not exist" Margin="1"
+                   Visibility="{c:Binding ViewModel.ShowPathWarning, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}"/>
+        </Grid>
+
+        <xceed:SplitButton Grid.Column="3" Margin="5,0,5,0" Command="{Binding ViewModel.Commands.BrowseForDirectoryCommand, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}" CommandParameter="{Binding ElementName=_this}"
+                Background="Transparent" BorderThickness="1"
+                Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
+            
+            <TextBlock Text="Browse"/>
+
+            <xceed:SplitButton.DropDownContent>
+                <!-- Need to use event instead of command because binding does not carry down to DropDownContent because it is not in the same visual tree as parent. -->
+                <local:MyButton Click="OpenButton_Click">
+                    <TextBlock Text="Open"/>
+                </local:MyButton>
+            </xceed:SplitButton.DropDownContent>
+        </xceed:SplitButton>
+    </Grid>
+</UserControl>

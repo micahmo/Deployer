@@ -1,0 +1,87 @@
+﻿<DataGrid x:Class="Deployer.ConfigurationDataGrid"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Deployer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             
+             ItemsSource="{Binding Configuration.ConfigurationItems}" SelectedItem="{Binding SelectedConfigurationItem, UpdateSourceTrigger=PropertyChanged}" 
+             SelectedIndex="{Binding Configuration.SelectedConfigurationIndex}"
+             AutoGenerateColumns="False" HeadersVisibility="None" ColumnWidth="*" SelectionMode="Single" CanUserAddRows="False"
+             BorderThickness="0" GridLinesVisibility="None"
+             x:Name="_this"
+             PreviewKeyDown="_this_PreviewKeyDown">
+
+    <DataGrid.Resources>
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 
+                                         Color="{x:Static SystemColors.HighlightColor}"/>
+
+        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" 
+                                         Color="{x:Static SystemColors.HighlightTextColor}"/>
+
+    </DataGrid.Resources>
+
+    <DataGrid.CellStyle>
+        <Style TargetType="DataGridCell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Height" Value="20"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsEditing" Value="True">
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Trigger>
+                <Trigger Property="IsEditing" Value="False">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+
+        </Style>
+    </DataGrid.CellStyle>
+
+
+    <DataGrid.Columns>
+        <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <DataGridTemplateColumn Width="10">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Button Background="White" BorderThickness="0" ToolTip="{Binding ViewModel.ReloadButtonTooltip, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
+                            Command="{Binding ViewModel.Commands.ReloadConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}">
+                        <Image Source="..\Images\refresh.png"/>
+                    </Button>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn Width="10">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Button Background="White" BorderThickness="0" ToolTip="Duplicate"
+                                            Command="{Binding ViewModel.Commands.DuplicateConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
+                                            CommandParameter="{Binding ElementName=_this}">
+                        <Image Source="..\Images\paper.png"/>
+                    </Button>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+        <DataGridTemplateColumn Width="10">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Button Background="White" BorderThickness="0" ToolTip="Settings"
+                            Command="{Binding ViewModel.Commands.OpenConfigurationItemSettingsCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
+                            CommandParameter="{Binding ElementName=_this}">
+                        <Image Source="..\Images\gear.png"/>
+                    </Button>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+
+    </DataGrid.Columns>
+
+</DataGrid>
