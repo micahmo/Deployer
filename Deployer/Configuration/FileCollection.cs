@@ -85,8 +85,17 @@ namespace Deployer
         {
             bool filter = (fileViewOptions ?? _configurationItem.FileViewOptions.Value) == FileViewOptions.ViewPendingFiles;
 
-            List<InternalFileItem> directoryFileList = new List<InternalFileItem>(_directory.GetFileInfos().Select(f => new InternalFileItem(f, _directory.Path) {Other = false}));
-            List<InternalFileItem> otherDirectoryFileList = new List<InternalFileItem>(_otherDirectory.GetFileInfos().Select(f => new InternalFileItem(f, _otherDirectory.Path) {Other = true}));
+            List<InternalFileItem> directoryFileList = new List<InternalFileItem>(_directory.GetFileInfos().Select(f => new InternalFileItem(f, _directory.Path)
+            {
+                Other = false,
+                Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+            }));
+            
+            List<InternalFileItem> otherDirectoryFileList = new List<InternalFileItem>(_otherDirectory.GetFileInfos().Select(f => new InternalFileItem(f, _otherDirectory.Path)
+            {
+                Other = true,
+                Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+            }));
 
             FileItemEqualityComparer fileItemEqualityComparer = new FileItemEqualityComparer();
             FileItemComparer fileItemComparer = new FileItemComparer();
@@ -108,6 +117,9 @@ namespace Deployer
             {
                 // Always remove files that exist in both places but are neither overwriting nor being overwritten
                 directoryFileList.RemoveAll(f => f.HasOther && !(f.Overwrite || f.GetOverwritten));
+
+                // Always remove files that are being excluded
+                directoryFileList.RemoveAll(f => f.Excluded);
 
                 if (IsLeft)
                 {
@@ -192,12 +204,14 @@ namespace Deployer
 
         private void ConfigurationItemSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (sender is Setting<FileViewOptions> || _configurationItem.FileViewOptions.Value == FileViewOptions.ViewPendingFiles)
+            // Check all the cases where a setting changes requires an update, any time a copy setting or view setting is updated
+            if (sender is Setting setting && (_configurationItem.CopySettings.Settings.Contains(setting) || _configurationItem.ViewSettings.Settings.Contains(setting)))
             {
                 UpdateFileCollection();
             }
 
-            if (sender is Setting setting && setting.Name == nameof(ConfigurationItem.EnabledSetting))
+            // If the user toggled the Enabled flag, we need to reload the whole configuration
+            if (sender is Setting enabledSetting && enabledSetting.Name == nameof(ConfigurationItem.EnabledSetting))
             {
                 Configuration.Instance.ReloadCurrentConfiguration();
             }
@@ -212,6 +226,7 @@ namespace Deployer
                 case nameof(ConfigurationItem.NewerOnRightSetting):
                 case nameof(ConfigurationItem.FileViewOptions):
                 case nameof(ConfigurationItem.EnabledSetting):
+                case nameof(ConfigurationItem.ExclusionsList):
                     _configurationItem.GeneralSettings.Settings.ToList().ForEach(s =>
                     {
                         s.PropertyChanged -= ConfigurationItemSetting_PropertyChanged;
@@ -283,6 +298,8 @@ namespace Deployer
     internal class InternalFileItem : FileItem
     {
         public InternalFileItem(FileInfo fileInfo, string directory) : base(fileInfo, directory) { }
+
+        public bool Excluded { get; set; }
 
         public bool Other { get; set; }
 

@@ -44,6 +44,14 @@
                 <DataTrigger Binding="{Binding Overwrite}" Value="True">
                     <Setter Property="Background" Value="LightGreen"/>
                 </DataTrigger>
+
+                <!--
+                     Order of declaration is precedence for DataTriggers.
+                     If there is a file which is both Overwrite and Excluded, the Excluded formatting will win.
+                -->
+                <DataTrigger Binding="{Binding Excluded}" Value="True">
+                    <Setter Property="Background" Value="LightCoral"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </DataGrid.RowStyle>

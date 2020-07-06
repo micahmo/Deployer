@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Management.Automation;
 using System.Xml.Serialization;
 
 #endregion
@@ -34,6 +35,7 @@ namespace Deployer
             CopySettings.Settings.Add(LeftButNotRightSetting);
             CopySettings.Settings.Add(NewerOnLeftSetting);
             CopySettings.Settings.Add(NewerOnRightSetting);
+            CopySettings.Settings.Add(ExclusionsList);
 
             LockedFileSettings = new SettingsGroup {Name = "LockedFileSettings", Description = "Locked File Settings"};
             LockedFileSettings.Settings.Add(LockedFileOptionSetting);
@@ -97,10 +99,12 @@ namespace Deployer
                 case nameof(LeftButNotRightSetting):
                 case nameof(NewerOnLeftSetting):
                 case nameof(NewerOnRightSetting):
+                case nameof(ExclusionsList):
                     CopySettings.Settings.Clear();
                     CopySettings.Settings.Add(LeftButNotRightSetting);
                     CopySettings.Settings.Add(NewerOnLeftSetting);
                     CopySettings.Settings.Add(NewerOnRightSetting);
+                    CopySettings.Settings.Add(ExclusionsList);
                     break;
                 case nameof(LockedFileOptionSetting):
                     LockedFileSettings.Settings.Clear();
@@ -176,6 +180,17 @@ namespace Deployer
             Name = nameof(NewerOnRightSetting), Description = "If file is newer on right:", SettingType = SettingType.List, DefaultValue = ExistingFileOptions.Skip
         };
 
+        public Setting<string> ExclusionsList
+        {
+            get => _exclusionsList;
+            set => Set(nameof(ExclusionsList), ref _exclusionsList, value);
+        }
+        private Setting<string> _exclusionsList = new Setting<string>
+        {
+            Name = nameof(ExclusionsList), Description = "Exclusions list:", SettingType = SettingType.ExtendedString, DefaultValue = string.Empty,
+            ExtendedDescription = $"One exclusion per line. Use * as wildcard.{Environment.NewLine}{Environment.NewLine}For example:{Environment.NewLine}*.exe{Environment.NewLine}*.config",
+        };
+
         public Setting<LockedFileOptions> LockedFileOptionSetting
         {
             get => _lockedFileOptionsSetting;
@@ -210,6 +225,26 @@ namespace Deployer
 
         [XmlIgnore]
         public SettingsGroup ViewSettings { get; }
+
+        [XmlIgnore]
+        public List<WildcardPattern> ExclusionListPatterns 
+        {
+            get
+            {
+                List<WildcardPattern> exclusionListPatterns = new List<WildcardPattern>();
+
+                if (!string.IsNullOrEmpty(ExclusionsList.Value))
+                {
+                    string[] patterns = ExclusionsList.Value.Split(new[] {"\n", "\r\n", "\r"}, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string pattern in patterns)
+                    {
+                        exclusionListPatterns.Add(new WildcardPattern(pattern, WildcardOptions.Compiled | WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase));
+                    }
+                }
+
+                return exclusionListPatterns;
+            }
+        }
 
         #endregion
 

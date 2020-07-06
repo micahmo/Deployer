@@ -16,6 +16,8 @@ namespace Deployer
 
         public string Description { get; set; }
 
+        public string ExtendedDescription { get; set; }
+
         public SettingType SettingType { get; set; }
     }
 
@@ -56,6 +58,7 @@ namespace Deployer
     public enum SettingType
     {
         Boolean,
-        List
+        List,
+        ExtendedString
     }
 }

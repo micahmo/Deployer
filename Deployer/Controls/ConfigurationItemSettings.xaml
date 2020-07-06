@@ -66,14 +66,19 @@
                                             </Grid.ColumnDefinitions>
 
                                             <Grid.RowDefinitions>
-                                                <RowDefinition Height="30"/>
+                                                <!-- Padding row -->
+                                                <RowDefinition Height="5"/>
+                                                <!-- Setting -->
+                                                <RowDefinition/>
+                                                <!-- Padding row -->
+                                                <RowDefinition Height="5"/>
                                             </Grid.RowDefinitions>
 
-                                            <Grid Grid.Column="0" VerticalAlignment="Center">
+                                            <Grid Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" ToolTip="{Binding ExtendedDescription}">
                                                 <TextBlock Text="{Binding Description}"/>
                                             </Grid>
 
-                                            <Grid Grid.Column="1" VerticalAlignment="Center">
+                                            <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" ToolTip="{Binding ExtendedDescription}">
                                                 <ComboBox SelectedItem="{Binding Value}" ItemsSource="{Binding PossibleValues}" Visibility="{c:Binding 'SettingType == local:SettingType.List', FalseToVisibility=Collapsed}">
                                                     <ComboBox.ItemTemplate>
                                                         <DataTemplate>
@@ -82,7 +87,14 @@
                                                     </ComboBox.ItemTemplate>
                                                 </ComboBox>
 
-                                                <CheckBox IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}" />
+                                                <CheckBox IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}"
+                                                          ToolTip="{Binding ExtendedDescription}"/>
+
+                                                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" ToolTip="{Binding ExtendedDescription}" 
+                                                              Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}">
+                                                    <!-- AcceptsReturn="True" is what makes it a multi-line TextBox -->
+                                                    <TextBox Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"/>
+                                                </ScrollViewer>
                                             </Grid>
 
                                         </Grid>
