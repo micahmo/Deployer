@@ -549,6 +549,14 @@ namespace Deployer
             }
             catch
             {
+                if (File.Exists(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME)))
+                {
+                    // The file exists, but there was a problem deserializing it.
+                    // Be sure to back up the existing file before overwriting it with an empty instance.
+                    File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
+                              XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_BACKUP_NAME), overwrite: true);
+                }
+
                 Save(new Configuration());
                 return Load();
             }
@@ -565,6 +573,7 @@ namespace Deployer
         }
 
         private const string CONFIG_FILE_NAME = "DeployerConfig.xml";
+        private const string CONFIG_BACKUP_NAME = "DeployerConfig.bak.xml";
 
         #endregion
     }

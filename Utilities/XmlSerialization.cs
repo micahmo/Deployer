@@ -72,7 +72,7 @@ namespace Utilities
             }
         }
 
-        private static string GetCustomConfigFilePath(Environment.SpecialFolder specialFolder, string configFileName)
+        public static string GetCustomConfigFilePath(Environment.SpecialFolder specialFolder, string configFileName)
         {
             string customConfigFilePath = Environment.GetFolderPath(specialFolder);
             customConfigFilePath = Path.Combine(customConfigFilePath, "Deployer");
