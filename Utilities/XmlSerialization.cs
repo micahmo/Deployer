@@ -33,10 +33,8 @@ namespace Utilities
                 {
                     if (mutex.WaitOne())
                     {
-                        using (Stream reader = new FileStream(customConfigFilePath, FileMode.Create))
-                        {
-                            serializer.Serialize(reader, objectToSerialize);
-                        }
+                        using Stream reader = new FileStream(customConfigFilePath, FileMode.Create);
+                        serializer.Serialize(reader, objectToSerialize);
                     }
                 }
                 finally
@@ -63,13 +61,10 @@ namespace Utilities
             string customConfigFilePath = GetCustomConfigFilePath(specialFolder, configFileName);
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
 
-            using (FileStream configFile = File.Open(customConfigFilePath, FileMode.Open, FileAccess.Read))
-            {
-                using (StreamReader streamReader = new StreamReader(configFile))
-                {
-                    return (T)xmlSerializer.Deserialize(streamReader);
-                }
-            }
+            using FileStream configFile = File.Open(customConfigFilePath, FileMode.Open, FileAccess.Read);
+            using StreamReader streamReader = new StreamReader(configFile);
+            
+            return (T)xmlSerializer.Deserialize(streamReader);
         }
 
         public static string GetCustomConfigFilePath(Environment.SpecialFolder specialFolder, string configFileName)
