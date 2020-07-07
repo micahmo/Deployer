@@ -129,6 +129,12 @@ namespace Deployer
             }
         }
 
+        private void ComboBox_OnDropDownOpened(object sender, EventArgs e)
+        {
+            // When the ComboBox opens, cause OtherPaths to reevaluate so we have the latest set of paths as soon as it is opened
+            ViewModel.RaisePropertyChanged(nameof(ViewModel.OtherPaths));
+        }
+
         #endregion
     }
 

@@ -43,7 +43,8 @@
 
             <ComboBox Grid.Column="0" Grid.ColumnSpan="3" Margin="5,0,5,0" IsEditable="true"
                       Text="{Binding RawPath, Delay=500}"
-                      ItemsSource="{Binding ViewModel.OtherPaths, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}, Mode=OneWay}">
+                      ItemsSource="{Binding ViewModel.OtherPaths, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}, Mode=OneWay}"
+                      DropDownOpened="ComboBox_OnDropDownOpened">
             </ComboBox>
 
             <Image Grid.Column="1" Source="..\Images\alert_white.png" ToolTip="Path does not exist" Margin="1"
