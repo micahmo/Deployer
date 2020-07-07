@@ -40,7 +40,7 @@ namespace Deployer
                         string extension = Path.GetExtension(file);
                         if (!string.IsNullOrEmpty(extension))
                         {
-                            if (extension != ".exe")
+                            if (_nonCachedExtensions.Contains(extension) == false)
                             {
                                 if (_iconCache.TryGetValue(Path.GetExtension(file), out var cachedImage) && cachedImage is { })
                                 {
@@ -92,6 +92,7 @@ namespace Deployer
         }
 
         private static readonly ConcurrentDictionary<string, ImageSource> _iconCache = new ConcurrentDictionary<string, ImageSource>();
-        //private static readonly BlockingCollection<FileItem> _filesToProcess = new BlockingCollection<FileItem>();
+
+        private static readonly List<string> _nonCachedExtensions = new List<string> {".exe", ".ico", ".bmp"};
     }
 }
