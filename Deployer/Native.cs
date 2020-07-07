@@ -20,10 +20,20 @@ namespace Deployer
 
         public static bool DirectoryExists(string path)
         {
-            return Utilities.FileSystem.IsUncPath(path, out Uri uri)
-                ? ConnectToNetworkShare($@"\\{uri.Host}") && Directory.Exists(path)
-                : Directory.Exists(path);
+            if (Utilities.FileSystem.IsUncPath(path, out Uri uri))
+            {
+                // We must lock here, otherwise other connections could come through
+                // for the same share while we're in the middle of processing one,
+                // and report the wrong availability.
+                lock (_connectToNetworkShareLock)
+                {
+                    ConnectToNetworkShare($@"\\{uri.Host}");
+                }
+            }
+            
+            return Directory.Exists(path);
         }
+        private static readonly object _connectToNetworkShareLock = new object();
 
         private static bool ConnectToNetworkShare(string path)
         {
