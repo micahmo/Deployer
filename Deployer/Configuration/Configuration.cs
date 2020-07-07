@@ -292,7 +292,10 @@ namespace Deployer
                         }
                     }
 
-                    File.Copy(sourceFileFullName, destinationFileFullName, true);
+                    await Task.Run(() =>
+                    {
+                        File.Copy(sourceFileFullName, destinationFileFullName, true);
+                    });
                 }
                 catch (Exception ex)
                 {
