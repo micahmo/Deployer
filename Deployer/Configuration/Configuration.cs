@@ -198,7 +198,7 @@ namespace Deployer
                 {
                     return;
                 }
-                
+
                 string fileOrFolder = fileCopyPair.SourceFile.FileInfo is FileInfo ? "File" : fileCopyPair.SourceFile.FileInfo is DirectoryInfo ? "Folder" : "Item";
                 string sourceFolder = Path.GetDirectoryName(fileCopyPair.SourceFile.FullName);
                 string sourceFileFullName = fileCopyPair.SourceFile.FullName;
@@ -321,41 +321,44 @@ namespace Deployer
             }
 
             // Restart all stopped services
-            foreach (ServiceController stoppedService in stoppedServices)
+            if (deploymentItem.ConfigurationItem.KilledProcessesSetting.Value)
             {
-                stoppedService.Refresh();
-                if (stoppedService.Status == ServiceControllerStatus.Stopped)
+                foreach (ServiceController stoppedService in stoppedServices)
                 {
-                    progress?.Report(new DeployProgress("Restarting Stopped Processes and Services", $"Restarting stopped service '{stoppedService.DisplayName}'..."));
+                    stoppedService.Refresh();
+                    if (stoppedService.Status == ServiceControllerStatus.Stopped)
+                    {
+                        progress?.Report(new DeployProgress("Restarting Stopped Processes and Services", $"Restarting stopped service '{stoppedService.DisplayName}'..."));
+                        try
+                        {
+                            stoppedService.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            errorProgress?.Report(new DeployError($"Error restarting service '{stoppedService.DisplayName}'", ex));
+                        }
+                    }
+                }
+
+                // Restart all killed processes
+                foreach (string process in killedProcesses)
+                {
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = process,
+                        WorkingDirectory = Path.GetDirectoryName(process)
+                    };
+
+                    progress?.Report(new DeployProgress("Restarting Stopped Processes and Services", $"Restarting killed process '{process}'..."));
+
                     try
                     {
-                        stoppedService.Start();
+                        Process.Start(startInfo);
                     }
                     catch (Exception ex)
                     {
-                        errorProgress?.Report(new DeployError($"Error restarting service '{stoppedService.DisplayName}'", ex));
+                        errorProgress?.Report(new DeployError($"Error restarting process '{process}'", ex));
                     }
-                }
-            }
-
-            // Restart all killed processes
-            foreach (string process in killedProcesses)
-            {
-                ProcessStartInfo startInfo = new ProcessStartInfo
-                {
-                    FileName = process,
-                    WorkingDirectory = Path.GetDirectoryName(process)
-                };
-
-                progress?.Report(new DeployProgress("Restarting Stopped Processes and Services", $"Restarting killed process '{process}'..."));
-
-                try
-                {
-                    Process.Start(startInfo);
-                }
-                catch (Exception ex)
-                {
-                    errorProgress?.Report(new DeployError($"Error restarting process '{process}'", ex));
                 }
             }
         }
@@ -641,7 +644,7 @@ namespace Deployer
 
     public enum LockedFileOptions
     {
-        [EnumDescription("Automatically stop and restart locking processes")]
+        [EnumDescription("Automatically stop locking processes")]
         StopLockingProcesses,
         
         [EnumDescription("Wait for locking processes to stop")]

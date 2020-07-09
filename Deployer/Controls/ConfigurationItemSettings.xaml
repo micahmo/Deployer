@@ -4,13 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Deployer"
-        xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
         mc:Ignorable="d"
-        Title="{Binding Name}" Height="550" Width="575">
-
-    <Window.Resources>
-        <local:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
-    </Window.Resources>
+        Title="{Binding Name}" Height="615" Width="600">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -53,57 +48,7 @@
                             <TextBlock Grid.Column="1" Grid.Row="1" FontWeight="Bold" Text="{Binding Description}"/>
                             <Canvas Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Background="LightGray"/>
 
-                            <ItemsControl Grid.Column="1" Grid.Row="4" ItemsSource="{Binding Settings}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <!-- Setting name -->
-                                                <ColumnDefinition Width="200"/>
-                                                <!-- Setting value -->
-                                                <ColumnDefinition/>
-                                                <!-- Padding column -->
-                                                <ColumnDefinition Width="30"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <Grid.RowDefinitions>
-                                                <!-- Padding row -->
-                                                <RowDefinition Height="5"/>
-                                                <!-- Setting -->
-                                                <RowDefinition/>
-                                                <!-- Padding row -->
-                                                <RowDefinition Height="5"/>
-                                            </Grid.RowDefinitions>
-
-                                            <Grid Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" ToolTip="{Binding ExtendedDescription}">
-                                                <TextBlock Text="{Binding Description}"/>
-                                            </Grid>
-
-                                            <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" ToolTip="{Binding ExtendedDescription}">
-                                                <ComboBox SelectedItem="{Binding Value}" ItemsSource="{Binding PossibleValues}" Visibility="{c:Binding 'SettingType == local:SettingType.List', FalseToVisibility=Collapsed}">
-                                                    <ComboBox.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <ContentPresenter Content="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
-                                                        </DataTemplate>
-                                                    </ComboBox.ItemTemplate>
-                                                </ComboBox>
-
-                                                <CheckBox IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}"
-                                                          ToolTip="{Binding ExtendedDescription}"/>
-
-                                                    <!-- AcceptsReturn="True" is what makes it a multi-line TextBox -->
-                                                <TextBox Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ExtendedDescription}" 
-                                                         Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}"    
-                                                         ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
-                                                         AcceptsReturn="True"/>
-                                            </Grid>
-
-                                        </Grid>
-
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                            <local:SettingsItemsControl Grid.Column="1" Grid.Row="4" DataContext="{Binding}"/>
 
                         </Grid>
                     </DataTemplate>

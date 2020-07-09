@@ -40,6 +40,7 @@ namespace Deployer
 
             LockedFileSettings = new SettingsGroup {Name = "LockedFileSettings", Description = "Locked File Settings"};
             LockedFileSettings.Settings.Add(LockedFileOptionSetting);
+            LockedFileOptionSetting.DependentSettings.Add(new DependentSettingCollection(() => LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses, LockedFileOptionSetting, KilledProcessesSetting));
 
             ViewSettings = new SettingsGroup {Name = "ViewSettings", Description = "View Settings"};
             ViewSettings.Settings.Add(FileViewOptions);
@@ -110,8 +111,11 @@ namespace Deployer
                     CopySettings.Settings.Add(ExclusionsList);
                     break;
                 case nameof(LockedFileOptionSetting):
+                case nameof(KilledProcessesSetting):
                     LockedFileSettings.Settings.Clear();
                     LockedFileSettings.Settings.Add(LockedFileOptionSetting);
+                    LockedFileOptionSetting.DependentSettings.Clear();
+                    LockedFileOptionSetting.DependentSettings.Add(new DependentSettingCollection(() => LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses, LockedFileOptionSetting, KilledProcessesSetting));
                     break;
                 case nameof(FileViewOptions):
                     ViewSettings.Settings.Clear();
@@ -213,6 +217,16 @@ namespace Deployer
         private Setting<LockedFileOptions> _lockedFileOptionsSetting = new Setting<LockedFileOptions>
         {
             Name = nameof(LockedFileOptionSetting), Description = "If destination file is locked:", SettingType = SettingType.List, DefaultValue = LockedFileOptions.StopLockingProcesses
+        };
+
+        public Setting<bool> KilledProcessesSetting
+        {
+            get => _killedProcessesSetting;
+            set => Set(nameof(KilledProcessesSetting), ref _killedProcessesSetting, value);
+        }
+        private Setting<bool> _killedProcessesSetting = new Setting<bool>
+        {
+            Name = nameof(KilledProcessesSetting), Description = "Automatically restart killed processes:", SettingType = SettingType.Boolean, DefaultValue = true
         };
 
         public Setting<FileViewOptions> FileViewOptions

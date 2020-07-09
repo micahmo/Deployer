@@ -10,6 +10,8 @@ using System.Xml.Serialization;
 
 namespace Deployer
 {
+    #region Setting class
+
     public class Setting : ObservableObject
     {
         public string Name { get; set; }
@@ -19,7 +21,14 @@ namespace Deployer
         public string ExtendedDescription { get; set; }
 
         public SettingType SettingType { get; set; }
+
+        [XmlIgnore]
+        public List<DependentSettingCollection> DependentSettings { get; } = new List<DependentSettingCollection>();
     }
+
+    #endregion
+
+    #region Setting<T> class
 
     [Serializable]
     [XmlInclude(typeof(Setting<bool>))]
@@ -55,10 +64,41 @@ namespace Deployer
         }
     }
 
+    #endregion
+
+    #region DependentSettingCollection class
+
+    public class DependentSettingCollection : ObservableObject
+    {
+        public DependentSettingCollection(Func<bool> conditionToShow, Setting parentSetting, params Setting[] dependentSettings)
+        {
+            ConditionToShow = conditionToShow;
+
+            parentSetting.PropertyChanged += (sender, args) => { RaisePropertyChanged(nameof(Show)); };
+
+            foreach (Setting dependentSetting in dependentSettings)
+            {
+                Settings.Add(dependentSetting);
+            }
+        }
+
+        public IList<Setting> Settings { get; } = new List<Setting>();
+
+        public bool Show => ConditionToShow?.Invoke() == true;
+
+        public Func<bool> ConditionToShow { get; set; }
+    }
+
+    #endregion
+
+    #region SettingType enum
+
     public enum SettingType
     {
         Boolean,
         List,
         ExtendedString
     }
+
+    #endregion
 }
