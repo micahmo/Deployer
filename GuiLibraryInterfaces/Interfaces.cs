@@ -32,7 +32,7 @@ namespace GuiLibraryInterfaces
 
     public interface IShellContextMenu
     {
-        void Show(FileInfo[] fileInfo, Point point);
+        void Show(FileSystemInfo[] fileInfo, Point point);
     }
 
     public struct Point

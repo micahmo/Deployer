@@ -62,10 +62,10 @@ namespace Deployer
 
         private void DataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is DataGrid dataGrid && dataGrid.SelectedItems.OfType<FileItem>().Any(f => f.FileInfo is FileInfo))
+            if (sender is DataGrid dataGrid && dataGrid.SelectedItems.OfType<FileItem>().Any())
             {
                 Point mousePosition = Mouse.GetPosition(Window.GetWindow(this));
-                Dependencies.ShellContextMenu.Show(dataGrid.SelectedItems.OfType<FileItem>().Select(f => f.FileInfo as FileInfo).Where(f => f is { }).ToArray(), new GuiLibraryInterfaces.Point(mousePosition.X, mousePosition.Y));
+                Dependencies.ShellContextMenu.Show(dataGrid.SelectedItems.OfType<FileItem>().Select(f => f.FileInfo).ToArray(), new GuiLibraryInterfaces.Point(mousePosition.X, mousePosition.Y));
             }
         }
 

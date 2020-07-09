@@ -353,6 +353,48 @@ namespace Peter
 
             return arrPIDLs;
         }
+
+        protected IntPtr[] GetPIDLs(FileSystemInfo[] arrFI)
+        {
+            if (null == arrFI || 0 == arrFI.Length)
+            {
+                return null;
+            }
+
+            IShellFolder oParentFolder = null;
+            if (arrFI[0] is FileInfo fileInfo)
+            {
+                oParentFolder = GetParentFolder(fileInfo.DirectoryName);
+            }
+            else if (arrFI[0] is DirectoryInfo directoryInfo)
+            {
+                oParentFolder = GetParentFolder(directoryInfo.Parent.FullName);
+            }
+            if (null == oParentFolder)
+            {
+                return null;
+            }
+
+            IntPtr[] arrPIDLs = new IntPtr[arrFI.Length];
+            int n = 0;
+            foreach (FileSystemInfo fi in arrFI)
+            {
+                // Get the file relative to folder
+                uint pchEaten = 0;
+                SFGAO pdwAttributes = 0;
+                IntPtr pPIDL = IntPtr.Zero;
+                int nResult = oParentFolder.ParseDisplayName(IntPtr.Zero, IntPtr.Zero, fi.Name, ref pchEaten, out pPIDL, ref pdwAttributes);
+                if (S_OK != nResult)
+                {
+                    FreePIDLs(arrPIDLs);
+                    return null;
+                }
+                arrPIDLs[n] = pPIDL;
+                n++;
+            }
+
+            return arrPIDLs;
+        }
         #endregion
 
         #region FreePIDLs()
@@ -459,6 +501,17 @@ namespace Peter
             // Release all resources first.
             ReleaseAll();
             _arrPIDLs = GetPIDLs(dirs);
+            this.ShowContextMenu(pointScreen);
+        }
+
+        /// <summary>
+        /// Shows the context menu
+        /// </summary>
+        public void ShowContextMenu(FileSystemInfo[] files, Point pointScreen)
+        {
+            // Release all resources first.
+            ReleaseAll();
+            _arrPIDLs = GetPIDLs(files);
             this.ShowContextMenu(pointScreen);
         }
 

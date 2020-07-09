@@ -12,7 +12,7 @@ namespace WindowsGuiLibrary
     {
         #region IShellContextMenu members
 
-        public void Show(FileInfo[] fileInfo, Point point)
+        public void Show(FileSystemInfo[] fileInfo, Point point)
         {
             ShellContextMenu scm = new ShellContextMenu();
             scm.ShowContextMenu(fileInfo, new System.Drawing.Point((int)point.X, (int)point.Y));
