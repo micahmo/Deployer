@@ -253,6 +253,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <local:SectionHeader Grid.Row="0" HeaderText="Configuration"/>
@@ -284,6 +285,40 @@
                         <DockPanel Grid.Row="2">
                             <local:ConfigurationDataGrid DataContext="{Binding}" Background="White"/>
                         </DockPanel>
+
+                        <Grid Grid.Row="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="35"/>
+                            </Grid.RowDefinitions>
+
+                            <Canvas Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                                    Background="LightGray" Height="2"/>
+
+                            <local:MyButton Grid.Column="1" Width="20" Height="20" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                            ToolTip="Move selected configuration item up"
+                                            Visibility="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex>0', RelativeSource={RelativeSource AncestorType=local:MainWindow}, FalseToVisibility=Hidden}">
+                                <StackPanel>
+                                    <Image Source="Images\up_arrow.png"/>
+                                </StackPanel>
+                            </local:MyButton>
+
+                            <local:MyButton Grid.Column="2" Width="20" Height="20" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                            ToolTip="Move selected configuration item down"
+                                            Visibility="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex less DataContext.Configuration.ConfigurationItems.Count-1 and DataContext.Configuration.SelectedConfigurationIndex>=0',
+                                                        RelativeSource={RelativeSource AncestorType=local:MainWindow}, FalseToVisibility=Hidden}">
+                                <StackPanel>
+                                    <Image Source="Images\down_arrow.png"/>
+                                </StackPanel>
+                            </local:MyButton>
+
+                        </Grid>
                     </Grid>
 
                     <Grid Grid.Row="1"  Margin="0,5,0,0">

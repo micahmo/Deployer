@@ -19,6 +19,7 @@
     <None Remove="Images\alert_white.png" />
     <None Remove="Images\arrow.png" />
     <None Remove="Images\arrow_shadow.png" />
+    <None Remove="Images\down_arrow.png" />
     <None Remove="Images\gear.png" />
     <None Remove="Images\minus.png" />
     <None Remove="Images\more.png" />
@@ -28,6 +29,7 @@
     <None Remove="Images\refresh.png" />
     <None Remove="Images\remove.png" />
     <None Remove="Images\sheet.png" />
+    <None Remove="Images\up_arrow.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +58,7 @@
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\arrow_shadow.png" />
+    <Resource Include="Images\down_arrow.png" />
     <Resource Include="Images\gear.png" />
     <Resource Include="Images\minus.png" />
     <Resource Include="Images\more.png" />
@@ -65,6 +68,7 @@
     <Resource Include="Images\refresh.png" />
     <Resource Include="Images\remove.png" />
     <Resource Include="Images\sheet.png" />
+    <Resource Include="Images\up_arrow.png" />
   </ItemGroup>
 
   <ItemGroup>

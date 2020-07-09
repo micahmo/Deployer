@@ -331,6 +331,12 @@ namespace Deployer
         public ICommand ViewLastErrorCommand => _viewLastErrorCommand ??= new RelayCommand(ViewLastError);
         private RelayCommand _viewLastErrorCommand;
 
+        public ICommand MoveConfigurationItemUpCommand => _moveConfigurationItemUpCommand ??= new RelayCommand(MoveConfigurationItemUp);
+        private RelayCommand _moveConfigurationItemUpCommand;
+
+        public ICommand MoveConfigurationItemDownCommand => _moveConfigurationItemDownCommand ??= new RelayCommand(MoveConfigurationItemDown);
+        private RelayCommand _moveConfigurationItemDownCommand;
+
         #endregion
 
         #region Command implementations
@@ -452,6 +458,34 @@ namespace Deployer
         private void ViewLastError()
         {
             Model.IsBusy = true;
+        }
+
+        private void MoveConfigurationItemUp()
+        {
+            if (Model.Configuration.SelectedConfigurationIndex > 0)
+            {
+                int selectedConfigurationIndex = Model.Configuration.SelectedConfigurationIndex;
+                ConfigurationItem configurationItem = Model.Configuration.ConfigurationItems[selectedConfigurationIndex];
+                
+                Model.Configuration.ConfigurationItems.RemoveAt(selectedConfigurationIndex);
+                Model.Configuration.ConfigurationItems.Insert(selectedConfigurationIndex - 1, configurationItem);
+
+                Model.Configuration.SelectedConfigurationIndex = Model.Configuration.ConfigurationItems.IndexOf(configurationItem);
+            }
+        }
+
+        private void MoveConfigurationItemDown()
+        {
+            if (Model.Configuration.SelectedConfigurationIndex < Model.Configuration.ConfigurationItems.Count)
+            {
+                int selectedConfigurationIndex = Model.Configuration.SelectedConfigurationIndex;
+                ConfigurationItem configurationItem = Model.Configuration.ConfigurationItems[selectedConfigurationIndex];
+
+                Model.Configuration.ConfigurationItems.RemoveAt(selectedConfigurationIndex);
+                Model.Configuration.ConfigurationItems.Insert(selectedConfigurationIndex + 1, configurationItem);
+
+                Model.Configuration.SelectedConfigurationIndex = Model.Configuration.ConfigurationItems.IndexOf(configurationItem);
+            }
         }
 
         #endregion
