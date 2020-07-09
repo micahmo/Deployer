@@ -14,7 +14,8 @@
         Height="{Binding Configuration.WindowSize.Height}"
         WindowStartupLocation="Manual"
         Left="{Binding Configuration.WindowLocation.X}"
-        Top="{Binding Configuration.WindowLocation.Y}">
+        Top="{Binding Configuration.WindowLocation.Y}"
+        SizeChanged="MainWindow_OnSizeChanged">
 
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:ShortcutCommands.ReloadCurrentConfigurationCommand}" Executed="ReloadCurrentConfigurationCommand_Executed"/>
@@ -165,15 +166,21 @@
     <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
         <xctk:BusyIndicator.BusyContentTemplate>
             <DataTemplate>
-                <StackPanel>
+                <StackPanel Width="{Binding DataContext.BusyIndicatorWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
 
-                    <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Margin="5" Text="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis"
+                               Text="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               ToolTip="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
-                    <TextBlock Margin="5" Text="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <TextBlock Margin="5" TextTrimming="CharacterEllipsis"
+                               Text="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               ToolTip="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
                     <!-- Unhandled error -->
-                    <TextBlock Margin="5" Text="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               Foreground="Red" FontWeight="Bold" Visibility="{c:Binding DataContext.DeployEncounteredUnhandledError, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
+                               Text="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" 
+                               ToolTip="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" 
+                               Visibility="{c:Binding DataContext.DeployEncounteredUnhandledError, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
                     <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredUnhandledError and (DataContext.DeployUnhandledErrorDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
                         <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
@@ -183,8 +190,10 @@
                     </Expander>
 
                     <!-- Handled errors -->
-                    <TextBlock Margin="5" Text="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               Foreground="Red" FontWeight="Bold" Visibility="{c:Binding DataContext.DeployEncounteredHandledErrors, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
+                               Text="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               ToolTip="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               Visibility="{c:Binding DataContext.DeployEncounteredHandledErrors, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
                     <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredHandledErrors and (DataContext.DeployHandledErrorsDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
                         <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
@@ -199,7 +208,7 @@
 
                     <CheckBox Margin="5"
                               IsChecked="{Binding DataContext.Configuration.CloseDialogOnErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <TextBlock Text="Automatically close after errors" ToolTip="Check to automatically close the dialog when a copy fails with errors"/>
+                        <TextBlock Text="Automatically close after errors" ToolTip="Check to automatically close the dialog when a copy fails with errors" TextTrimming="CharacterEllipsis"/>
                     </CheckBox>
 
                     <Grid>

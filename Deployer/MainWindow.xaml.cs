@@ -92,9 +92,9 @@ namespace Deployer
             Model.RaisePropertyChanged(nameof(Model.RightTabControlMaxWidth));
         }
 
-        private void GoToConfigurationITem_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //throw new NotImplementedException();
+            Model.RaisePropertyChanged(nameof(Model.BusyIndicatorWidth));
         }
 
         #endregion
@@ -119,17 +119,29 @@ namespace Deployer
         #endregion
     }
 
+    #region MainWindowModel class
+
     internal class MainWindowModel : ObservableObject
     {
+        #region Constructor
+
         public MainWindowModel(MainWindow mainWindow)
         {
             _mainWindow = mainWindow;
             Commands = new MainWindowCommands(this, _mainWindow);
         }
 
+        #endregion
+
+        #region Properties/fields
+
         private readonly MainWindow _mainWindow;
         
         public MainWindowCommands Commands { get; }
+
+        #endregion
+
+        #region Observable Properties
 
         public Configuration Configuration
         {
@@ -286,7 +298,15 @@ namespace Deployer
             set => Set(nameof(CancelRequested), ref _cancelRequested, value);
         }
         private bool _cancelRequested;
+
+        public double BusyIndicatorWidth => Math.Min(_mainWindow.ActualWidth - 100, 600);
+
+        #endregion
     }
+
+    #endregion
+
+    #region MainWindowCommands class
 
     internal class MainWindowCommands
     {
@@ -496,6 +516,10 @@ namespace Deployer
         #endregion
     }
 
+    #endregion
+
+    #region WpfExtensions class
+
     internal static class WpfExtensions
     {
         public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
@@ -518,4 +542,6 @@ namespace Deployer
             }
         }
     }
+
+    #endregion
 }
