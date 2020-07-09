@@ -46,6 +46,11 @@ namespace Deployer
             return Native.DirectoryExists(Path) ? DirectoryInfo.GetFiles() : Enumerable.Empty<FileInfo>();
         }
 
+        public IEnumerable<DirectoryInfo> GetDirectoryInfos()
+        {
+            return Native.DirectoryExists(Path) ? DirectoryInfo.GetDirectories() : Enumerable.Empty<DirectoryInfo>();
+        }
+
         #endregion
 
         #region Public properties

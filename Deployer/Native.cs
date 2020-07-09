@@ -133,6 +133,26 @@ namespace Deployer
                 null;
         }
 
+        // https://stackoverflow.com/a/59129804/4206279
+        private static Icon GetStockIcon(uint type, uint size)
+        {
+            var info = new SHSTOCKICONINFO();
+            info.cbSize = (uint)Marshal.SizeOf(info);
+
+            SHGetStockIconInfo(type, SHGSI_ICON | size, ref info);
+
+            var icon = (Icon)Icon.FromHandle(info.hIcon).Clone(); // Get a copy that doesn't use the original handle
+            DestroyIcon(info.hIcon); // Clean up native icon to prevent resource leak
+
+            return icon;
+        }
+
+        public static Icon GetFolderIcon()
+        {
+            return _folderIcon ??= GetStockIcon(SHSIID_FOLDER, SHGSI_LARGEICON);
+        }
+        private static Icon _folderIcon;
+
         #endregion
 
         #region DllImports
@@ -178,6 +198,12 @@ namespace Deployer
         [DllImport("Kernel32.dll")]
         private static extern bool QueryFullProcessImageName([In] IntPtr hProcess, [In] uint dwFlags, [Out] StringBuilder lpExeName, [In, Out] ref uint lpdwSize);
 
+        [DllImport("shell32.dll")]
+        private static extern int SHGetStockIconInfo(uint siid, uint uFlags, ref SHSTOCKICONINFO psii);
+
+        [DllImport("user32.dll")]
+        private static extern bool DestroyIcon(IntPtr handle);
+
         #endregion
 
         #region Native classes and structs
@@ -218,6 +244,17 @@ namespace Deployer
             public uint AppStatus;
             public uint TSSessionId;
             [MarshalAs(UnmanagedType.Bool)] public bool bRestartable;
+        }
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+        private struct SHSTOCKICONINFO
+        {
+            public uint cbSize;
+            public IntPtr hIcon;
+            public int iSysIconIndex;
+            public int iIcon;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+            public string szPath;
         }
 
         #endregion
@@ -302,6 +339,11 @@ namespace Deployer
 
         private const int CCH_RM_MAX_SVC_NAME = 63;
 
-        #endregion
+        private const uint SHSIID_FOLDER = 0x3;
+        private const uint SHGSI_ICON = 0x100;
+        private const uint SHGSI_LARGEICON = 0x0;
+        private const uint SHGSI_SMALLICON = 0x1;
+
+            #endregion
     }
 }

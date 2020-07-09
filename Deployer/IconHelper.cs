@@ -29,43 +29,57 @@ namespace Deployer
         {
             if ((parameter as FileCollection)?.Files is { } files)
             {
-                //foreach (FileItem fileItem in _filesToProcess.GetConsumingEnumerable())
                 foreach (FileItem fileItem in files)
                 {
                     if (fileItem.CancelLoad) continue;
 
-                    string file = fileItem.FullName;
-                    if (File.Exists(file))
+                    if (fileItem.IsDirectory)
                     {
-                        string extension = Path.GetExtension(file);
-                        if (!string.IsNullOrEmpty(extension))
+                        if (_iconCache.TryGetValue(DIRECTORY_ICON_KEY, out var cachedDirectoryIcon) && cachedDirectoryIcon is { })
                         {
-                            if (_nonCachedExtensions.Contains(extension) == false)
+                            fileItem._icon = cachedDirectoryIcon;
+                        }
+                        else
+                        {
+                            fileItem._icon = _iconCache[DIRECTORY_ICON_KEY] = IconToImageSource(Native.GetFolderIcon());
+                            _iconCache[DIRECTORY_ICON_KEY]?.Freeze();
+                        }
+                    }
+                    else
+                    {
+                        string file = fileItem.FullName;
+                        if (File.Exists(file))
+                        {
+                            string extension = Path.GetExtension(file);
+                            if (!string.IsNullOrEmpty(extension))
                             {
-                                if (_iconCache.TryGetValue(Path.GetExtension(file), out var cachedImage) && cachedImage is { })
+                                if (_nonCachedExtensions.Contains(extension) == false)
                                 {
-                                    fileItem._icon = cachedImage;
+                                    if (_iconCache.TryGetValue(Path.GetExtension(file), out var cachedImage) && cachedImage is { })
+                                    {
+                                        fileItem._icon = cachedImage;
+                                    }
+                                    else
+                                    {
+                                        fileItem._icon = _iconCache[extension] = IconToImageSource(Native.ExtractAssociationIcon(file));
+
+                                        // Must freeze to pass from background thread to main thread
+                                        _iconCache[extension]?.Freeze();
+                                    }
                                 }
                                 else
                                 {
-                                    fileItem._icon = _iconCache[extension] = IconToImageSource(Native.ExtractAssociationIcon(file));
+                                    if (_iconCache.TryGetValue(file, out var cachedImage) && cachedImage is { })
+                                    {
+                                        fileItem._icon = cachedImage;
+                                    }
+                                    else
+                                    {
+                                        fileItem._icon = _iconCache[file] = IconToImageSource(Native.ExtractAssociationIcon(file));
 
-                                    // Must freeze to pass from background thread to main thread
-                                    _iconCache[extension]?.Freeze();
-                                }
-                            }
-                            else
-                            {
-                                if (_iconCache.TryGetValue(file, out var cachedImage) && cachedImage is { })
-                                {
-                                    fileItem._icon = cachedImage;
-                                }
-                                else
-                                {
-                                    fileItem._icon = _iconCache[file] = IconToImageSource(Native.ExtractAssociationIcon(file));
-
-                                    // Must freeze to pass from background thread to main thread
-                                    _iconCache[file]?.Freeze();
+                                        // Must freeze to pass from background thread to main thread
+                                        _iconCache[file]?.Freeze();
+                                    }
                                 }
                             }
                         }
@@ -94,5 +108,7 @@ namespace Deployer
         private static readonly ConcurrentDictionary<string, ImageSource> _iconCache = new ConcurrentDictionary<string, ImageSource>();
 
         private static readonly List<string> _nonCachedExtensions = new List<string> {".exe", ".ico", ".bmp"};
+
+        private static string DIRECTORY_ICON_KEY = nameof(DIRECTORY_ICON_KEY);
     }
 }

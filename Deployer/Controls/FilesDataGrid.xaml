@@ -90,6 +90,7 @@
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
 
+        <DataGridTemplateColumn Header="IsDirectory" SortMemberPath="IsDirectory" SortDirection="Descending" Visibility="Collapsed"/>
 
     </DataGrid.Columns>
 </DataGrid>

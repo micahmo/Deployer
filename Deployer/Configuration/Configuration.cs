@@ -16,8 +16,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Forms.VisualStyles;
 using System.Xml.Serialization;
+using Microsoft.VisualBasic.Devices;
 using Utilities;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
@@ -175,7 +175,7 @@ namespace Deployer
                         // Generate the list of files
                         filesToCopy.AddRange(
                             directoryPair.LeftFileCollection.GenerateFileCollection(fileViewOptions: FileViewOptions.ViewPendingFiles)
-                            .Select(f => new FileCopyPair(f, directoryPair.Right.Path)));
+                            .Select(f => new FileCopyPair(f, directoryPair.Right.Path, f.IsDirectory)));
                     }
 
                     result = new DeploymentItem(configurationItem, filesToCopy);
@@ -198,13 +198,14 @@ namespace Deployer
                 {
                     return;
                 }
-
+                
+                string fileOrFolder = fileCopyPair.SourceFile.FileInfo is FileInfo ? "File" : fileCopyPair.SourceFile.FileInfo is DirectoryInfo ? "Folder" : "Item";
                 string sourceFolder = Path.GetDirectoryName(fileCopyPair.SourceFile.FullName);
                 string sourceFileFullName = fileCopyPair.SourceFile.FullName;
                 string destinationFileFullName = Path.Combine(fileCopyPair.DestinationPath, fileCopyPair.SourceFile.Name);
 
                 progress?.Report(new DeployProgress(
-                    "Copying Files", $"From: {sourceFolder}{Environment.NewLine}To: {fileCopyPair.DestinationPath}{Environment.NewLine}File: {fileCopyPair.SourceFile.Name}",
+                    "Copying Files", $"From: {sourceFolder}{Environment.NewLine}To: {fileCopyPair.DestinationPath}{Environment.NewLine}{fileOrFolder}: {fileCopyPair.SourceFile.Name}",
                     (i / deploymentItem.FilesToCopy.Count) * 100));
 
                 bool skipFile = false;
@@ -279,7 +280,7 @@ namespace Deployer
 
                 try
                 {
-                    if (File.Exists(destinationFileFullName))
+                    if (fileCopyPair.SourceFile.IsDirectory == false && File.Exists(destinationFileFullName))
                     {
                         if (await WaitForFileToHaveAttributes(destinationFileFullName, FileAttributes.Normal, cancellationTokenSource) == false)
                         {
@@ -291,10 +292,24 @@ namespace Deployer
                             return;
                         }
                     }
+                    else if (fileCopyPair.SourceFile.IsDirectory && Native.DirectoryExists(destinationFileFullName))
+                    {
+                        if (await WaitForDirectoryToBeDeleted(destinationFileFullName, cancellationTokenSource) == false)
+                        {
+                            return;
+                        }
+                    }
 
                     await Task.Run(() =>
                     {
-                        File.Copy(sourceFileFullName, destinationFileFullName, true);
+                        if (fileCopyPair.IsDirectory)
+                        {
+                            new Computer().FileSystem.CopyDirectory(sourceFileFullName, destinationFileFullName, true);
+                        }
+                        else
+                        {
+                            File.Copy(sourceFileFullName, destinationFileFullName, true);
+                        }
                     });
                 }
                 catch (Exception ex)
@@ -536,6 +551,35 @@ namespace Deployer
                     }
 
                     await Task.Delay(10);
+                }
+            });
+        }
+
+        private async Task<bool> WaitForDirectoryToBeDeleted(string path, CancellationTokenSource cancellationTokenSource = null)
+        {
+            return await Task.Run(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        Directory.Delete(path, true);
+                    }
+                    catch
+                    {
+                        // Empty
+                    }
+
+                    if (Native.DirectoryExists(path) == false)
+                    {
+                        return true;
+                    }
+                    else if (cancellationTokenSource?.IsCancellationRequested == true)
+                    {
+                        return false;
+                    }
+
+                    Task.Delay(10);
                 }
             });
         }

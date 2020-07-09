@@ -29,6 +29,7 @@ namespace Deployer
 
             GeneralSettings = new SettingsGroup {Name = "General", Description = "General Settings"};
             GeneralSettings.Settings.Add(EnabledSetting);
+            GeneralSettings.Settings.Add(IncludeDirectoriesSetting);
             //GeneralSettings.Settings.Add(UpdateLiveSetting);
 
             CopySettings = new SettingsGroup {Name = "CopySettings", Description = "Copy Settings"};
@@ -91,9 +92,11 @@ namespace Deployer
             switch (e.PropertyName)
             {
                 case nameof(EnabledSetting):
+                case nameof(IncludeDirectoriesSetting):
                 //case nameof(UpdateLiveSetting):
                     GeneralSettings.Settings.Clear();
                     GeneralSettings.Settings.Add(EnabledSetting);
+                    GeneralSettings.Settings.Add(IncludeDirectoriesSetting);
                     //GeneralSettings.Settings.Add(UpdateLiveSetting);
                     break;
                 case nameof(LeftButNotRightSetting):
@@ -139,6 +142,17 @@ namespace Deployer
         private Setting<bool> _enabledSetting = new Setting<bool>
         {
             Name = nameof(EnabledSetting), Description = "Enabled: ", SettingType = SettingType.Boolean, DefaultValue = true
+        };
+
+        public Setting<bool> IncludeDirectoriesSetting
+        {
+            get => _includeDirectoriesSetting;
+            set => Set(nameof(IncludeDirectoriesSetting), ref _includeDirectoriesSetting, value);
+        }
+        private Setting<bool> _includeDirectoriesSetting = new Setting<bool>
+        {
+            Name = nameof(IncludeDirectoriesSetting), Description = "Include directories: ", ExtendedDescription = "Directories are all-or-nothing, meaning that if a source directory is newer than a destination directory, all of its contents will be copied and replace all of the destination contents.",
+            SettingType = SettingType.Boolean, DefaultValue = false
         };
 
         public Setting<bool> UpdateLiveSetting

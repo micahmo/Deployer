@@ -87,17 +87,39 @@ namespace Deployer
         {
             bool filter = (fileViewOptions ?? _configurationItem.FileViewOptions.Value) == FileViewOptions.ViewPendingFiles;
 
+            // Get these files
             List<InternalFileItem> directoryFileList = new List<InternalFileItem>(_directory.GetFileInfos().Select(f => new InternalFileItem(f, _directory.Path)
             {
                 Other = false,
                 Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
             }));
-            
+
+            if (_configurationItem.IncludeDirectoriesSetting.Value)
+            {
+                // Get these directories
+                directoryFileList.AddRange(new List<InternalFileItem>(_directory.GetDirectoryInfos().Select(f => new InternalFileItem(f, _directory.Path)
+                {
+                    Other = false,
+                    Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                })));
+            }
+
+            // Get other files
             List<InternalFileItem> otherDirectoryFileList = new List<InternalFileItem>(_otherDirectory.GetFileInfos().Select(f => new InternalFileItem(f, _otherDirectory.Path)
             {
                 Other = true,
                 Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
             }));
+
+            if (_configurationItem.IncludeDirectoriesSetting.Value)
+            {
+                // Get other directories
+                otherDirectoryFileList.AddRange(new List<InternalFileItem>(_otherDirectory.GetDirectoryInfos().Select(f => new InternalFileItem(f, _otherDirectory.Path)
+                {
+                    Other = true,
+                    Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                })));
+            }
 
             FileItemEqualityComparer fileItemEqualityComparer = new FileItemEqualityComparer();
             FileItemComparer fileItemComparer = new FileItemComparer();
@@ -207,7 +229,8 @@ namespace Deployer
         private void ConfigurationItemSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // Check all the cases where a setting changes requires an update, any time a copy setting or view setting is updated
-            if (sender is Setting setting && (_configurationItem.CopySettings.Settings.Contains(setting) || _configurationItem.ViewSettings.Settings.Contains(setting)))
+            if (sender is Setting setting && (_configurationItem.CopySettings.Settings.Contains(setting) || _configurationItem.ViewSettings.Settings.Contains(setting)
+                || setting.Name == nameof(_configurationItem.IncludeDirectoriesSetting)))
             {
                 UpdateFileCollection();
             }
@@ -229,6 +252,7 @@ namespace Deployer
                 case nameof(ConfigurationItem.FileViewOptions):
                 case nameof(ConfigurationItem.EnabledSetting):
                 case nameof(ConfigurationItem.ExclusionsList):
+                case nameof(ConfigurationItem.IncludeDirectoriesSetting):
                     _configurationItem.GeneralSettings.Settings.ToList().ForEach(s =>
                     {
                         s.PropertyChanged -= ConfigurationItemSetting_PropertyChanged;
@@ -299,7 +323,7 @@ namespace Deployer
 
     internal class InternalFileItem : FileItem
     {
-        public InternalFileItem(FileInfo fileInfo, string directory) : base(fileInfo, directory) { }
+        public InternalFileItem(FileSystemInfo fileInfo, string directory) : base(fileInfo, directory) { }
 
         public bool Excluded { get; set; }
 
@@ -317,21 +341,23 @@ namespace Deployer
             {
                 StringBuilder additionalDetails = new StringBuilder();
 
+                string fileOrFolder = FileInfo is FileInfo ? "File" : FileInfo is DirectoryInfo ? "Folder" : "Item";
+
                 if (Excluded)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File matches exclusion pattern and will not be copied.");
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} matches exclusion pattern and will not be copied.");
                 }
                 else if (Other)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File exists only on other side.");
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} exists only on other side.");
                 }
                 else if (Overwrite)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File is newer than matching file on other side.");
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} is newer than matching {fileOrFolder.ToLower()} on other side.");
                 }
                 else if (GetOverwritten)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}File is older than matching file on other side.");
+                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} is older than matching {fileOrFolder.ToLower()} on other side.");
                 }
 
                 return $"{base.Description}{additionalDetails}";
@@ -354,7 +380,7 @@ namespace Deployer
 
         public int GetHashCode(FileItem obj)
         {
-            return obj.FileInfo.FullName.GetHashCode();
+            return obj.FullName.GetHashCode();
         }
 
         #endregion

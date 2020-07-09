@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,7 @@ namespace Deployer
         public FilesDataGrid()
         {
             InitializeComponent();
+            Items.SortDescriptions.Add(new SortDescription(nameof(FileItem.IsDirectory), ListSortDirection.Descending));
             Items.SortDescriptions.Add(new SortDescription(nameof(FileItem.Name), ListSortDirection.Ascending));
         }
 
@@ -37,13 +39,21 @@ namespace Deployer
             // TODO: Perhaps allow user-configurable sorts
 
             // Have to reapply the SortDirection every time the ItemsSource changes
+            Items.SortDescriptions.Add(new SortDescription(nameof(FileItem.IsDirectory), ListSortDirection.Descending));
             Items.SortDescriptions.Add(new SortDescription(nameof(FileItem.Name), ListSortDirection.Ascending));
 
             // Have to reapply the sort directly to the column, otherwise the arrow disappears
-            if (Columns.FirstOrDefault(c => c.SortMemberPath == nameof(FileItem.Name)) is { } column)
+            if (Columns.FirstOrDefault(c => c.SortMemberPath == nameof(FileItem.IsDirectory)) is { } isDirectoryColumn)
             {
-                column.SortDirection = ListSortDirection.Ascending;
+                isDirectoryColumn.SortDirection = ListSortDirection.Descending;
             }
+
+            if (Columns.FirstOrDefault(c => c.SortMemberPath == nameof(FileItem.Name)) is { } nameColumn)
+            {
+                nameColumn.SortDirection = ListSortDirection.Ascending;
+            }
+
+            
         }
 
         #endregion
@@ -52,10 +62,10 @@ namespace Deployer
 
         private void DataGrid_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            if (sender is DataGrid dataGrid && dataGrid.SelectedItems.OfType<FileItem>().Any())
+            if (sender is DataGrid dataGrid && dataGrid.SelectedItems.OfType<FileItem>().Any(f => f.FileInfo is FileInfo))
             {
                 Point mousePosition = Mouse.GetPosition(Window.GetWindow(this));
-                Dependencies.ShellContextMenu.Show(dataGrid.SelectedItems.OfType<FileItem>().Select(f => f.FileInfo).ToArray(), new GuiLibraryInterfaces.Point(mousePosition.X, mousePosition.Y));
+                Dependencies.ShellContextMenu.Show(dataGrid.SelectedItems.OfType<FileItem>().Select(f => f.FileInfo as FileInfo).Where(f => f is { }).ToArray(), new GuiLibraryInterfaces.Point(mousePosition.X, mousePosition.Y));
             }
         }
 
