@@ -2,6 +2,7 @@
 
 using System.Windows;
 using GuiLibraryInterfaces;
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 #endregion
 
@@ -11,7 +12,7 @@ namespace WindowsGuiLibrary
     {
         public QuestionResult Question(string message, string title, QuestionOptions options)
         {
-            MessageBoxResult result = MessageBox.Show(message, title, QuestionOptionsToMessageBoxButton(options));
+            MessageBoxResult result = MessageBox.Show(message, title, QuestionOptionsToMessageBoxButton(options), MessageBoxImage.Question);
             return MessageBoxResultToQuestionResult(result);
         }
 
