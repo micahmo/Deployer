@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 #endregion
@@ -57,7 +58,7 @@ namespace Deployer
 
         private void UpdateFileCollection()
         {
-            using (new WaitCursor(DispatcherPriority.ApplicationIdle))
+            using (new WaitCursor(DispatcherPriority.ApplicationIdle, Cursors.Arrow))
             {
                 if (Configuration.Instance is { } && _configurationItem.EnabledSetting.Value)
                 {

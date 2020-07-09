@@ -11,9 +11,9 @@ namespace Deployer
         private readonly Cursor _previousCursor;
         private readonly DispatcherPriority _dispatcherPriority;
 
-        public WaitCursor(DispatcherPriority dispatcherPriority = DispatcherPriority.Normal)
+        public WaitCursor(DispatcherPriority dispatcherPriority = DispatcherPriority.Normal, Cursor restoreCursor = null)
         {
-            _previousCursor = Mouse.OverrideCursor;
+            _previousCursor = restoreCursor ?? Mouse.OverrideCursor;
             _dispatcherPriority = dispatcherPriority;
 
             Mouse.OverrideCursor = Cursors.Wait;
