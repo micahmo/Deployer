@@ -354,6 +354,11 @@ namespace Deployer
                 if (QuestionResult.Yes == Dependencies.Notify.Question(string.Format(Resource.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resource.Question, QuestionOptions.YesNo))
                 {
                     Model.Configuration.ConfigurationItems.Remove(Model.SelectedConfigurationItem);
+
+                    if (Model.Configuration.ConfigurationItems.Any())
+                    {
+                        Model.SelectedConfigurationItem = Model.Configuration.ConfigurationItems.ElementAt(0);
+                    }
                 }
             }
         }
