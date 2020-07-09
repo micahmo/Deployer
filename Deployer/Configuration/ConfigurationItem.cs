@@ -216,7 +216,8 @@ namespace Deployer
         }
         private Setting<LockedFileOptions> _lockedFileOptionsSetting = new Setting<LockedFileOptions>
         {
-            Name = nameof(LockedFileOptionSetting), Description = "If destination file is locked:", SettingType = SettingType.List, DefaultValue = LockedFileOptions.StopLockingProcesses
+            Name = nameof(LockedFileOptionSetting), Description = "If destination file is locked:", SettingType = SettingType.List, DefaultValue = LockedFileOptions.StopLockingProcesses,
+            ExtendedDescription = "Note: Unable to detect or automatically stop locking processes when copying to a remote server."
         };
 
         public Setting<bool> KilledProcessesSetting

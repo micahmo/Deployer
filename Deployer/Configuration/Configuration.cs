@@ -211,6 +211,16 @@ namespace Deployer
                 bool skipFile = false;
                 if (File.Exists(destinationFileFullName))
                 {
+                    // Destination file exists and is on UNC path.
+                    // Tell the user that we can't detect locking processes.
+                    if (FileSystem.IsUncPath(destinationFileFullName, out _))
+                    {
+                        progress?.Report(new DeployProgress(
+                            "Copying Files", $"From: {sourceFolder}{Environment.NewLine}To: {fileCopyPair.DestinationPath}{Environment.NewLine}{fileOrFolder}: {fileCopyPair.SourceFile.Name}" +
+                                             $"{Environment.NewLine}{Environment.NewLine}Note: Unable to detect locking processes on remote server.",
+                            (i / deploymentItem.FilesToCopy.Count) * 100));
+                    }
+
                     foreach (Process process in Native.GetLockingProcesses(destinationFileFullName))
                     {
                         if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.Skip)
