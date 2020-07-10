@@ -71,8 +71,6 @@ namespace Deployer
 
         public virtual string Description => $"Full path: {FullName}{Environment.NewLine}Size: {Length?.ToString() ?? "unknown"} bytes{Environment.NewLine}Last modified at: {LastModifiedDateTime}";
 
-        public bool CancelLoad { get; set; }
-
         public bool IsDirectory => FileInfo is DirectoryInfo;
 
         #endregion

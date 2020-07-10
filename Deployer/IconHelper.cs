@@ -18,76 +18,84 @@ namespace Deployer
 {
     public static class IconHelper
     {
-        public static Thread GetIcons(FileCollection fileCollection)
+        public static CancellationTokenSource GetIcons(FileCollection fileCollection)
         {
             Thread thread = new Thread(ThreadProc);
-            thread.Start(fileCollection);
-            return thread;
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            thread.Start(new IconHelperParameters {FileCollection = fileCollection, CancellationTokenSource = cancellationTokenSource});
+            return cancellationTokenSource;
         }
 
         private static void ThreadProc(object parameter)
         {
-            if ((parameter as FileCollection)?.Files is { } files)
+            if (parameter is IconHelperParameters iconHelperParameters && iconHelperParameters.FileCollection?.Files?.ToList() is { } files)
             {
                 foreach (FileItem fileItem in files)
                 {
-                    if (fileItem.CancelLoad) continue;
+                    if (iconHelperParameters.CancellationTokenSource?.IsCancellationRequested == true) return;
 
-                    if (fileItem.IsDirectory)
+                    try
                     {
-                        if (_iconCache.TryGetValue(DIRECTORY_ICON_KEY, out var cachedDirectoryIcon) && cachedDirectoryIcon is { })
+                        if (fileItem.IsDirectory)
                         {
-                            fileItem._icon = cachedDirectoryIcon;
+                            if (_iconCache.TryGetValue(DIRECTORY_ICON_KEY, out var cachedDirectoryIcon) && cachedDirectoryIcon is { })
+                            {
+                                fileItem._icon = cachedDirectoryIcon;
+                            }
+                            else
+                            {
+                                fileItem._icon = _iconCache[DIRECTORY_ICON_KEY] = IconToImageSource(Native.GetFolderIcon());
+                                _iconCache[DIRECTORY_ICON_KEY]?.Freeze();
+                            }
                         }
                         else
                         {
-                            fileItem._icon = _iconCache[DIRECTORY_ICON_KEY] = IconToImageSource(Native.GetFolderIcon());
-                            _iconCache[DIRECTORY_ICON_KEY]?.Freeze();
-                        }
-                    }
-                    else
-                    {
-                        string file = fileItem.FullName;
-                        if (File.Exists(file))
-                        {
-                            string extension = Path.GetExtension(file);
-                            if (!string.IsNullOrEmpty(extension))
+                            string file = fileItem.FullName;
+                            if (File.Exists(file))
                             {
-                                if (_nonCachedExtensions.Contains(extension) == false)
+                                string extension = Path.GetExtension(file);
+                                if (!string.IsNullOrEmpty(extension))
                                 {
-                                    if (_iconCache.TryGetValue(Path.GetExtension(file), out var cachedImage) && cachedImage is { })
+                                    if (_nonCachedExtensions.Contains(extension) == false)
                                     {
-                                        fileItem._icon = cachedImage;
+                                        if (_iconCache.TryGetValue(Path.GetExtension(file), out var cachedImage) && cachedImage is { })
+                                        {
+                                            fileItem._icon = cachedImage;
+                                        }
+                                        else
+                                        {
+                                            fileItem._icon = _iconCache[extension] = IconToImageSource(Native.ExtractAssociationIcon(file));
+
+                                            // Must freeze to pass from background thread to main thread
+                                            _iconCache[extension]?.Freeze();
+                                        }
                                     }
                                     else
                                     {
-                                        fileItem._icon = _iconCache[extension] = IconToImageSource(Native.ExtractAssociationIcon(file));
+                                        if (_iconCache.TryGetValue(file, out var cachedImage) && cachedImage is { })
+                                        {
+                                            fileItem._icon = cachedImage;
+                                        }
+                                        else
+                                        {
+                                            fileItem._icon = _iconCache[file] = IconToImageSource(Native.ExtractAssociationIcon(file));
 
-                                        // Must freeze to pass from background thread to main thread
-                                        _iconCache[extension]?.Freeze();
-                                    }
-                                }
-                                else
-                                {
-                                    if (_iconCache.TryGetValue(file, out var cachedImage) && cachedImage is { })
-                                    {
-                                        fileItem._icon = cachedImage;
-                                    }
-                                    else
-                                    {
-                                        fileItem._icon = _iconCache[file] = IconToImageSource(Native.ExtractAssociationIcon(file));
-
-                                        // Must freeze to pass from background thread to main thread
-                                        _iconCache[file]?.Freeze();
+                                            // Must freeze to pass from background thread to main thread
+                                            _iconCache[file]?.Freeze();
+                                        }
                                     }
                                 }
                             }
                         }
+                    }
+                    catch
+                    {
+                        // Do not let icon load kill us.
+                    }
 
-                        if (fileItem._icon is { })
-                        {
-                            Application.Current?.Dispatcher?.BeginInvoke(new Action(() => { fileItem.RaisePropertyChanged(nameof(FileItem.Icon)); }), DispatcherPriority.Background);
-                        }
+                    if (fileItem._icon is { })
+                    {
+                        Application.Current?.Dispatcher?.BeginInvoke(new Action(() => { fileItem.RaisePropertyChanged(nameof(FileItem.Icon)); }), DispatcherPriority.Background);
                     }
                 }
             }
@@ -110,5 +118,11 @@ namespace Deployer
         private static readonly List<string> _nonCachedExtensions = new List<string> {".exe", ".ico", ".bmp"};
 
         private static string DIRECTORY_ICON_KEY = nameof(DIRECTORY_ICON_KEY);
+
+        private class IconHelperParameters
+        {
+            public FileCollection FileCollection { get; set; }
+            public CancellationTokenSource CancellationTokenSource { get; set; }
+        }
     }
 }

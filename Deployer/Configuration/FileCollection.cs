@@ -66,11 +66,10 @@ namespace Deployer
                     {
                         lock (_fileUpdateLock)
                         {
-                            _thread?.Abort();
-                            _files.ForEach(f => f.CancelLoad = true);
+                            _threadCancellationTokenSource?.Cancel();
                             _files.Clear();
                             _files.AddRange(GenerateFileCollection());
-                            _thread = IconHelper.GetIcons(this);
+                            _threadCancellationTokenSource = IconHelper.GetIcons(this);
 
                             Application.Current?.Dispatcher.Invoke(() => { RaisePropertyChanged(nameof(CountLabel)); });
                         }
@@ -288,7 +287,7 @@ namespace Deployer
 
         private bool IsRight => _configurationItem.DestinationDirectories.Contains(_directory) && _configurationItem.SourceDirectories.Contains(_otherDirectory);
 
-        private Thread _thread;
+        private CancellationTokenSource _threadCancellationTokenSource;
 
         #endregion
 
