@@ -11,16 +11,16 @@
              AutoGenerateColumns="False" HeadersVisibility="None" ColumnWidth="*" SelectionMode="Single" CanUserAddRows="False"
              BorderThickness="0" GridLinesVisibility="None"
              x:Name="_this"
-             PreviewKeyDown="_this_PreviewKeyDown" LostFocus="_this_LostFocus">
+             PreviewKeyDown="_this_PreviewKeyDown">
 
-    <!--<DataGrid.Resources>
+    <DataGrid.Resources>
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 
                                          Color="{x:Static SystemColors.HighlightColor}"/>
 
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightTextBrushKey}" 
                                          Color="{x:Static SystemColors.HighlightTextColor}"/>
 
-    </DataGrid.Resources>-->
+    </DataGrid.Resources>
 
     <DataGrid.CellStyle>
         <Style TargetType="DataGridCell">

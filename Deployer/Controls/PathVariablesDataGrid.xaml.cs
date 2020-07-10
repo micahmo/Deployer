@@ -27,11 +27,6 @@ namespace Deployer
                 control.MoveFocus(new TraversalRequest(FocusNavigationDirection.Right));
             }
         }
-
-        private void _this_LostFocus(object sender, RoutedEventArgs e)
-        {
-            UnselectAll();
-        }
     }
 
     public class PathVariablesModel

@@ -97,6 +97,15 @@ namespace Deployer
             Model.RaisePropertyChanged(nameof(Model.BusyIndicatorWidth));
         }
 
+        private void PathVariableGrid_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            // The user's focus has moved out of the path variables area, so we can deselect any selected variables
+            if (PathVariableGridContainer.FindVisualChildren<Control>().Contains(e.NewFocus) == false)
+            {
+                PathVariableGrid.UnselectAll();
+            }
+        }
+
         #endregion
 
         #region Private methods
@@ -522,6 +531,7 @@ namespace Deployer
 
     internal static class WpfExtensions
     {
+        // https://stackoverflow.com/a/978352/4206279
         public static IEnumerable<T> FindVisualChildren<T>(this DependencyObject depObj) where T : DependencyObject
         {
             if (depObj != null)
