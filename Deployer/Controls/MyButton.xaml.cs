@@ -3,6 +3,7 @@
 using System.Windows;
 using GalaSoft.MvvmLight;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 #endregion
 
@@ -31,6 +32,18 @@ namespace Deployer
             set => Model.ImageSource = value;
         }
 
+        public string LightImageSource
+        {
+            get => Model.LightImageSource;
+            set => Model.LightImageSource = value;
+        }
+
+        public SolidColorBrush HoverColor
+        {
+            get => Model.HoverColor;
+            set => Model.HoverColor = value;
+        }
+
         private MyButtonModel Model { get; } = new MyButtonModel();
     }
 
@@ -46,8 +59,30 @@ namespace Deployer
         public string ImageSource
         {
             get => _imageSource;
-            set => Set(nameof(ImageSource), ref _imageSource, value);
+            set
+            {
+                Set(nameof(ImageSource), ref _imageSource, value);
+
+                if (_lightImageSource is null)
+                {
+                    RaisePropertyChanged(nameof(LightImageSource));
+                }
+            }
         }
         private string _imageSource;
+
+        public string LightImageSource
+        {
+            get => _lightImageSource ?? _imageSource;
+            set => Set(nameof(LightImageSource), ref _lightImageSource, value);
+        }
+        private string _lightImageSource;
+
+        public SolidColorBrush HoverColor
+        {
+            get => _hoverColor;
+            set => Set(nameof(HoverColor), ref _hoverColor, value);
+        }
+        private SolidColorBrush _hoverColor = new SolidColorBrush(Color.FromRgb(190, 230, 253)); // This is the default hover color in WPF
     }
 }

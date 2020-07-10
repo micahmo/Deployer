@@ -26,10 +26,19 @@
     <DataGrid.CellStyle>
         <Style TargetType="DataGridCell">
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Margin" Value="2"/>
             <Setter Property="VerticalContentAlignment" Value="Stretch"/>
             <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-            <Setter Property="Height" Value="20"/>
+            <Setter Property="Height" Value="26"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter VerticalAlignment="Center" Margin="3"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
 
             <Style.Triggers>
                 <Trigger Property="IsEditing" Value="True">
@@ -43,41 +52,37 @@
         </Style>
     </DataGrid.CellStyle>
 
-
     <DataGrid.Columns>
         <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
 
-        <DataGridTemplateColumn Width="10">
+        <DataGridTemplateColumn Width="26">
             <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                    <Button Background="White" BorderThickness="0" ToolTip="{Binding ViewModel.ReloadButtonTooltip, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
-                            Command="{Binding ViewModel.Commands.ReloadConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}">
-                        <Image Source="..\Images\refresh.png"/>
-                    </Button>
+                    <local:MyButton ShowBorder="False" ToolTip="{Binding ViewModel.ReloadButtonTooltip, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
+                            Command="{Binding ViewModel.Commands.ReloadConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
+                            ImageSource="..\Images\refresh.png" LightImageSource="..\Images\refresh_light.png" HoverColor="#0078D7"/>
                 </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
 
-        <DataGridTemplateColumn Width="10">
+        <DataGridTemplateColumn Width="26">
             <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                    <Button Background="White" BorderThickness="0" ToolTip="Duplicate"
+                    <local:MyButton ShowBorder="False" ToolTip="Duplicate"
                                             Command="{Binding ViewModel.Commands.DuplicateConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
-                                            CommandParameter="{Binding ElementName=_this}">
-                        <Image Source="..\Images\paper.png"/>
-                    </Button>
+                                            CommandParameter="{Binding ElementName=_this}"
+                                            ImageSource="..\Images\paper.png" LightImageSource="..\Images\paper_light.png" HoverColor="#0078D7"/>
                 </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
 
-        <DataGridTemplateColumn Width="10">
+        <DataGridTemplateColumn Width="26">
             <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                    <Button Background="White" BorderThickness="0" ToolTip="Settings"
+                    <local:MyButton ShowBorder="False" ToolTip="Settings"
                             Command="{Binding ViewModel.Commands.OpenConfigurationItemSettingsCommand, RelativeSource={RelativeSource AncestorType=local:ConfigurationDataGrid}}"
-                            CommandParameter="{Binding ElementName=_this}">
-                        <Image Source="..\Images\gear.png"/>
-                    </Button>
+                            CommandParameter="{Binding ElementName=_this}"
+                            ImageSource="..\Images\gear.png" LightImageSource="..\Images\gear_light.png" HoverColor="#0078D7"/>
                 </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
