@@ -58,7 +58,7 @@ namespace Deployer
 
         private void UpdateFileCollection()
         {
-            using (new WaitCursor(DispatcherPriority.ApplicationIdle, Cursors.Arrow))
+            using (new WaitCursor(DispatcherPriority.ApplicationIdle, restoreCursorToNull: true))
             {
                 if (Configuration.Instance is { } && _configurationItem.EnabledSetting.Value)
                 {
