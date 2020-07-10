@@ -63,7 +63,7 @@
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
 
-        <DataGridTextColumn Binding="{Binding SelectedValue.Value}"/>
+        <DataGridTextColumn Binding="{Binding SelectedValue.Value, UpdateSourceTrigger=PropertyChanged}"/>
 
         <DataGridTemplateColumn Width="26">
             <DataGridTemplateColumn.CellTemplate>

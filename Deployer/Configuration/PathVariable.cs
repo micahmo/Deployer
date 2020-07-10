@@ -78,6 +78,7 @@ namespace Deployer
                 switch (e.PropertyName)
                 {
                     case nameof(PossiblePathVariable.IsSelected):
+                    case nameof(PossiblePathVariable.Value):
                         if (changedValue.IsSelected)
                         {
                             PossibleValues.Where(p => p != changedValue).ToList().ForEach(p => p.IsSelected = false);
