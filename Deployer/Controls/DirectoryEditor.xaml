@@ -51,9 +51,9 @@
 
             <xceed:SplitButton.DropDownContent>
                 <!-- Need to use event instead of command because binding does not carry down to DropDownContent because it is not in the same visual tree as parent. -->
-                <local:MyButton Click="OpenButton_Click">
-                    <TextBlock Text="Open"/>
-                </local:MyButton>
+                <Button Click="OpenButton_Click" BorderThickness="0" Width="52" Height="22" Background="White">
+                    <TextBlock Text="Open" HorizontalAlignment="Stretch" TextAlignment="Left"/>
+                </Button>
             </xceed:SplitButton.DropDownContent>
         </xceed:SplitButton>
     </Grid>
