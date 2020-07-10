@@ -275,19 +275,11 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <local:MyButton Grid.Column="1" Width="30" Height="30" Command="{Binding DataContext.Commands.AddConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Create new configuration">
-                                <StackPanel>
-                                    <Image Source="Images\add.png"/>
-                                </StackPanel>
-                            </local:MyButton>
+                            <local:MyButton Grid.Column="1" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.AddConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                        ToolTip="Create new configuration" ImageSource="..\Images\add.png"/>
 
-                            <local:MyButton Grid.Column="2" Width="30" Height="30" Command="{Binding DataContext.Commands.RemoveConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Delete selected configuration">
-                                <StackPanel>
-                                    <Image Source="Images\remove.png"/>
-                                </StackPanel>
-                            </local:MyButton>
+                            <local:MyButton Grid.Column="2" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.RemoveConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                        ToolTip="Delete selected configuration" ImageSource="..\Images\remove.png"/>
 
                         </Grid>
 
@@ -310,22 +302,16 @@
                             <Canvas Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Top" HorizontalAlignment="Stretch"
                                     Background="LightGray" Height="2"/>
 
-                            <local:MyButton Grid.Column="1" Width="20" Height="20" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                            <local:MyButton Grid.Column="1" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ToolTip="Move selected configuration item up"
-                                            Visibility="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex>0', RelativeSource={RelativeSource AncestorType=local:MainWindow}, FalseToVisibility=Hidden}">
-                                <StackPanel>
-                                    <Image Source="Images\up_arrow.png"/>
-                                </StackPanel>
-                            </local:MyButton>
+                                            IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex>0', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                            ImageSource="..\Images\up_arrow.png"/>
 
-                            <local:MyButton Grid.Column="2" Width="20" Height="20" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                            <local:MyButton Grid.Column="2" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ToolTip="Move selected configuration item down"
-                                            Visibility="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex less DataContext.Configuration.ConfigurationItems.Count-1 and DataContext.Configuration.SelectedConfigurationIndex>=0',
-                                                        RelativeSource={RelativeSource AncestorType=local:MainWindow}, FalseToVisibility=Hidden}">
-                                <StackPanel>
-                                    <Image Source="Images\down_arrow.png"/>
-                                </StackPanel>
-                            </local:MyButton>
+                                            IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex less DataContext.Configuration.ConfigurationItems.Count-1 and DataContext.Configuration.SelectedConfigurationIndex>=0',
+                                                        RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                            ImageSource="..\Images\down_arrow.png"/>
 
                         </Grid>
                     </Grid>
@@ -352,19 +338,11 @@
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <local:MyButton Grid.Column="1" Grid.Row="0" Width="25" Height="25" Command="{Binding DataContext.Commands.AddPathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Add new path variable">
-                                <StackPanel>
-                                    <Image Source="Images\plus.png"/>
-                                </StackPanel>
-                            </local:MyButton>
+                            <local:MyButton Grid.Column="1" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.AddPathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                        ToolTip="Add new path variable" ImageSource="..\Images\plus.png"/>
 
-                            <local:MyButton Grid.Column="2" Grid.Row="0" Width="25" Height="25" Command="{Binding DataContext.Commands.RemovePathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Delete selected path variable">
-                                <StackPanel>
-                                    <Image Source="Images\minus.png"/>
-                                </StackPanel>
-                            </local:MyButton>
+                            <local:MyButton Grid.Column="2" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.RemovePathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                        ToolTip="Delete selected path variable" ImageSource="..\Images\minus.png"/>
                         </Grid>
 
                         <DockPanel Grid.Row="2">

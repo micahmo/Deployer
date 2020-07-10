@@ -25,6 +25,12 @@ namespace Deployer
             set => Model.BorderThickness = value ? new Thickness(1) : new Thickness(0);
         }
 
+        public string ImageSource
+        {
+            get => Model.ImageSource;
+            set => Model.ImageSource = value;
+        }
+
         private MyButtonModel Model { get; } = new MyButtonModel();
     }
 
@@ -36,5 +42,12 @@ namespace Deployer
             set => Set(nameof(BorderThickness), ref _borderThickness, value);
         }
         private Thickness _borderThickness = new Thickness(0);
+
+        public string ImageSource
+        {
+            get => _imageSource;
+            set => Set(nameof(ImageSource), ref _imageSource, value);
+        }
+        private string _imageSource;
     }
 }

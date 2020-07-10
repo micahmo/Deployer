@@ -20,21 +20,13 @@
             <RadioButton IsChecked="{Binding IsSelected}"/>
         </Grid>
 
-        <local:MyButton Grid.Column="1" Height="20" Width="20" Margin="5,0,5,0" Command="{Binding ViewModel.Commands.AddValueCommand, RelativeSource={RelativeSource AncestorType=local:PathValueEditor}}" CommandParameter="{Binding ElementName=_this}"
+        <local:MyButton Grid.Column="1" Height="25" Width="25" Margin="5,0,0,0" Command="{Binding ViewModel.Commands.AddValueCommand, RelativeSource={RelativeSource AncestorType=local:PathValueEditor}}" CommandParameter="{Binding ElementName=_this}"
                         Visibility="{calcBinding:Binding ViewModel.ShowAddValueButton, FalseToVisibility=Hidden, RelativeSource={RelativeSource AncestorType=local:PathValueEditor}}"
-                        ToolTip="Add directory">
-            <StackPanel>
-                <Image Source="..\Images\plus.png"/>
-            </StackPanel>
-        </local:MyButton>
+                        ToolTip="Add directory" ImageSource="..\Images\plus.png"/>
 
-        <local:MyButton Grid.Column="2" Height="20" Width="20" Margin="5,0,5,0" Command="{Binding ViewModel.Commands.RemoveValueCommand, RelativeSource={RelativeSource AncestorType=local:PathValueEditor}}" CommandParameter="{Binding ElementName=_this}"
+        <local:MyButton Grid.Column="2" Height="25" Width="25" Margin="5,0,0,0" Command="{Binding ViewModel.Commands.RemoveValueCommand, RelativeSource={RelativeSource AncestorType=local:PathValueEditor}}" CommandParameter="{Binding ElementName=_this}"
                         Visibility="{calcBinding:Binding ViewModel.ShowRemoveValueButton, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:PathValueEditor}}"
-                        ToolTip="Remove directory">
-            <StackPanel>
-                <Image Source="..\Images\minus.png"/>
-            </StackPanel>
-        </local:MyButton>
+                        ToolTip="Remove directory" ImageSource="..\Images\minus.png"/>
 
         <TextBox Grid.Column="3" Margin="5,0,5,0" Text="{Binding Value}" VerticalContentAlignment="Center"/>
 
