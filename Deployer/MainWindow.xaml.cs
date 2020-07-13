@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Timers;
 using System.Windows.Media;
 using System.Threading;
+using Deployer.Properties;
 using Timer = System.Timers.Timer;
 
 #endregion
@@ -380,7 +381,7 @@ namespace Deployer
         {
             if (Model.SelectedConfigurationItem is { })
             {
-                if (QuestionResult.Yes == Dependencies.Notify.Question(string.Format(Resource.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resource.Question, QuestionOptions.YesNo))
+                if (QuestionResult.Yes == Dependencies.Notify.Question(string.Format(Resources.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resources.Question, QuestionOptions.YesNo))
                 {
                     Model.Configuration.ConfigurationItems.Remove(Model.SelectedConfigurationItem);
 

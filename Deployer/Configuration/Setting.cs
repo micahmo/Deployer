@@ -14,12 +14,16 @@ namespace Deployer
 
     public class Setting : ObservableObject
     {
+        [XmlIgnore]
         public string Name { get; set; }
 
+        [XmlIgnore]
         public string Description { get; set; }
 
+        [XmlIgnore]
         public string ExtendedDescription { get; set; }
 
+        [XmlIgnore]
         public SettingType SettingType { get; set; }
 
         [XmlIgnore]
@@ -31,13 +35,13 @@ namespace Deployer
     #region Setting<T> class
 
     [Serializable]
-    [XmlInclude(typeof(Setting<bool>))]
-    [XmlInclude(typeof(Setting<NonExistingFileOptions>))]
-    [XmlInclude(typeof(Setting<ExistingFileOptions>))]
-    [XmlInclude(typeof(Setting<LockedFileOptions>))]
-    [XmlInclude(typeof(Setting<FileViewOptions>))]
     public class Setting<T> : Setting
     {
+        public void Apply(Setting<T> settingToApply)
+        {
+            Value = settingToApply.Value;
+        }
+
         public T Value
         {
             get => _value == null ? (T)(_value = DefaultValue) : (T)_value;
@@ -45,6 +49,7 @@ namespace Deployer
         }
         private object _value;
 
+        [XmlIgnore]
         public T DefaultValue { get; set; } = default;
 
         [XmlIgnore]

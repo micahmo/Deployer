@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:Deployer"
              xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
              xmlns:xceed="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:properties="clr-namespace:Deployer.Properties"
              mc:Ignorable="d" 
              Height="25" d:DesignWidth="800"
              ToolTip="{c:Binding 'Path.Length > 0 ? Path : null'}"
@@ -20,11 +21,11 @@
 
         <local:MyButton Grid.Column="0" Height="25" Width="25" Margin="5,0,0,0" Command="{Binding ViewModel.Commands.AddDirectoryCommand, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}" CommandParameter="{Binding ElementName=_this}"
                         Visibility="{c:Binding ViewModel.ShowAddDirectoryButton, FalseToVisibility=Hidden, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}"
-                        ToolTip="Add directory" ImageSource="..\Images\plus.png"/>
+                        ToolTip="{x:Static properties:Resources.AddDirectory}" ImageSource="..\Images\plus.png"/>
 
         <local:MyButton Grid.Column="1" Height="25" Width="25" Margin="5,0,0,0" Command="{Binding ViewModel.Commands.RemoveDirectoryCommand, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}" CommandParameter="{Binding ElementName=_this}"
                             Visibility="{c:Binding ViewModel.ShowRemoveDirectoryButton, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}"
-                            ToolTip="Remove directory" ImageSource="..\Images\minus.png"/>
+                            ToolTip="{x:Static properties:Resources.RemoveDirectory}" ImageSource="..\Images\minus.png"/>
 
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
@@ -39,7 +40,7 @@
                       DropDownOpened="ComboBox_OnDropDownOpened">
             </ComboBox>
 
-            <Image Grid.Column="1" Source="..\Images\alert_white.png" ToolTip="Path does not exist" Margin="1"
+            <Image Grid.Column="1" Source="..\Images\alert_white.png" ToolTip="{x:Static properties:Resources.PathDoesNotExist}" Margin="1"
                    Visibility="{c:Binding ViewModel.ShowPathWarning, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:DirectoryEditor}}"/>
         </Grid>
 
@@ -47,12 +48,12 @@
                 Background="Transparent" BorderThickness="1"
                 Tag="{Binding DataContext,RelativeSource={RelativeSource Mode=Self}}">
             
-            <TextBlock Text="Browse"/>
+            <TextBlock Text="{x:Static properties:Resources.Browse}"/>
 
             <xceed:SplitButton.DropDownContent>
                 <!-- Need to use event instead of command because binding does not carry down to DropDownContent because it is not in the same visual tree as parent. -->
                 <Button Click="OpenButton_Click" BorderThickness="0" Width="52" Height="22" Background="White">
-                    <TextBlock Text="Open" HorizontalAlignment="Stretch" TextAlignment="Left"/>
+                    <TextBlock Text="{x:Static properties:Resources.Open}" HorizontalAlignment="Stretch" TextAlignment="Left"/>
                 </Button>
             </xceed:SplitButton.DropDownContent>
         </xceed:SplitButton>

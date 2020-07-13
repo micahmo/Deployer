@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
 using System.Management.Automation;
 using System.Xml.Serialization;
+using Deployer.Properties;
 
 #endregion
 
@@ -27,27 +27,25 @@ namespace Deployer
             SourceDirectories.CollectionChanged += Directories_CollectionChanged;
             DestinationDirectories.CollectionChanged += Directories_CollectionChanged;
 
-            GeneralSettings = new SettingsGroup {Name = "General", Description = "General Settings"};
+            GeneralSettings = new SettingsGroup {Name = nameof(GeneralSettings), Description = Resources.GeneralSettingsDescription};
             GeneralSettings.Settings.Add(EnabledSetting);
             GeneralSettings.Settings.Add(IncludeDirectoriesSetting);
             //GeneralSettings.Settings.Add(UpdateLiveSetting);
 
-            CopySettings = new SettingsGroup {Name = "CopySettings", Description = "Copy Settings"};
+            CopySettings = new SettingsGroup {Name = nameof(CopySettings), Description = Resources.CopySettingsDescription};
             CopySettings.Settings.Add(LeftButNotRightSetting);
             CopySettings.Settings.Add(NewerOnLeftSetting);
             CopySettings.Settings.Add(NewerOnRightSetting);
-            CopySettings.Settings.Add(ExclusionsList);
+            CopySettings.Settings.Add(ExclusionsListSetting);
 
-            LockedFileSettings = new SettingsGroup {Name = "LockedFileSettings", Description = "Locked File Settings"};
+            LockedFileSettings = new SettingsGroup {Name = nameof(LockedFileSettings), Description = Resources.LockedFileSettingsDescription};
             LockedFileSettings.Settings.Add(LockedFileOptionSetting);
             LockedFileOptionSetting.DependentSettings.Add(new DependentSettingCollection(() => LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses, LockedFileOptionSetting, KilledProcessesSetting));
 
-            ViewSettings = new SettingsGroup {Name = "ViewSettings", Description = "View Settings"};
-            ViewSettings.Settings.Add(FileViewOptions);
+            ViewSettings = new SettingsGroup {Name = nameof(ViewSettings), Description = Resources.ViewSettingsDescription};
+            ViewSettings.Settings.Add(FileViewOptionsSetting);
 
             SettingsGroups = new List<SettingsGroup> {GeneralSettings, CopySettings, LockedFileSettings, ViewSettings};
-
-            PropertyChanged += ConfigurationItem_PropertyChanged;
         }
 
         #endregion
@@ -88,42 +86,6 @@ namespace Deployer
             }
         }
 
-        private void ConfigurationItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(EnabledSetting):
-                case nameof(IncludeDirectoriesSetting):
-                //case nameof(UpdateLiveSetting):
-                    GeneralSettings.Settings.Clear();
-                    GeneralSettings.Settings.Add(EnabledSetting);
-                    GeneralSettings.Settings.Add(IncludeDirectoriesSetting);
-                    //GeneralSettings.Settings.Add(UpdateLiveSetting);
-                    break;
-                case nameof(LeftButNotRightSetting):
-                case nameof(NewerOnLeftSetting):
-                case nameof(NewerOnRightSetting):
-                case nameof(ExclusionsList):
-                    CopySettings.Settings.Clear();
-                    CopySettings.Settings.Add(LeftButNotRightSetting);
-                    CopySettings.Settings.Add(NewerOnLeftSetting);
-                    CopySettings.Settings.Add(NewerOnRightSetting);
-                    CopySettings.Settings.Add(ExclusionsList);
-                    break;
-                case nameof(LockedFileOptionSetting):
-                case nameof(KilledProcessesSetting):
-                    LockedFileSettings.Settings.Clear();
-                    LockedFileSettings.Settings.Add(LockedFileOptionSetting);
-                    LockedFileOptionSetting.DependentSettings.Clear();
-                    LockedFileOptionSetting.DependentSettings.Add(new DependentSettingCollection(() => LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses, LockedFileOptionSetting, KilledProcessesSetting));
-                    break;
-                case nameof(FileViewOptions):
-                    ViewSettings.Settings.Clear();
-                    ViewSettings.Settings.Add(FileViewOptions);
-                    break;
-            }
-        }
-
         #endregion
 
         #region Data members (public properties)
@@ -141,103 +103,121 @@ namespace Deployer
         public Setting<bool> EnabledSetting
         {
             get => _enabledSetting;
-            set => Set(nameof(EnabledSetting), ref _enabledSetting, value);
+            set => _enabledSetting.Apply(value);
         }
         private Setting<bool> _enabledSetting = new Setting<bool>
         {
-            Name = nameof(EnabledSetting), Description = "Enabled: ", SettingType = SettingType.Boolean, DefaultValue = true
+            Name = nameof(EnabledSetting), Description = Resources.EnabledSettingDescription,
+            SettingType = SettingType.Boolean, DefaultValue = true
         };
 
         public Setting<bool> IncludeDirectoriesSetting
         {
             get => _includeDirectoriesSetting;
-            set => Set(nameof(IncludeDirectoriesSetting), ref _includeDirectoriesSetting, value);
+            set => _includeDirectoriesSetting.Apply(value);
         }
         private Setting<bool> _includeDirectoriesSetting = new Setting<bool>
         {
-            Name = nameof(IncludeDirectoriesSetting), Description = "Include directories: ", ExtendedDescription = "Directories are all-or-nothing, meaning that if a source directory is newer than a destination directory, all of its contents will be copied and replace all of the destination contents.",
+            Name = nameof(IncludeDirectoriesSetting), 
+            Description = Resources.IncludeDirectoriesSettingDescription,
+            ExtendedDescription = Resources.IncludeDirectoriesSettingExtendedDescription,
             SettingType = SettingType.Boolean, DefaultValue = false
         };
 
         public Setting<bool> UpdateLiveSetting
         {
             get => _updateLiveSetting;
-            set => Set(nameof(UpdateLiveSetting), ref _updateLiveSetting, value);
+            set => _updateLiveSetting.Apply(value);
         }
         private Setting<bool> _updateLiveSetting = new Setting<bool>
         {
-            Name = nameof(UpdateLiveSetting), Description = "Update live:", SettingType = SettingType.Boolean, DefaultValue = false
+            Name = nameof(UpdateLiveSetting),
+            Description = Resources.UpdateLiveSettingDescription,
+            SettingType = SettingType.Boolean, DefaultValue = false
         };
 
-        public Setting<NonExistingFileOptions> LeftButNotRightSetting {
+        public Setting<NonExistingFileOptions> LeftButNotRightSetting
+        {
             get => _leftButNotRightSetting;
-            set => Set(nameof(LeftButNotRightSetting), ref _leftButNotRightSetting, value);
+            set => _leftButNotRightSetting.Apply(value);
         }
         private Setting<NonExistingFileOptions> _leftButNotRightSetting = new Setting<NonExistingFileOptions>
         {
-            Name = nameof(LeftButNotRightSetting), Description = "If file exists on left but not on right:", SettingType = SettingType.List, DefaultValue = NonExistingFileOptions.Skip
+            Name = nameof(LeftButNotRightSetting), 
+            Description = Resources.LeftButNotRightSettingDescription,
+            SettingType = SettingType.List, DefaultValue = NonExistingFileOptions.Skip
         };
 
         public Setting<ExistingFileOptions> NewerOnLeftSetting
         {
             get => _newerOnLeftSetting;
-            set => Set(nameof(NewerOnLeftSetting), ref _newerOnLeftSetting, value);
+            set => _newerOnLeftSetting.Apply(value);
         }
         private Setting<ExistingFileOptions> _newerOnLeftSetting = new Setting<ExistingFileOptions>
         {
-            Name = nameof(NewerOnLeftSetting), Description = "If file is newer on left:", SettingType = SettingType.List, DefaultValue = ExistingFileOptions.Replace
+            Name = nameof(NewerOnLeftSetting),
+            Description = Resources.NewerOnLeftSettingDescription,
+            SettingType = SettingType.List, DefaultValue = ExistingFileOptions.Replace
         };
 
         public Setting<ExistingFileOptions> NewerOnRightSetting
         {
             get => _newerOnRightSetting;
-            set => Set(nameof(NewerOnRightSetting), ref _newerOnRightSetting, value);
+            set => _newerOnRightSetting.Apply(value);
         }
         private Setting<ExistingFileOptions> _newerOnRightSetting = new Setting<ExistingFileOptions>
         {
-            Name = nameof(NewerOnRightSetting), Description = "If file is newer on right:", SettingType = SettingType.List, DefaultValue = ExistingFileOptions.Skip
+            Name = nameof(NewerOnRightSetting),
+            Description = Resources.NewerOnRightSettingDescription,
+            SettingType = SettingType.List, DefaultValue = ExistingFileOptions.Skip
         };
 
-        public Setting<string> ExclusionsList
+        public Setting<string> ExclusionsListSetting
         {
-            get => _exclusionsList;
-            set => Set(nameof(ExclusionsList), ref _exclusionsList, value);
+            get => _exclusionsListSetting;
+            set => _exclusionsListSetting.Apply(value);
         }
-        private Setting<string> _exclusionsList = new Setting<string>
+        private Setting<string> _exclusionsListSetting = new Setting<string>
         {
-            Name = nameof(ExclusionsList), Description = "Exclusions list:", SettingType = SettingType.ExtendedString, DefaultValue = string.Empty,
-            ExtendedDescription = $"One exclusion per line. Use * as wildcard.{Environment.NewLine}{Environment.NewLine}For example:{Environment.NewLine}*.exe{Environment.NewLine}*.config",
+            Name = nameof(ExclusionsListSetting), SettingType = SettingType.ExtendedString, DefaultValue = string.Empty,
+            Description = Resources.ExclusionsListSettingDescription,
+            ExtendedDescription = Resources.ExclusionsListSettingExtendedDescription
         };
 
         public Setting<LockedFileOptions> LockedFileOptionSetting
         {
             get => _lockedFileOptionsSetting;
-            set => Set(nameof(LockedFileOptionSetting), ref _lockedFileOptionsSetting, value);
+            set => _lockedFileOptionsSetting.Apply(value);
         }
         private Setting<LockedFileOptions> _lockedFileOptionsSetting = new Setting<LockedFileOptions>
         {
-            Name = nameof(LockedFileOptionSetting), Description = "If destination file is locked:", SettingType = SettingType.List, DefaultValue = LockedFileOptions.StopLockingProcesses,
-            ExtendedDescription = "Note: Unable to detect or automatically stop locking processes when copying to a remote server."
+            Name = nameof(LockedFileOptionSetting), SettingType = SettingType.List, DefaultValue = LockedFileOptions.StopLockingProcesses,
+            Description = Resources.LockedFileOptionSettingDescription,
+            ExtendedDescription = Resources.LockedFileOptionSettingExtendedDescription
         };
 
         public Setting<bool> KilledProcessesSetting
         {
             get => _killedProcessesSetting;
-            set => Set(nameof(KilledProcessesSetting), ref _killedProcessesSetting, value);
+            set => _killedProcessesSetting.Apply(value);
         }
         private Setting<bool> _killedProcessesSetting = new Setting<bool>
         {
-            Name = nameof(KilledProcessesSetting), Description = "Automatically restart killed processes:", SettingType = SettingType.Boolean, DefaultValue = true
+            Name = nameof(KilledProcessesSetting),
+            Description = Resources.KilledProcessesSettingDescription,
+            SettingType = SettingType.Boolean, DefaultValue = true
         };
 
-        public Setting<FileViewOptions> FileViewOptions
+        public Setting<FileViewOptions> FileViewOptionsSetting
         {
-            get => _fileViewOptions;
-            set => Set(nameof(FileViewOptions), ref _fileViewOptions, value);
+            get => _fileViewOptionsSetting;
+            set => _fileViewOptionsSetting.Apply(value);
         }
-        private Setting<FileViewOptions> _fileViewOptions = new Setting<FileViewOptions>
+        private Setting<FileViewOptions> _fileViewOptionsSetting = new Setting<FileViewOptions>
         {
-            Name = nameof(FileViewOptions), Description = "File view options:", SettingType = SettingType.List, DefaultValue = Deployer.FileViewOptions.ViewAllFiles
+            Name = nameof(FileViewOptionsSetting),
+            Description = Resources.FileViewOptionsSettingDescription,
+            SettingType = SettingType.List, DefaultValue = Deployer.FileViewOptions.ViewAllFiles
         };
 
         [XmlIgnore]
@@ -262,9 +242,9 @@ namespace Deployer
             {
                 List<WildcardPattern> exclusionListPatterns = new List<WildcardPattern>();
 
-                if (!string.IsNullOrEmpty(ExclusionsList.Value))
+                if (!string.IsNullOrEmpty(ExclusionsListSetting.Value))
                 {
-                    string[] patterns = ExclusionsList.Value.Split(new[] {"\n", "\r\n", "\r"}, StringSplitOptions.RemoveEmptyEntries);
+                    string[] patterns = ExclusionsListSetting.Value.Split(new[] {"\n", "\r\n", "\r"}, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string pattern in patterns)
                     {
                         exclusionListPatterns.Add(new WildcardPattern(pattern, WildcardOptions.Compiled | WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase));
@@ -279,7 +259,7 @@ namespace Deployer
 
         #region Public static fields
 
-        public static string DefaultName = "New Configuration";
+        public static string DefaultName = Resources.NewConfigurationName;
 
         #endregion
     }

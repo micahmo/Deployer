@@ -10,8 +10,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Threading;
+using Deployer.Properties;
+using Humanizer;
 
 #endregion
 
@@ -27,7 +28,7 @@ namespace Deployer
             _otherDirectory = otherDirectory;
 
             _configurationItem = configurationItem;
-            _configurationItem.PropertyChanged += _configurationItem_PropertyChanged;
+            _configurationItem.GeneralSettings.Settings.ToList().ForEach(s => s.PropertyChanged += ConfigurationItemSetting_PropertyChanged);
             _configurationItem.ViewSettings.Settings.ToList().ForEach(s => s.PropertyChanged += ConfigurationItemSetting_PropertyChanged);
             _configurationItem.CopySettings.Settings.ToList().ForEach(s => s.PropertyChanged += ConfigurationItemSetting_PropertyChanged);
 
@@ -84,7 +85,7 @@ namespace Deployer
 
         public List<FileItem> GenerateFileCollection(FileViewOptions? fileViewOptions = null)
         {
-            bool filter = (fileViewOptions ?? _configurationItem.FileViewOptions.Value) == FileViewOptions.ViewPendingFiles;
+            bool filter = (fileViewOptions ?? _configurationItem.FileViewOptionsSetting.Value) == FileViewOptions.ViewPendingFiles;
 
             // Get these files
             List<InternalFileItem> directoryFileList = new List<InternalFileItem>(_directory.GetFileInfos().Select(f => new InternalFileItem(f, _directory.Path)
@@ -227,47 +228,20 @@ namespace Deployer
 
         private void ConfigurationItemSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // Check all the cases where a setting changes requires an update, any time a copy setting or view setting is updated
-            if (sender is Setting setting && (_configurationItem.CopySettings.Settings.Contains(setting) || _configurationItem.ViewSettings.Settings.Contains(setting)
-                || setting.Name == nameof(_configurationItem.IncludeDirectoriesSetting)))
+            if (Configuration.Instance is { })
             {
-                UpdateFileCollection();
-            }
+                // Check all the cases where a setting changes requires an update, any time a copy setting or view setting is updated
+                if (sender is Setting setting && (_configurationItem.CopySettings.Settings.Contains(setting) || _configurationItem.ViewSettings.Settings.Contains(setting)
+                                                                                                             || setting.Name == nameof(_configurationItem.IncludeDirectoriesSetting)))
+                {
+                    UpdateFileCollection();
+                }
 
-            // If the user toggled the Enabled flag, we need to reload the whole configuration
-            if (sender is Setting enabledSetting && enabledSetting.Name == nameof(ConfigurationItem.EnabledSetting))
-            {
-                Configuration.Instance.ReloadCurrentConfiguration();
-            }
-        }
-
-        private void _configurationItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(ConfigurationItem.LeftButNotRightSetting):
-                case nameof(ConfigurationItem.NewerOnLeftSetting):
-                case nameof(ConfigurationItem.NewerOnRightSetting):
-                case nameof(ConfigurationItem.FileViewOptions):
-                case nameof(ConfigurationItem.EnabledSetting):
-                case nameof(ConfigurationItem.ExclusionsList):
-                case nameof(ConfigurationItem.IncludeDirectoriesSetting):
-                    _configurationItem.GeneralSettings.Settings.ToList().ForEach(s =>
-                    {
-                        s.PropertyChanged -= ConfigurationItemSetting_PropertyChanged;
-                        s.PropertyChanged += ConfigurationItemSetting_PropertyChanged;
-                    });
-                    _configurationItem.ViewSettings.Settings.ToList().ForEach(s =>
-                    {
-                        s.PropertyChanged -= ConfigurationItemSetting_PropertyChanged;
-                        s.PropertyChanged += ConfigurationItemSetting_PropertyChanged;
-                    });
-                    _configurationItem.CopySettings.Settings.ToList().ForEach(s =>
-                    {
-                        s.PropertyChanged -= ConfigurationItemSetting_PropertyChanged;
-                        s.PropertyChanged += ConfigurationItemSetting_PropertyChanged;
-                    });
-                    break;
+                // If the user toggled the Enabled flag, we need to reload the whole configuration
+                if (sender is Setting enabledSetting && enabledSetting.Name == nameof(ConfigurationItem.EnabledSetting))
+                {
+                    Configuration.Instance.ReloadCurrentConfiguration();
+                }
             }
         }
 
@@ -340,26 +314,28 @@ namespace Deployer
             {
                 StringBuilder additionalDetails = new StringBuilder();
 
-                string fileOrFolder = FileInfo is FileInfo ? "File" : FileInfo is DirectoryInfo ? "Folder" : "Item";
+                string fileOrFolder = FileInfo is FileInfo ? Resources.File : FileInfo is DirectoryInfo ? Resources.Folder : Resources.Item;
 
                 if (Excluded)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} matches exclusion pattern and will not be copied.");
+                    additionalDetails.Append(string.Format(Resources.FileMatchesExclusionPattern, fileOrFolder).Transform(To.LowerCase, To.SentenceCase));
                 }
                 else if (Other)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} exists only on other side.");
+                    additionalDetails.Append(string.Format(Resources.FileExistsOnOtherSize, fileOrFolder).Transform(To.LowerCase, To.SentenceCase));
                 }
                 else if (Overwrite)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} is newer than matching {fileOrFolder.ToLower()} on other side.");
+                    additionalDetails.Append(string.Format(Resources.FileIsNewerThanOtherSide, fileOrFolder, fileOrFolder).Transform(To.LowerCase, To.SentenceCase));
                 }
                 else if (GetOverwritten)
                 {
-                    additionalDetails.Append($"{Environment.NewLine}{Environment.NewLine}{fileOrFolder} is older than matching {fileOrFolder.ToLower()} on other side.");
+                    additionalDetails.Append(string.Format(Resources.FileIsOlderThanOtherSize, fileOrFolder, fileOrFolder).Transform(To.LowerCase, To.SentenceCase));
                 }
 
-                return $"{base.Description}{additionalDetails}";
+                return additionalDetails.Length > 0
+                    ? string.Join(Environment.NewLine, base.Description, string.Empty, additionalDetails)
+                    : base.Description;
             }
         }
     }

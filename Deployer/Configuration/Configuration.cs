@@ -4,12 +4,12 @@ using GalaSoft.MvvmLight;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
-using System.Reflection;
 using System.ServiceProcess;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using System.Xml.Serialization;
+using Deployer.Properties;
+using Humanizer;
 using Microsoft.VisualBasic.Devices;
 using Utilities;
 using Point = System.Windows.Point;
@@ -144,7 +146,7 @@ namespace Deployer
 
         public string GenerateDuplicateConfigurationName(string existingName)
         {
-            return $"Copy of {existingName}";
+            return string.Format(Resources.DuplicateConfigurationName, existingName);
         }
 
         public void ReloadCurrentConfiguration()
@@ -199,14 +201,19 @@ namespace Deployer
                     return;
                 }
 
-                string fileOrFolder = fileCopyPair.SourceFile.FileInfo is FileInfo ? "File" : fileCopyPair.SourceFile.FileInfo is DirectoryInfo ? "Folder" : "Item";
+                string fileOrFolder = (fileCopyPair.SourceFile.FileInfo is FileInfo ? Resources.File : fileCopyPair.SourceFile.FileInfo is DirectoryInfo ? Resources.Folder : Resources.Item)
+                                      .Transform(To.SentenceCase);
                 string sourceFolder = Path.GetDirectoryName(fileCopyPair.SourceFile.FullName);
                 string sourceFileFullName = fileCopyPair.SourceFile.FullName;
                 string destinationFileFullName = Path.Combine(fileCopyPair.DestinationPath, fileCopyPair.SourceFile.Name);
+                double percentComplete = (i / deploymentItem.FilesToCopy.Count) * 100;
 
                 progress?.Report(new DeployProgress(
-                    "Copying Files", $"From: {sourceFolder}{Environment.NewLine}To: {fileCopyPair.DestinationPath}{Environment.NewLine}{fileOrFolder}: {fileCopyPair.SourceFile.Name}",
-                    (i / deploymentItem.FilesToCopy.Count) * 100));
+                    Resources.CopyingFilesTitle, string.Join(Environment.NewLine,
+                        string.Format(Resources.FromSource, sourceFolder),
+                        string.Format(Resources.ToDestination, fileCopyPair.DestinationPath),
+                        string.Format(Resources.AtoB, fileOrFolder, fileCopyPair.SourceFile.Name)),
+                        percentComplete));
 
                 bool skipFile = false;
                 if (File.Exists(destinationFileFullName))
@@ -216,9 +223,13 @@ namespace Deployer
                     if (FileSystem.IsUncPath(destinationFileFullName, out _))
                     {
                         progress?.Report(new DeployProgress(
-                            "Copying Files", $"From: {sourceFolder}{Environment.NewLine}To: {fileCopyPair.DestinationPath}{Environment.NewLine}{fileOrFolder}: {fileCopyPair.SourceFile.Name}" +
-                                             $"{Environment.NewLine}{Environment.NewLine}Note: Unable to detect locking processes on remote server.",
-                            (i / deploymentItem.FilesToCopy.Count) * 100));
+                            Resources.CopyingFilesTitle, string.Join(Environment.NewLine,
+                                string.Format(Resources.FromSource, sourceFolder),
+                                string.Format(Resources.ToDestination, fileCopyPair.DestinationPath),
+                                string.Format(Resources.AtoB, fileOrFolder, fileCopyPair.SourceFile.Name),
+                                string.Empty,
+                                Resources.UnableToDetectRemoteLockingProcesses),
+                            percentComplete));
                     }
 
                     foreach (Process process in Native.GetLockingProcesses(destinationFileFullName))
@@ -230,8 +241,9 @@ namespace Deployer
                         }
                         else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.WaitForLockingProcesses)
                         {
-                            progress?.Report(new DeployProgress("Locking Processes and Services", $"Found locked file: {destinationFileFullName}{Environment.NewLine}" +
-                                                                                                  $"Waiting for locking process '{process.ProcessName}' to stop..."));
+                            progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine, 
+                                string.Format(Resources.FoundLockedFile, destinationFileFullName),
+                                string.Format(Resources.WaitingForLockingProcessToStop, process.ProcessName))));
 
                             if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
                             {
@@ -245,8 +257,9 @@ namespace Deployer
                                 // Check if it's a service
                                 if (await GetServiceFromProcess(process) is { } service)
                                 {
-                                    progress?.Report(new DeployProgress("Stopping Locking Processes and Services", $"Found locked file: {destinationFileFullName}{Environment.NewLine}" +
-                                                                                                                   $"Stopping locking service '{service.DisplayName}'..."));
+                                    progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
+                                        string.Format(Resources.FoundLockedFile, destinationFileFullName),
+                                        string.Format(Resources.StoppingLockingService, service.DisplayName))));
 
                                     var services = await StopServiceAndDependencies(service, destinationFileFullName, cancellationTokenSource, progress, errorProgress);
                                     if (services is { })
@@ -267,8 +280,9 @@ namespace Deployer
                                 // Otherwise, it's a regular process
                                 else
                                 {
-                                    progress?.Report(new DeployProgress("Stopping Locking Processes and Services", $"Found locked file: {destinationFileFullName}{Environment.NewLine}" +
-                                                                                                                   $"Killing locking process '{process.ProcessName}'..."));
+                                    progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
+                                        string.Format(Resources.FoundLockedFile, destinationFileFullName),
+                                        string.Format(Resources.KillingLockingProcess, process.ProcessName))));
 
                                     killedProcesses.Add(process.GetMainModuleFileName());
                                     process.Kill();
@@ -324,7 +338,9 @@ namespace Deployer
                 }
                 catch (Exception ex)
                 {
-                    errorProgress?.Report(new DeployError($"Error copying {fileCopyPair.SourceFile.FullName} to {fileCopyPair.DestinationPath}{Environment.NewLine}{ex}", ex));
+                    errorProgress?.Report(new DeployError(string.Join(Environment.NewLine, 
+                        string.Format(Resources.ErrorCopyingSourceToDestination, fileCopyPair.SourceFile.FullName, fileCopyPair.DestinationPath),
+                        ex.ToString()), ex));
                 }
 
                 ++i;
@@ -338,14 +354,14 @@ namespace Deployer
                     stoppedService.Refresh();
                     if (stoppedService.Status == ServiceControllerStatus.Stopped)
                     {
-                        progress?.Report(new DeployProgress("Restarting Stopped Processes and Services", $"Restarting stopped service '{stoppedService.DisplayName}'..."));
+                        progress?.Report(new DeployProgress(Resources.RestartingStoppedProcessesTitle, string.Format(Resources.RestartingStoppedService, stoppedService.DisplayName)));
                         try
                         {
                             stoppedService.Start();
                         }
                         catch (Exception ex)
                         {
-                            errorProgress?.Report(new DeployError($"Error restarting service '{stoppedService.DisplayName}'", ex));
+                            errorProgress?.Report(new DeployError(string.Format(Resources.ErrorRestartingService, stoppedService.DisplayName), ex));
                         }
                     }
                 }
@@ -359,7 +375,7 @@ namespace Deployer
                         WorkingDirectory = Path.GetDirectoryName(process)
                     };
 
-                    progress?.Report(new DeployProgress("Restarting Stopped Processes and Services", $"Restarting killed process '{process}'..."));
+                    progress?.Report(new DeployProgress(Resources.RestartingStoppedProcessesTitle, string.Format(Resources.RestartingKilledProcess, process)));
 
                     try
                     {
@@ -367,7 +383,7 @@ namespace Deployer
                     }
                     catch (Exception ex)
                     {
-                        errorProgress?.Report(new DeployError($"Error restarting process '{process}'", ex));
+                        errorProgress?.Report(new DeployError(string.Format(Resources.ErrorRestartingProcess, process), ex));
                     }
                 }
             }
@@ -439,8 +455,9 @@ namespace Deployer
 
                 try
                 {
-                    progress?.Report(new DeployProgress("Stopping Locking Processes and Services", $"Found locked file: {lockedFileName}{Environment.NewLine}" +
-                                                                                                   $"Stopping locking service '{serviceController.DisplayName}'..."));
+                    progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine, 
+                        string.Format(Resources.FoundLockedFile, lockedFileName),
+                        string.Format(Resources.StoppingLockingService, serviceController.DisplayName))));
 
                     serviceController.Stop();
 
@@ -451,7 +468,9 @@ namespace Deployer
                 }
                 catch (Exception ex)
                 {
-                    errorProgress?.Report(new DeployError($"Error stopping locking service {serviceController.DisplayName}{Environment.NewLine}{ex}", ex));
+                    errorProgress?.Report(new DeployError(string.Join(Environment.NewLine, 
+                        string.Format(Resources.ErrorStoppingLockingService, serviceController.DisplayName),
+                        ex.ToString()), ex));
                 }
             }
 
@@ -642,42 +661,41 @@ namespace Deployer
 
     public enum NonExistingFileOptions
     {
+        [Display(Description = nameof(Resources.Skip), ResourceType = typeof(Resources))]
         Skip,
+
+        [Display(Description = nameof(Resources.Copy), ResourceType = typeof(Resources))]
         Copy
     }
 
     public enum ExistingFileOptions
     {
+        [Display(Description = nameof(Resources.Skip), ResourceType = typeof(Resources))]
         Skip,
+
+        [Display(Description = nameof(Resources.Replace), ResourceType = typeof(Resources))]
         Replace
     }
 
     public enum LockedFileOptions
     {
-        [EnumDescription("Automatically stop locking processes")]
+        [Display(Description = nameof(Resources.AutomaticallyStopLockingProcesses), ResourceType = typeof(Resources))]
         StopLockingProcesses,
         
-        [EnumDescription("Wait for locking processes to stop")]
+        [Display(Description = nameof(Resources.WaitForLockingProcesses), ResourceType = typeof(Resources))]
         WaitForLockingProcesses,
 
-        [EnumDescription("Skipped locked files")]
+        [Display(Description = nameof(Resources.SkipLockedFiles), ResourceType = typeof(Resources))]
         Skip
     }
 
     public enum FileViewOptions
     {
-        [EnumDescription("View all files")]
+        [Display(Description = nameof(Resources.ViewAllFiles), ResourceType = typeof(Resources))]
         ViewAllFiles,
 
-        [EnumDescription("View files which will be copied")]
+        [Display(Description = nameof(Resources.ViewPendingFiles), ResourceType = typeof(Resources))]
         ViewPendingFiles
-    }
-
-    [AttributeUsage(AttributeTargets.Field)]
-    public class EnumDescriptionAttribute : Attribute
-    {
-        public EnumDescriptionAttribute(string description) => Description = description;
-        public string Description { get; }
     }
 
     public class EnumDescriptionConverter : IValueConverter
@@ -686,12 +704,11 @@ namespace Deployer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            object result = value?.ToString();
+            string result = value?.ToString();
 
-            FieldInfo fieldInfo = value?.GetType().GetField(value.ToString());
-            if (fieldInfo?.GetCustomAttribute(typeof(EnumDescriptionAttribute)) is EnumDescriptionAttribute attribute)
+            if (value is Enum member)
             {
-                result = attribute.Description;
+                result = member.Humanize();
             }
 
             return result;

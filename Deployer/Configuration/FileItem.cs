@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media;
+using Deployer.Properties;
 
 #endregion
 
@@ -69,7 +70,10 @@ namespace Deployer
 
         public FileSystemInfo FileInfo { get; }
 
-        public virtual string Description => $"Full path: {FullName}{Environment.NewLine}Size: {Length?.ToString() ?? "unknown"} bytes{Environment.NewLine}Last modified at: {LastModifiedDateTime}";
+        public virtual string Description => string.Join(Environment.NewLine,
+            string.Format(Resources.FullPath, FullName), 
+            string.Format(Resources.Size, Length?.ToString() ?? Resources.Unknown), 
+            string.Format(Resources.LastModifiedAt, LastModifiedDateTime));
 
         public bool IsDirectory => FileInfo is DirectoryInfo;
 
