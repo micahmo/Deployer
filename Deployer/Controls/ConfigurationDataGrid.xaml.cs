@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Serialization;
+using Deployer.Properties;
 using GalaSoft.MvvmLight.Command;
 
 #endregion
@@ -47,7 +48,7 @@ namespace Deployer
             Commands = new ConfigurationDataGridCommands();
         }
 
-        public string ReloadButtonTooltip => $"Refresh ({ShortcutCommands.GetShortcutKey(ShortcutCommands.ReloadCurrentConfigurationCommand).FirstOrDefault()})";
+        public string ReloadButtonTooltip => string.Format(Resources.RefreshTooltip, ShortcutCommands.GetShortcutKey(ShortcutCommands.ReloadCurrentConfigurationCommand).FirstOrDefault());
 
         public ConfigurationDataGridCommands Commands { get; }
     }

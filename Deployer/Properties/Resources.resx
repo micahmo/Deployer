@@ -303,4 +303,70 @@ For example:
   <data name="ChooseValues" xml:space="preserve">
     <value>Choose value(s)</value>
   </data>
+  <data name="AutomaticallyCloseAfterError" xml:space="preserve">
+    <value>Automatically close after errors</value>
+  </data>
+  <data name="AutomaticallyCloseAfterErrorTooltip" xml:space="preserve">
+    <value>Check to automatically close the dialog when a copy fails with errors</value>
+  </data>
+  <data name="CreateConfiguration" xml:space="preserve">
+    <value>Create new configuration</value>
+  </data>
+  <data name="DeleteConfiguration" xml:space="preserve">
+    <value>Delete selected configuration</value>
+  </data>
+  <data name="MoveConfigurationUp" xml:space="preserve">
+    <value>Move selected configuration item up</value>
+  </data>
+  <data name="MoveConfigurationDown" xml:space="preserve">
+    <value>Move selected configuration item down</value>
+  </data>
+  <data name="AddPathVariable" xml:space="preserve">
+    <value>Add new path variable</value>
+  </data>
+  <data name="DeletePathVariable" xml:space="preserve">
+    <value>Delete selected path variable</value>
+  </data>
+  <data name="ViewLastErrorDetails" xml:space="preserve">
+    <value>View last error details</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="PathVariables" xml:space="preserve">
+    <value>Path Variables</value>
+  </data>
+  <data name="SourceDirectories" xml:space="preserve">
+    <value>Source Directory(s)</value>
+  </data>
+  <data name="DestinationDirectories" xml:space="preserve">
+    <value>Destination Directory(s)</value>
+  </data>
+  <data name="Deploy" xml:space="preserve">
+    <value>Deploy</value>
+  </data>
+  <data name="DeployTooltip" xml:space="preserve">
+    <value>Deploy ({0})</value>
+  </data>
+  <data name="PreparingToDeploy" xml:space="preserve">
+    <value>Preparing to Deploy</value>
+  </data>
+  <data name="DeployEncounteredErrors" xml:space="preserve">
+    <value>Deploy encountered {0} errors(s).</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="TheOperationWasCanceled" xml:space="preserve">
+    <value>The operation was canceled.</value>
+  </data>
+  <data name="RefreshTooltip" xml:space="preserve">
+    <value>Refresh ({0})</value>
+  </data>
 </root>

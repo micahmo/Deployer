@@ -70,6 +70,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add new path variable.
+        /// </summary>
+        public static string AddPathVariable {
+            get {
+                return ResourceManager.GetString("AddPathVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add value.
         /// </summary>
         public static string AddValue {
@@ -84,6 +93,24 @@ namespace Deployer.Properties {
         public static string AtoB {
             get {
                 return ResourceManager.GetString("AtoB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically close after errors.
+        /// </summary>
+        public static string AutomaticallyCloseAfterError {
+            get {
+                return ResourceManager.GetString("AutomaticallyCloseAfterError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check to automatically close the dialog when a copy fails with errors.
+        /// </summary>
+        public static string AutomaticallyCloseAfterErrorTooltip {
+            get {
+                return ResourceManager.GetString("AutomaticallyCloseAfterErrorTooltip", resourceCulture);
             }
         }
         
@@ -106,11 +133,38 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancel.
+        /// </summary>
+        public static string Cancel {
+            get {
+                return ResourceManager.GetString("Cancel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose value(s).
         /// </summary>
         public static string ChooseValues {
             get {
                 return ResourceManager.GetString("ChooseValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration.
+        /// </summary>
+        public static string Configuration {
+            get {
+                return ResourceManager.GetString("Configuration", resourceCulture);
             }
         }
         
@@ -151,6 +205,69 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create new configuration.
+        /// </summary>
+        public static string CreateConfiguration {
+            get {
+                return ResourceManager.GetString("CreateConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete selected configuration.
+        /// </summary>
+        public static string DeleteConfiguration {
+            get {
+                return ResourceManager.GetString("DeleteConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete selected path variable.
+        /// </summary>
+        public static string DeletePathVariable {
+            get {
+                return ResourceManager.GetString("DeletePathVariable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy.
+        /// </summary>
+        public static string Deploy {
+            get {
+                return ResourceManager.GetString("Deploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy encountered {0} errors(s)..
+        /// </summary>
+        public static string DeployEncounteredErrors {
+            get {
+                return ResourceManager.GetString("DeployEncounteredErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy ({0}).
+        /// </summary>
+        public static string DeployTooltip {
+            get {
+                return ResourceManager.GetString("DeployTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Destination Directory(s).
+        /// </summary>
+        public static string DestinationDirectories {
+            get {
+                return ResourceManager.GetString("DestinationDirectories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate.
         /// </summary>
         public static string Duplicate {
@@ -174,6 +291,15 @@ namespace Deployer.Properties {
         public static string EnabledSettingDescription {
             get {
                 return ResourceManager.GetString("EnabledSettingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error: {0}.
+        /// </summary>
+        public static string Error {
+            get {
+                return ResourceManager.GetString("Error", resourceCulture);
             }
         }
         
@@ -425,6 +551,24 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move selected configuration item down.
+        /// </summary>
+        public static string MoveConfigurationDown {
+            get {
+                return ResourceManager.GetString("MoveConfigurationDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Move selected configuration item up.
+        /// </summary>
+        public static string MoveConfigurationUp {
+            get {
+                return ResourceManager.GetString("MoveConfigurationUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Configuration.
         /// </summary>
         public static string NewConfigurationName {
@@ -470,11 +614,38 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Path Variables.
+        /// </summary>
+        public static string PathVariables {
+            get {
+                return ResourceManager.GetString("PathVariables", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preparing to Deploy.
+        /// </summary>
+        public static string PreparingToDeploy {
+            get {
+                return ResourceManager.GetString("PreparingToDeploy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Question.
         /// </summary>
         public static string Question {
             get {
                 return ResourceManager.GetString("Question", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh ({0}).
+        /// </summary>
+        public static string RefreshTooltip {
+            get {
+                return ResourceManager.GetString("RefreshTooltip", resourceCulture);
             }
         }
         
@@ -569,6 +740,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source Directory(s).
+        /// </summary>
+        public static string SourceDirectories {
+            get {
+                return ResourceManager.GetString("SourceDirectories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stopping Locking Processes and Services.
         /// </summary>
         public static string StoppingLockingProcessesTitle {
@@ -583,6 +763,15 @@ namespace Deployer.Properties {
         public static string StoppingLockingService {
             get {
                 return ResourceManager.GetString("StoppingLockingService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation was canceled..
+        /// </summary>
+        public static string TheOperationWasCanceled {
+            get {
+                return ResourceManager.GetString("TheOperationWasCanceled", resourceCulture);
             }
         }
         
@@ -628,6 +817,15 @@ namespace Deployer.Properties {
         public static string ViewAllFiles {
             get {
                 return ResourceManager.GetString("ViewAllFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View last error details.
+        /// </summary>
+        public static string ViewLastErrorDetails {
+            get {
+                return ResourceManager.GetString("ViewLastErrorDetails", resourceCulture);
             }
         }
         

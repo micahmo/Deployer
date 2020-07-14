@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Deployer"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
+        xmlns:properties="clr-namespace:Deployer.Properties"
         mc:Ignorable="d"
         Title="Deployer"
         Closing="Window_Closing"
@@ -208,7 +209,7 @@
 
                     <CheckBox Margin="5"
                               IsChecked="{Binding DataContext.Configuration.CloseDialogOnErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <TextBlock Text="Automatically close after errors" ToolTip="Check to automatically close the dialog when a copy fails with errors" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock Text="{x:Static properties:Resources.AutomaticallyCloseAfterError}" ToolTip="{x:Static properties:Resources.AutomaticallyCloseAfterErrorTooltip}" TextTrimming="CharacterEllipsis"/>
                     </CheckBox>
 
                     <Grid>
@@ -226,13 +227,13 @@
                                 Command="{Binding DataContext.Commands.CancelDeployCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                 Visibility="{c:Binding DataContext.DeployInProgress, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                 IsEnabled="{c:Binding '!DataContext.CancelRequested', RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                            <TextBlock Text="Cancel"/>
+                            <TextBlock Text="{x:Static properties:Resources.Cancel}"/>
                         </Button>
 
                         <Button Grid.Column="1" Margin="5" BorderBrush="Silver" Background="Transparent"
                                 Command="{Binding DataContext.Commands.CloseProgressCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                 Visibility="{c:Binding '!DataContext.DeployInProgress', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                            <TextBlock Text="Close"/>
+                            <TextBlock Text="{x:Static properties:Resources.Close}"/>
                         </Button>
                     </Grid>
                 </StackPanel>
@@ -265,7 +266,7 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
-                        <local:SectionHeader Grid.Row="0" HeaderText="Configuration"/>
+                        <local:SectionHeader Grid.Row="0" HeaderText="{x:Static properties:Resources.Configuration}"/>
 
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -276,10 +277,10 @@
                             </Grid.ColumnDefinitions>
 
                             <local:MyButton Grid.Column="1" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.AddConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Create new configuration" ImageSource="..\Images\add.png"/>
+                                        ToolTip="{x:Static properties:Resources.CreateConfiguration}" ImageSource="..\Images\add.png"/>
 
                             <local:MyButton Grid.Column="2" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.RemoveConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Delete selected configuration" ImageSource="..\Images\remove.png"/>
+                                        ToolTip="{x:Static properties:Resources.DeleteConfiguration}" ImageSource="..\Images\remove.png"/>
 
                         </Grid>
 
@@ -303,12 +304,12 @@
                                     Background="LightGray" Height="2"/>
 
                             <local:MyButton Grid.Column="1" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                            ToolTip="Move selected configuration item up"
+                                            ToolTip="{x:Static properties:Resources.MoveConfigurationUp}"
                                             IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex>0', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ImageSource="..\Images\up_arrow.png"/>
 
                             <local:MyButton Grid.Column="2" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                            ToolTip="Move selected configuration item down"
+                                            ToolTip="{x:Static properties:Resources.MoveConfigurationDown}"
                                             IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex less DataContext.Configuration.ConfigurationItems.Count-1 and DataContext.Configuration.SelectedConfigurationIndex>=0',
                                                         RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ImageSource="..\Images\down_arrow.png"/>
@@ -323,7 +324,7 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
 
-                        <local:SectionHeader Grid.Row="0" HeaderText="Path Variables"/>
+                        <local:SectionHeader Grid.Row="0" HeaderText="{x:Static properties:Resources.PathVariables}"/>
 
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -339,10 +340,10 @@
                             </Grid.RowDefinitions>
 
                             <local:MyButton Grid.Column="1" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.AddPathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Add new path variable" ImageSource="..\Images\plus.png"/>
+                                        ToolTip="{x:Static properties:Resources.AddPathVariable}" ImageSource="..\Images\plus.png"/>
 
                             <local:MyButton Grid.Column="2" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.RemovePathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="Delete selected path variable" ImageSource="..\Images\minus.png"/>
+                                        ToolTip="{x:Static properties:Resources.DeletePathVariable}" ImageSource="..\Images\minus.png"/>
                         </Grid>
 
                         <DockPanel Grid.Row="2">
@@ -369,7 +370,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Column="0" Grid.Row="0">
-                        <local:SectionHeader HeaderText="Source Directory(s)"/>
+                        <local:SectionHeader HeaderText="{x:Static properties:Resources.SourceDirectories}"/>
                         <local:DirectoryCollectionEditor DataContext="{Binding DataContext.SelectedConfigurationItem.SourceDirectories, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
                     </StackPanel>
 
@@ -406,7 +407,7 @@
 
 
                     <StackPanel Grid.Column="1" Grid.Row="0">
-                        <local:SectionHeader HeaderText="Destination Directory(s)"/>
+                        <local:SectionHeader HeaderText="{x:Static properties:Resources.DestinationDirectories}"/>
                         <local:DirectoryCollectionEditor DataContext="{Binding DataContext.SelectedConfigurationItem.DestinationDirectories, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
                     </StackPanel>
 
@@ -463,12 +464,12 @@
                                 <Image Grid.Column="0" Source="..\Images\arrow.png" Margin="-10,2,10,2"/>
 
                                 <Grid Grid.Column="1" VerticalAlignment="Stretch">
-                                    <TextBlock Text="Deploy" VerticalAlignment="Center" FontSize="15" Margin="0,-2,0,0"/>
+                                    <TextBlock Text="{x:Static properties:Resources.Deploy}" VerticalAlignment="Center" FontSize="15" Margin="0,-2,0,0"/>
                                 </Grid>
                             </Grid>
                         </Button>
 
-                        <Button Grid.Column="3" Background="White" ToolTip="View last error details"
+                        <Button Grid.Column="3" Background="White" ToolTip="{x:Static properties:Resources.ViewLastErrorDetails}"
                                 Command="{Binding Commands.ViewLastErrorCommand}">
                             <Image Source="..\Images\alert.png" Margin="2"/>
                         </Button>

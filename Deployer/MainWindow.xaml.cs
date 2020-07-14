@@ -218,7 +218,7 @@ namespace Deployer
 
         public double RightTabControlMaxWidth => _mainWindow.rightTabControl.ActualWidth - (_mainWindow.rightTabControlCountLabel.ActualWidth + 50);
 
-        public string DeployButtonTooltip => $"Deploy ({ShortcutCommands.GetShortcutKey(ShortcutCommands.DeployCurrentConfigurationCommand).FirstOrDefault()})";
+        public string DeployButtonTooltip => string.Format(Resources.DeployTooltip, ShortcutCommands.GetShortcutKey(ShortcutCommands.DeployCurrentConfigurationCommand).FirstOrDefault());
 
         public bool IsBusy
         {
@@ -411,7 +411,7 @@ namespace Deployer
             _cancellationTokenSource = new CancellationTokenSource();
             int errors = 0;
 
-            Model.DeployStep = "Preparing to Deploy";
+            Model.DeployStep = Resources.PreparingToDeploy;
             Model.DeployDetails = string.Empty;
             Model.IndeterminateProgress = true;
             Model.DeployEncounteredUnhandledError = false;
@@ -431,7 +431,7 @@ namespace Deployer
             if (deploymentItem.FilesToCopy.Count > 0)
             {
                 Model.IndeterminateProgress = false;
-                Model.DeployStep = "Copying Files";
+                Model.DeployStep = Resources.CopyingFilesTitle;
 
                 Progress<DeployProgress> progress = new Progress<DeployProgress>(e =>
                 {
@@ -445,8 +445,8 @@ namespace Deployer
                     ++errors;
 
                     Model.DeployEncounteredHandledErrors = true;
-                    Model.DeployHandledErrors = $"Deploy encountered {errors} errors(s).";
-                    Model.DeployHandledErrorsDetails += $"{e.Details}{Environment.NewLine}{Environment.NewLine}";
+                    Model.DeployHandledErrors = string.Format(Resources.DeployEncounteredErrors, errors);
+                    Model.DeployHandledErrorsDetails += string.Join(Environment.NewLine, e.Details, string.Empty, string.Empty);
                 });
 
                 try
@@ -457,7 +457,7 @@ namespace Deployer
                 {
                     ++errors;
 
-                    Model.DeployUnhandledError = $"Error: {ex.Message}";
+                    Model.DeployUnhandledError = string.Format(Resources.Error, ex.Message);
                     Model.DeployUnhandledErrorDetails = ex.ToString();
                     Model.DeployInProgress = false;
                     Model.DeployEncounteredUnhandledError = true;
@@ -465,7 +465,7 @@ namespace Deployer
 
                 if (_cancellationTokenSource.IsCancellationRequested)
                 {
-                    Model.DeployUnhandledError = "The operation was canceled.";
+                    Model.DeployUnhandledError = Resources.TheOperationWasCanceled;
                     Model.DeployInProgress = false;
                     Model.DeployEncounteredUnhandledError = true;
                 }
