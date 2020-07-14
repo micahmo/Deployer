@@ -28,9 +28,11 @@ namespace Deployer
             _otherDirectory = otherDirectory;
 
             _configurationItem = configurationItem;
-            _configurationItem.GeneralSettings.Settings.ToList().ForEach(s => s.PropertyChanged += ConfigurationItemSetting_PropertyChanged);
-            _configurationItem.ViewSettings.Settings.ToList().ForEach(s => s.PropertyChanged += ConfigurationItemSetting_PropertyChanged);
-            _configurationItem.CopySettings.Settings.ToList().ForEach(s => s.PropertyChanged += ConfigurationItemSetting_PropertyChanged);
+
+            _configurationItem.EnabledSetting.PropertyChanged += EnabledSetting_PropertyChanged;
+            _configurationItem.IncludeDirectoriesSetting.PropertyChanged += IncludeDirectoriesSetting_PropertyChanged;
+            _configurationItem.CopySettings.Settings.ToList().ForEach(s => s.PropertyChanged += CopySetting_PropertyChanged);
+            _configurationItem.ViewSettings.Settings.ToList().ForEach(s => s.PropertyChanged += ViewSetting_PropertyChanged);
 
             directory.PropertyChanged += Directory_PropertyChanged;
             otherDirectory.PropertyChanged += Directory_PropertyChanged;
@@ -226,22 +228,38 @@ namespace Deployer
             }
         }
 
-        private void ConfigurationItemSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void EnabledSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (Configuration.Instance is { })
             {
-                // Check all the cases where a setting changes requires an update, any time a copy setting or view setting is updated
-                if (sender is Setting setting && (_configurationItem.CopySettings.Settings.Contains(setting) || _configurationItem.ViewSettings.Settings.Contains(setting)
-                                                                                                             || setting.Name == nameof(_configurationItem.IncludeDirectoriesSetting)))
+                Configuration.Instance.ReloadCurrentConfiguration();
+            }
+        }
+
+        private void IncludeDirectoriesSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (Configuration.Instance is { })
+            {
+                UpdateFileCollection();
+            }
+        }
+
+        private void CopySetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (Configuration.Instance is { })
+            {
+                if (_configurationItem.FileViewOptionsSetting.Value == FileViewOptions.ViewPendingFiles || sender == _configurationItem.ExclusionsListSetting)
                 {
                     UpdateFileCollection();
                 }
+            }
+        }
 
-                // If the user toggled the Enabled flag, we need to reload the whole configuration
-                if (sender is Setting enabledSetting && enabledSetting.Name == nameof(ConfigurationItem.EnabledSetting))
-                {
-                    Configuration.Instance.ReloadCurrentConfiguration();
-                }
+        private void ViewSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (Configuration.Instance is { })
+            {
+                UpdateFileCollection();
             }
         }
 
