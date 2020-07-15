@@ -1,5 +1,7 @@
 ﻿#region Usings
 
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -99,9 +101,23 @@ namespace Deployer
         {
             if (control.DataModel.SelectedConfigurationItem is { })
             {
-                new ConfigurationItemSettings {DataContext = control.DataModel.SelectedConfigurationItem}.ShowDialog();
+                if (_openConfigurationItemSettings.TryGetValue(control.DataModel.SelectedConfigurationItem.Guid, out var configurationItemSettings) && configurationItemSettings.IsVisible)
+                {
+                    if (configurationItemSettings.WindowState == WindowState.Minimized)
+                    {
+                        configurationItemSettings.WindowState = WindowState.Normal;
+                    }
+                    configurationItemSettings.Activate();
+                }
+                else
+                {
+                    (_openConfigurationItemSettings[control.DataModel.SelectedConfigurationItem.Guid] =
+                        new ConfigurationItemSettings {DataContext = control.DataModel.SelectedConfigurationItem}).Show();
+                }
             }
         }
+
+        private static readonly Dictionary<Guid, ConfigurationItemSettings> _openConfigurationItemSettings = new Dictionary<Guid, ConfigurationItemSettings>();
 
         #endregion
     }

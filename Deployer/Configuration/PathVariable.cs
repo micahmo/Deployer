@@ -27,6 +27,12 @@ namespace Deployer
         }
         private string _name;
 
+        /// <summary>
+        /// Globally unique runtime ID (not persisted)
+        /// </summary>
+        [XmlIgnore]
+        public Guid Guid { get; } = Guid.NewGuid();
+
         public ObservableCollection<PossiblePathVariable> PossibleValues { get; } = new ObservableCollection<PossiblePathVariable>();
 
         [XmlIgnore]

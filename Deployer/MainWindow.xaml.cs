@@ -28,6 +28,9 @@ namespace Deployer
     {
         public MainWindow()
         {
+            // Ensure that closing the MainWindow also closes any child windows and stops the application.
+            Application.Current.ShutdownMode = ShutdownMode.OnMainWindowClose;
+
             InitializeComponent();
             DataContext = Model ??= new MainWindowModel(this);
             Model.Configuration = Configuration.Load();

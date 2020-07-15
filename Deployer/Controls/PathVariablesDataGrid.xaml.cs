@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using GalaSoft.MvvmLight.Command;
@@ -52,8 +54,25 @@ namespace Deployer
 
         private void ChooseValues(PathVariablesDataGrid control)
         {
-            new PathVariableEditor {DataContext = control.DataModel.SelectedPathVariable}.ShowDialog();
+            if (control.DataModel.SelectedPathVariable is { })
+            {
+                if (_openPathVariableEditors.TryGetValue(control.DataModel.SelectedPathVariable.Guid, out var pathVariableEditor) && pathVariableEditor.IsVisible)
+                {
+                    if (pathVariableEditor.WindowState == WindowState.Minimized)
+                    {
+                        pathVariableEditor.WindowState = WindowState.Normal;
+                    }
+                    pathVariableEditor.Activate();
+                }
+                else
+                {
+                    (_openPathVariableEditors[control.DataModel.SelectedPathVariable.Guid] =
+                        new PathVariableEditor { DataContext = control.DataModel.SelectedPathVariable }).Show();
+                }
+            }
         }
+
+        private static readonly Dictionary<Guid, PathVariableEditor> _openPathVariableEditors = new Dictionary<Guid, PathVariableEditor>();
 
         #endregion
     }

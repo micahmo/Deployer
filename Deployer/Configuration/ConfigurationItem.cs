@@ -92,6 +92,12 @@ namespace Deployer
 
         public string Name { get; set; }
 
+        /// <summary>
+        /// Globally unique runtime ID (not persisted)
+        /// </summary>
+        [XmlIgnore]
+        public Guid Guid { get; } = Guid.NewGuid();
+
         public DirectoryCollection SourceDirectories { get; } = new DirectoryCollection();
 
         public DirectoryCollection DestinationDirectories { get; } = new DirectoryCollection();
