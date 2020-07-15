@@ -230,7 +230,7 @@ namespace Deployer
 
         private void EnabledSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Configuration.Instance is { })
+            if (Configuration.Instance is { } && IsLeft) // Only one of our FileCollections should handle this event, otherwise we'll reload twice
             {
                 Configuration.Instance.ReloadCurrentConfiguration();
             }
