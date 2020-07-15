@@ -54,7 +54,14 @@
     </DataGrid.CellStyle>
 
     <DataGrid.Columns>
-        <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+        <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}">
+            <!-- Set the TextTrimming for the column's underlying TextBlock -->
+            <DataGridTextColumn.ElementStyle>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                </Style>
+            </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
 
         <DataGridTemplateColumn Width="26">
             <DataGridTemplateColumn.CellTemplate>

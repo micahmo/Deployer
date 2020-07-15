@@ -54,7 +54,14 @@
 
 
     <DataGrid.Columns>
-        <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="Auto"/>
+        <DataGridTextColumn Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Width="Auto">
+            <!-- Set the TextTrimming for the column's underlying TextBlock -->
+            <DataGridTextColumn.ElementStyle>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                </Style>
+            </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
 
         <DataGridTemplateColumn Width="Auto">
             <DataGridTemplateColumn.CellTemplate>
@@ -64,7 +71,14 @@
             </DataGridTemplateColumn.CellTemplate>
         </DataGridTemplateColumn>
 
-        <DataGridTextColumn Binding="{Binding SelectedValue.Value, UpdateSourceTrigger=PropertyChanged}"/>
+        <DataGridTextColumn Binding="{Binding SelectedValue.Value, UpdateSourceTrigger=PropertyChanged}">
+            <!-- Set the TextTrimming for the column's underlying TextBlock -->
+            <DataGridTextColumn.ElementStyle>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                </Style>
+            </DataGridTextColumn.ElementStyle>
+        </DataGridTextColumn>
 
         <DataGridTemplateColumn Width="26">
             <DataGridTemplateColumn.CellTemplate>
