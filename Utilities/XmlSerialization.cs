@@ -67,7 +67,7 @@ namespace Utilities
             return (T)xmlSerializer.Deserialize(streamReader);
         }
 
-        public static string GetCustomConfigFilePath(Environment.SpecialFolder specialFolder, string configFileName)
+        public static string GetCustomConfigFilePath(Environment.SpecialFolder specialFolder, string configFileName, bool createIfNotExists = true)
         {
             string customConfigFilePath = Environment.GetFolderPath(specialFolder);
             customConfigFilePath = Path.Combine(customConfigFilePath, "Deployer");
@@ -80,7 +80,7 @@ namespace Utilities
 
             customConfigFilePath = Path.Combine(customConfigFilePath, configFileName);
 
-            if (File.Exists(customConfigFilePath) == false)
+            if (File.Exists(customConfigFilePath) == false && createIfNotExists)
             {
                 // If the file doesn't exist, create it
                 using (File.Create(customConfigFilePath)) { }

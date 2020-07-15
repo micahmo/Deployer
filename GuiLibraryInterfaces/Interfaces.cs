@@ -9,6 +9,10 @@ namespace GuiLibraryInterfaces
     public interface INotify
     {
         QuestionResult Question(string message, string title, QuestionOptions options);
+
+        void Information(string message, string title);
+
+        void Warning(string message, string title);
     }
 
     public enum QuestionOptions

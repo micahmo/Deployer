@@ -16,6 +16,16 @@ namespace WindowsGuiLibrary
             return MessageBoxResultToQuestionResult(result);
         }
 
+        public void Information(string message, string title)
+        {
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        public void Warning(string message, string title)
+        {
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
         private MessageBoxButton QuestionOptionsToMessageBoxButton(QuestionOptions options)
         {
             switch (options)

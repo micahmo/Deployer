@@ -628,18 +628,28 @@ namespace Deployer
 
         public static Configuration Load()
         {
+            bool fileExistedBeforeFirstRead = File.Exists(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME, createIfNotExists: false));
+
             try
             {
                 return Instance = XmlSerialization.DeserializeObjectFromCustomConfigFile<Configuration>(CONFIG_FILE_NAME, SpecialFolder.ApplicationData);
             }
             catch
             {
-                if (File.Exists(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME)))
+                if (fileExistedBeforeFirstRead)
                 {
                     // The file exists, but there was a problem deserializing it.
                     // Be sure to back up the existing file before overwriting it with an empty instance.
                     File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
                               XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_BACKUP_NAME), overwrite: true);
+
+                    // Inform the user that there was an error loading the existing configuration.
+                    Dependencies.Notify.Warning(string.Join(Environment.NewLine,
+                            Resources.ErrorLoadingExistingConfiguration,
+                            string.Empty,
+                            Resources.OldConfigurationAvailableAt,
+                            XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_BACKUP_NAME)),
+                        Resources.Warning);
                 }
 
                 Save(new Configuration());

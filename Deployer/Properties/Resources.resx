@@ -369,4 +369,13 @@ For example:
   <data name="RefreshTooltip" xml:space="preserve">
     <value>Refresh ({0})</value>
   </data>
+  <data name="Warning" xml:space="preserve">
+    <value>Warning</value>
+  </data>
+  <data name="ErrorLoadingExistingConfiguration" xml:space="preserve">
+    <value>There was an error loading the existing configuration file. It has been backed up, and a new empty configuration file has been created.</value>
+  </data>
+  <data name="OldConfigurationAvailableAt" xml:space="preserve">
+    <value>The old configuration file is available at:</value>
+  </data>
 </root>

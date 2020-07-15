@@ -313,6 +313,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to There was an error loading the existing configuration file. It has been backed up, and a new empty configuration file has been created..
+        /// </summary>
+        public static string ErrorLoadingExistingConfiguration {
+            get {
+                return ResourceManager.GetString("ErrorLoadingExistingConfiguration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error restarting process &apos;{0}&apos;.
         /// </summary>
         public static string ErrorRestartingProcess {
@@ -596,6 +605,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The old configuration file is available at:.
+        /// </summary>
+        public static string OldConfigurationAvailableAt {
+            get {
+                return ResourceManager.GetString("OldConfigurationAvailableAt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open.
         /// </summary>
         public static string Open {
@@ -862,6 +880,15 @@ namespace Deployer.Properties {
         public static string WaitingForLockingProcessToStop {
             get {
                 return ResourceManager.GetString("WaitingForLockingProcessToStop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warning.
+        /// </summary>
+        public static string Warning {
+            get {
+                return ResourceManager.GetString("Warning", resourceCulture);
             }
         }
     }
