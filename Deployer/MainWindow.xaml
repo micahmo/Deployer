@@ -20,6 +20,7 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:ShortcutCommands.ReloadCurrentConfigurationCommand}" Executed="ReloadCurrentConfigurationCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.HardReloadCurrentConfigurationCommand}" Executed="HardReloadCurrentConfigurationCommand_Executed"/>
         <CommandBinding Command="{x:Static local:ShortcutCommands.DeployCurrentConfigurationCommand}" Executed="DeployCurrentConfigurationCommand_Executed"/>
     </Window.CommandBindings>
 

@@ -15,6 +15,11 @@ namespace Deployer
 {
     public static class IconHelper
     {
+        public static void Reset()
+        {
+            _iconCache.Clear();
+        }
+
         public static CancellationTokenSource GetIcons(FileCollection fileCollection)
         {
             Thread thread = new Thread(ThreadProc);

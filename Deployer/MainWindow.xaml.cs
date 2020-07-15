@@ -85,6 +85,11 @@ namespace Deployer
             Configuration.Instance.ReloadCurrentConfiguration();
         }
 
+        private void HardReloadCurrentConfigurationCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Configuration.Instance.HardReloadCurrentConfiguration();
+        }
+
         private void DeployCurrentConfigurationCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Model.Commands.DeployCommand?.Execute(null);

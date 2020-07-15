@@ -162,6 +162,12 @@ namespace Deployer
             }
         }
 
+        public void HardReloadCurrentConfiguration()
+        {
+            IconHelper.Reset();
+            ReloadCurrentConfiguration();
+        }
+
         public async Task<DeploymentItem> PrepareDeployment()
         {
             return await Task.Run(() =>

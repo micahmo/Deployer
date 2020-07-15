@@ -12,10 +12,13 @@ namespace Deployer
         static ShortcutCommands()
         {
             ReloadCurrentConfigurationCommand.InputGestures.Add(new KeyGesture(Key.F5));
+            HardReloadCurrentConfigurationCommand.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
             DeployCurrentConfigurationCommand.InputGestures.Add(new KeyGesture(Key.F6));
         }
 
         public static RoutedCommand ReloadCurrentConfigurationCommand { get; } = new RoutedCommand();
+
+        public static RoutedCommand HardReloadCurrentConfigurationCommand { get; } = new RoutedCommand();
 
         public static RoutedCommand DeployCurrentConfigurationCommand { get; } = new RoutedCommand();
 
