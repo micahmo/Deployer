@@ -231,11 +231,25 @@
     <value>Exclusions list:</value>
   </data>
   <data name="ExclusionsListSettingExtendedDescription" xml:space="preserve">
-    <value>One exclusion per line. Use * as wildcard.
+    <value>Specify a set of file names or patterns to exclude. One exclusion per line. Use * as wildcard.
 
 For example:
 *.exe
-*.config</value>
+*.config
+
+If a file matches both inclusions and exclusions list, it will be excluded.</value>
+    </data>
+  <data name="InclusionsListSettingDescription" xml:space="preserve">
+    <value>Inclusions list:</value>
+  </data>
+    <data name="InclusionsListSettingExtendedDescription" xml:space="preserve">
+    <value>Specify a set of file names or patterns to include. One exclusion per line. Use * as wildcard.
+
+For example:
+*.exe
+*.config
+
+If a file matches both inclusions and exclusions list, it will be excluded.</value>
   </data>
   <data name="LockedFileOptionSettingDescription" xml:space="preserve">
     <value>If destination file is locked:</value>
@@ -253,7 +267,7 @@ For example:
     <value>New Configuration</value>
   </data>
   <data name="FileMatchesExclusionPattern" xml:space="preserve">
-    <value>{0} matches exclusion pattern and will not be copied.</value>
+    <value>{0} matches exclusion pattern or does not match inclusion pattern and will not be copied.</value>
   </data>
   <data name="FileExistsOnOtherSize" xml:space="preserve">
     <value>{0} exists only on other side.</value>

@@ -358,11 +358,13 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to One exclusion per line. Use * as wildcard.
+        ///   Looks up a localized string similar to Specify a set of file names or patterns to exclude. One exclusion per line. Use * as wildcard.
         ///
         ///For example:
         ///*.exe
-        ///*.config.
+        ///*.config
+        ///
+        ///If a file matches both inclusions and exclusions list, it will be excluded..
         /// </summary>
         public static string ExclusionsListSettingExtendedDescription {
             get {
@@ -407,7 +409,7 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} matches exclusion pattern and will not be copied..
+        ///   Looks up a localized string similar to {0} matches exclusion pattern or does not match inclusion pattern and will not be copied..
         /// </summary>
         public static string FileMatchesExclusionPattern {
             get {
@@ -484,6 +486,30 @@ namespace Deployer.Properties {
         public static string IncludeDirectoriesSettingExtendedDescription {
             get {
                 return ResourceManager.GetString("IncludeDirectoriesSettingExtendedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Inclusions list:.
+        /// </summary>
+        public static string InclusionsListSettingDescription {
+            get {
+                return ResourceManager.GetString("InclusionsListSettingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify a set of file names or patterns to include. One exclusion per line. Use * as wildcard.
+        ///
+        ///For example:
+        ///*.exe
+        ///*.config
+        ///
+        ///If a file matches both inclusions and exclusions list, it will be excluded..
+        /// </summary>
+        public static string InclusionsListSettingExtendedDescription {
+            get {
+                return ResourceManager.GetString("InclusionsListSettingExtendedDescription", resourceCulture);
             }
         }
         

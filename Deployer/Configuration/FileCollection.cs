@@ -93,7 +93,12 @@ namespace Deployer
             List<InternalFileItem> directoryFileList = new List<InternalFileItem>(_directory.GetFileInfos().Select(f => new InternalFileItem(f, _directory.Path)
             {
                 Other = false,
-                Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                Excluded =
+                    // Either it DOES matches a pattern in the exclusions list
+                    _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                    
+                    // Or the user has defined an inclusion and it DOESN'T match any pattern
+                    || (_configurationItem.InclusionsListPatterns.Any() && !_configurationItem.InclusionsListPatterns.Any(p => p.IsMatch(f.Name)))
             }));
 
             if (_configurationItem.IncludeDirectoriesSetting.Value)
@@ -102,7 +107,12 @@ namespace Deployer
                 directoryFileList.AddRange(new List<InternalFileItem>(_directory.GetDirectoryInfos().Select(f => new InternalFileItem(f, _directory.Path)
                 {
                     Other = false,
-                    Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                    Excluded =
+                        // Either it DOES matches a pattern in the exclusions list
+                        _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+
+                        // Or the user has defined an inclusion and it DOESN'T match any pattern
+                        || (_configurationItem.InclusionsListPatterns.Any() && !_configurationItem.InclusionsListPatterns.Any(p => p.IsMatch(f.Name)))
                 })));
             }
 
@@ -110,7 +120,12 @@ namespace Deployer
             List<InternalFileItem> otherDirectoryFileList = new List<InternalFileItem>(_otherDirectory.GetFileInfos().Select(f => new InternalFileItem(f, _otherDirectory.Path)
             {
                 Other = true,
-                Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                Excluded =
+                    // Either it DOES matches a pattern in the exclusions list
+                    _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+
+                    // Or the user has defined an inclusion and it DOESN'T match any pattern
+                    || (_configurationItem.InclusionsListPatterns.Any() && !_configurationItem.InclusionsListPatterns.Any(p => p.IsMatch(f.Name)))
             }));
 
             if (_configurationItem.IncludeDirectoriesSetting.Value)
@@ -119,7 +134,12 @@ namespace Deployer
                 otherDirectoryFileList.AddRange(new List<InternalFileItem>(_otherDirectory.GetDirectoryInfos().Select(f => new InternalFileItem(f, _otherDirectory.Path)
                 {
                     Other = true,
-                    Excluded = _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+                    Excluded =
+                        // Either it DOES matches a pattern in the exclusions list
+                        _configurationItem.ExclusionListPatterns.Any(p => p.IsMatch(f.Name))
+
+                        // Or the user has defined an inclusion and it DOESN'T match any pattern
+                        || (_configurationItem.InclusionsListPatterns.Any() && !_configurationItem.InclusionsListPatterns.Any(p => p.IsMatch(f.Name)))
                 })));
             }
 
@@ -248,7 +268,8 @@ namespace Deployer
         {
             if (Configuration.Instance is { })
             {
-                if (_configurationItem.FileViewOptionsSetting.Value == FileViewOptions.ViewPendingFiles || sender == _configurationItem.ExclusionsListSetting)
+                if (_configurationItem.FileViewOptionsSetting.Value == FileViewOptions.ViewPendingFiles 
+                    || sender == _configurationItem.ExclusionsListSetting || sender == _configurationItem.InclusionsListPatterns)
                 {
                     UpdateFileCollection();
                 }

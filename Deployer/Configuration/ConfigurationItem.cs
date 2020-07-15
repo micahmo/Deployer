@@ -37,6 +37,7 @@ namespace Deployer
             CopySettings.Settings.Add(NewerOnLeftSetting);
             CopySettings.Settings.Add(NewerOnRightSetting);
             CopySettings.Settings.Add(ExclusionsListSetting);
+            CopySettings.Settings.Add(InclusionsListSetting);
 
             LockedFileSettings = new SettingsGroup {Name = nameof(LockedFileSettings), Description = Resources.LockedFileSettingsDescription};
             LockedFileSettings.Settings.Add(LockedFileOptionSetting);
@@ -190,6 +191,18 @@ namespace Deployer
             ExtendedDescription = Resources.ExclusionsListSettingExtendedDescription
         };
 
+        public Setting<string> InclusionsListSetting
+        {
+            get => _inclusionsListSetting;
+            set => _inclusionsListSetting.Apply(value);
+        }
+        private Setting<string> _inclusionsListSetting = new Setting<string>
+        {
+            Name = nameof(InclusionsListSetting), SettingType = SettingType.ExtendedString, DefaultValue = string.Empty,
+            Description = Resources.InclusionsListSettingDescription,
+            ExtendedDescription = Resources.InclusionsListSettingExtendedDescription,
+        };
+
         public Setting<LockedFileOptions> LockedFileOptionSetting
         {
             get => _lockedFileOptionsSetting;
@@ -258,6 +271,26 @@ namespace Deployer
                 }
 
                 return exclusionListPatterns;
+            }
+        }
+
+        [XmlIgnore]
+        public List<WildcardPattern> InclusionsListPatterns
+        {
+            get
+            {
+                List<WildcardPattern> inclusionsListPatterns = new List<WildcardPattern>();
+
+                if (!string.IsNullOrEmpty(InclusionsListSetting.Value))
+                {
+                    string[] patterns = InclusionsListSetting.Value.Split(new[] { "\n", "\r\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string pattern in patterns)
+                    {
+                        inclusionsListPatterns.Add(new WildcardPattern(pattern, WildcardOptions.Compiled | WildcardOptions.CultureInvariant | WildcardOptions.IgnoreCase));
+                    }
+                }
+
+                return inclusionsListPatterns;
             }
         }
 
