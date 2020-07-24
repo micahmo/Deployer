@@ -209,6 +209,10 @@ namespace Deployer
                     directoryFileList.RemoveAll(f => !(f.HasOther || f.Other));
                 }
             }
+            else if (_configurationItem.FileViewOptionsSetting.Value == FileViewOptions.ViewExcludedFiles)
+            {
+                directoryFileList.RemoveAll(f => f.Excluded == false);
+            }
 
             return directoryFileList.OfType<FileItem>().ToList();
         }

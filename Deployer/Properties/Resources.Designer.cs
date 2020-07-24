@@ -901,6 +901,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View files which will be excluded.
+        /// </summary>
+        public static string ViewExcludedFiles {
+            get {
+                return ResourceManager.GetString("ViewExcludedFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to View last error details.
         /// </summary>
         public static string ViewLastErrorDetails {

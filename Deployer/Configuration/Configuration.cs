@@ -711,7 +711,10 @@ namespace Deployer
         ViewAllFiles,
 
         [Display(Description = nameof(Resources.ViewPendingFiles), ResourceType = typeof(Resources))]
-        ViewPendingFiles
+        ViewPendingFiles,
+
+        [Display(Description = nameof(Resources.ViewExcludedFiles), ResourceType = typeof(Resources))]
+        ViewExcludedFiles
     }
 
     public class EnumDescriptionConverter : IValueConverter

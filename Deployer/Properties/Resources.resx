@@ -185,6 +185,9 @@
   <data name="ViewPendingFiles" xml:space="preserve">
     <value>View files which will be copied</value>
   </data>
+  <data name="ViewExcludedFiles" xml:space="preserve">
+    <value>View files which will be excluded</value>
+  </data>
   <data name="Skip" xml:space="preserve">
     <value>Skip</value>
   </data>
