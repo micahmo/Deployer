@@ -7,7 +7,8 @@
               xmlns:local="clr-namespace:Deployer"
               mc:Ignorable="d" 
               
-              ItemsSource="{Binding Settings}">
+              ItemsSource="{Binding Settings}"
+              KeyboardNavigation.IsTabStop="False">
 
     <ItemsControl.Resources>
         <local:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
@@ -62,7 +63,7 @@
                                                          AcceptsReturn="True"/>
                 </Grid>
 
-                <ItemsControl Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemsSource="{Binding DependentSettings}">
+                <ItemsControl Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemsSource="{Binding DependentSettings}" KeyboardNavigation.IsTabStop="False">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <local:SettingsItemsControl DataContext="{Binding}" Visibility="{c:Binding Show, FalseToVisibility=Collapsed}"/>

@@ -20,7 +20,7 @@
 
         <ScrollViewer Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto">
 
-            <ItemsControl ItemsSource="{Binding SettingsGroups}">
+            <ItemsControl ItemsSource="{Binding SettingsGroups}" KeyboardNavigation.IsTabStop="False">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Grid>
