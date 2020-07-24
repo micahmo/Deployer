@@ -507,7 +507,7 @@ namespace Deployer
                     Model.DeployHandledErrors = string.Format(Resources.DeployEncounteredErrors, errors);
                     Model.DeployHandledErrorsDetails += string.Join(Environment.NewLine, e.Details, string.Empty, string.Empty);
 
-                    LogManager.Log(e.Details, Model.DeployStep);
+                    LogManager.Log(e.Details, Model.DeployStep, LogLevel.Error);
                 });
 
                 try
@@ -523,7 +523,7 @@ namespace Deployer
                     Model.DeployInProgress = false;
                     Model.DeployEncounteredUnhandledError = true;
 
-                    LogManager.Log(ex.ToString(), Resources.UnhandledError);
+                    LogManager.Log(ex.ToString(), Resources.UnhandledError, LogLevel.Error);
                 }
 
                 if (_cancellationTokenSource.IsCancellationRequested)
