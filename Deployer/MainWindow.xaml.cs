@@ -15,6 +15,7 @@ using System.IO;
 using System.Timers;
 using System.Windows.Media;
 using System.Threading;
+using System.Windows.Threading;
 using Deployer.Properties;
 using HTMLConverter;
 using Utilities;
@@ -123,6 +124,7 @@ namespace Deployer
 
         private void ViewLogButton_Click(object sender, RoutedEventArgs e)
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             DeployButton.IsOpen = false; // For some reason, Binding doesn't work on this property, so I have to set it directly
             Model.RaisePropertyChanged(nameof(Model.Log));
             Model.ShowLog = true;
@@ -132,7 +134,12 @@ namespace Deployer
         {
             if (sender is Xctk.RichTextBox richTextBox && (bool)e.NewValue)
             {
-                richTextBox.ScrollToEnd();
+                // Scroll with a low priority to guarantee that the full text has loaded first
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    richTextBox.ScrollToEnd();
+                    Mouse.OverrideCursor = null;
+                }), DispatcherPriority.ApplicationIdle);
             }
         }
 
@@ -143,7 +150,7 @@ namespace Deployer
         private void Save()
         {
             // Have to retrieve window properties in UI thread
-            
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 // Have to manually save readonly properties which are not bindable
@@ -175,7 +182,7 @@ namespace Deployer
         #region Properties/fields
 
         private readonly MainWindow _mainWindow;
-        
+
         public MainWindowCommands Commands { get; }
 
         #endregion
@@ -217,7 +224,8 @@ namespace Deployer
         }
         private Thickness _sourceDirectoriesMargin;
 
-        public Thickness DestinationDirectoriesMargin {
+        public Thickness DestinationDirectoriesMargin
+        {
             get => _destinationDirectoriesMargin;
             set => Set(nameof(DestinationDirectoriesMargin), ref _destinationDirectoriesMargin, value);
         }
@@ -237,7 +245,8 @@ namespace Deployer
         }
         private DirectoryPair _leftSelectedDirectoryPair;
 
-        public DirectoryPair RightSelectedDirectoryPair {
+        public DirectoryPair RightSelectedDirectoryPair
+        {
             get => _rightSelectedDirectoryPair;
             set => Set(nameof(RightSelectedDirectoryPair), ref _rightSelectedDirectoryPair, value);
         }
