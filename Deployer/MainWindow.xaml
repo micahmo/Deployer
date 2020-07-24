@@ -245,7 +245,7 @@
 
                         <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredHandledErrors and (DataContext.DeployHandledErrorsDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
                             <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                  Text="{Binding DataContext.DeployHandledErrorsDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                  IsReadOnly="True"/>
                         </Expander>
