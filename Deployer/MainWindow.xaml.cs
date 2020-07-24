@@ -456,6 +456,13 @@ namespace Deployer
 
         private async void Deploy()
         {
+            if (Model.DeployInProgress)
+            {
+                return;
+            }
+
+            Model.DeployInProgress = true;
+
             _cancellationTokenSource = new CancellationTokenSource();
             int errors = 0;
 
@@ -469,7 +476,6 @@ namespace Deployer
             Model.DeployHandledErrors = string.Empty;
             Model.DeployHandledErrorsDetails = string.Empty;
             Model.CancelRequested = false;
-            Model.DeployInProgress = true;
             Model.IsBusy = true;
 
             Configuration.Instance.ReloadCurrentConfiguration();
@@ -534,8 +540,8 @@ namespace Deployer
 
             LogManager.Log(Resources.FinishedDeployment);
 
-            Model.DeployInProgress = false;
             Model.IsBusy = errors > 0 && !Configuration.Instance.CloseDialogOnErrors;
+            Model.DeployInProgress = false;
         }
 
         private CancellationTokenSource _cancellationTokenSource;
