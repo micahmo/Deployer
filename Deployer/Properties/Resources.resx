@@ -392,4 +392,19 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="OldConfigurationAvailableAt" xml:space="preserve">
     <value>The old configuration file is available at:</value>
   </data>
+  <data name="ViewSessionLog" xml:space="preserve">
+    <value>View session log...</value>
+  </data>
+  <data name="BeginningDeployment" xml:space="preserve">
+    <value>Beginning Deployment</value>
+  </data>
+  <data name="FinishedDeployment" xml:space="preserve">
+    <value>Finished Deployment</value>
+  </data>
+  <data name="UnhandledError" xml:space="preserve">
+    <value>Encountered unhandled error.</value>
+  </data>
+  <data name="Clear" xml:space="preserve">
+    <value>Clear</value>
+  </data>
 </root>

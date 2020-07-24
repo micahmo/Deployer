@@ -11,11 +11,15 @@ using Point = System.Windows.Point;
 using System.Windows.Controls;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Timers;
 using System.Windows.Media;
 using System.Threading;
 using Deployer.Properties;
+using HTMLConverter;
+using Utilities;
 using Timer = System.Timers.Timer;
+using Xctk = Xceed.Wpf.Toolkit;
 
 #endregion
 
@@ -104,6 +108,8 @@ namespace Deployer
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             Model.RaisePropertyChanged(nameof(Model.BusyIndicatorWidth));
+            Model.RaisePropertyChanged(nameof(Model.LogWidth));
+            Model.RaisePropertyChanged(nameof(Model.LogHeight));
         }
 
         private void PathVariableGrid_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
@@ -112,6 +118,21 @@ namespace Deployer
             if (PathVariableGridContainer.FindVisualChildren<Control>().Contains(e.NewFocus) == false)
             {
                 PathVariableGrid.UnselectAll();
+            }
+        }
+
+        private void ViewLogButton_Click(object sender, RoutedEventArgs e)
+        {
+            DeployButton.IsOpen = false; // For some reason, Binding doesn't work on this property, so I have to set it directly
+            Model.RaisePropertyChanged(nameof(Model.Log));
+            Model.ShowLog = true;
+        }
+
+        private void LogTextBox_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (sender is Xctk.RichTextBox richTextBox && (bool)e.NewValue)
+            {
+                richTextBox.ScrollToEnd();
             }
         }
 
@@ -228,6 +249,15 @@ namespace Deployer
 
         public string DeployButtonTooltip => string.Format(Resources.DeployTooltip, ShortcutCommands.GetShortcutKey(ShortcutCommands.DeployCurrentConfigurationCommand).FirstOrDefault());
 
+        public bool ShowLog
+        {
+            get => _showLog;
+            set => Set(nameof(ShowLog), ref _showLog, value);
+        }
+        private bool _showLog;
+
+        public string Log => HtmlToXamlConverter.ConvertHtmlToXaml(File.ReadAllText(Dependencies.SessionFileLogger.Path), false);
+
         public bool IsBusy
         {
             get => _isBusy;
@@ -319,6 +349,10 @@ namespace Deployer
 
         public double BusyIndicatorWidth => Math.Min(_mainWindow.ActualWidth - 100, 600);
 
+        public double LogWidth => _mainWindow.ActualWidth - 300;
+
+        public double LogHeight => _mainWindow.ActualHeight - 300;
+
         #endregion
     }
 
@@ -362,6 +396,12 @@ namespace Deployer
 
         public ICommand CloseProgressCommand => _closeProgressCommand ??= new RelayCommand(CloseProgress);
         private RelayCommand _closeProgressCommand;
+
+        public ICommand CloseLogCommand => _closeLogCommand ??= new RelayCommand(CloseLog);
+        private RelayCommand _closeLogCommand;
+
+        public ICommand ClearLogCommand => _clearLogCommand ??= new RelayCommand(ClearLog);
+        private RelayCommand _clearLogCommand;
 
         public ICommand CancelDeployCommand => _cancelDeployCommand ??= new RelayCommand(CancelDeploy);
         private RelayCommand _cancelDeployCommand;
@@ -441,11 +481,16 @@ namespace Deployer
                 Model.IndeterminateProgress = false;
                 Model.DeployStep = Resources.CopyingFilesTitle;
 
+                LogManager.LogBreak();
+                LogManager.Log(Resources.BeginningDeployment);
+
                 Progress<DeployProgress> progress = new Progress<DeployProgress>(e =>
                 {
                     Model.DeployStep = e.CurrentStep;
                     Model.DeployDetails = e.Details;
                     Model.DeployProgress = e.PercentComplete ?? Model.DeployProgress;
+
+                    LogManager.Log(e.Details, e.CurrentStep);
                 });
 
                 Progress<DeployError> errorProgress = new Progress<DeployError>(e =>
@@ -455,6 +500,8 @@ namespace Deployer
                     Model.DeployEncounteredHandledErrors = true;
                     Model.DeployHandledErrors = string.Format(Resources.DeployEncounteredErrors, errors);
                     Model.DeployHandledErrorsDetails += string.Join(Environment.NewLine, e.Details, string.Empty, string.Empty);
+
+                    LogManager.Log(e.Details, Model.DeployStep);
                 });
 
                 try
@@ -469,6 +516,8 @@ namespace Deployer
                     Model.DeployUnhandledErrorDetails = ex.ToString();
                     Model.DeployInProgress = false;
                     Model.DeployEncounteredUnhandledError = true;
+
+                    LogManager.Log(ex.ToString(), Resources.UnhandledError);
                 }
 
                 if (_cancellationTokenSource.IsCancellationRequested)
@@ -476,10 +525,14 @@ namespace Deployer
                     Model.DeployUnhandledError = Resources.TheOperationWasCanceled;
                     Model.DeployInProgress = false;
                     Model.DeployEncounteredUnhandledError = true;
+
+                    LogManager.Log(Resources.TheOperationWasCanceled, level: LogLevel.Error);
                 }
 
                 Configuration.Instance.ReloadCurrentConfiguration();
             }
+
+            LogManager.Log(Resources.FinishedDeployment);
 
             Model.DeployInProgress = false;
             Model.IsBusy = errors > 0 && !Configuration.Instance.CloseDialogOnErrors;
@@ -490,6 +543,17 @@ namespace Deployer
         private void CloseProgress()
         {
             Model.IsBusy = false;
+        }
+
+        private void CloseLog()
+        {
+            Model.ShowLog = false;
+        }
+
+        private void ClearLog()
+        {
+            Dependencies.SessionFileLogger.Clear();
+            Model.RaisePropertyChanged(nameof(Model.Log));
         }
 
         private void CancelDeploy()

@@ -124,6 +124,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beginning Deployment.
+        /// </summary>
+        public static string BeginningDeployment {
+            get {
+                return ResourceManager.GetString("BeginningDeployment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Browse.
         /// </summary>
         public static string Browse {
@@ -147,6 +156,15 @@ namespace Deployer.Properties {
         public static string ChooseValues {
             get {
                 return ResourceManager.GetString("ChooseValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear.
+        /// </summary>
+        public static string Clear {
+            get {
+                return ResourceManager.GetString("Clear", resourceCulture);
             }
         }
         
@@ -423,6 +441,15 @@ namespace Deployer.Properties {
         public static string FileViewOptionsSettingDescription {
             get {
                 return ResourceManager.GetString("FileViewOptionsSettingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished Deployment.
+        /// </summary>
+        public static string FinishedDeployment {
+            get {
+                return ResourceManager.GetString("FinishedDeployment", resourceCulture);
             }
         }
         
@@ -838,6 +865,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Encountered unhandled error..
+        /// </summary>
+        public static string UnhandledError {
+            get {
+                return ResourceManager.GetString("UnhandledError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to unknown.
         /// </summary>
         public static string Unknown {
@@ -879,6 +915,15 @@ namespace Deployer.Properties {
         public static string ViewPendingFiles {
             get {
                 return ResourceManager.GetString("ViewPendingFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View session log....
+        /// </summary>
+        public static string ViewSessionLog {
+            get {
+                return ResourceManager.GetString("ViewSessionLog", resourceCulture);
             }
         }
         

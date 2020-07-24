@@ -3,6 +3,7 @@
 using System.Windows;
 using WindowsGuiLibrary;
 using GuiLibraryInterfaces;
+using Utilities;
 
 #endregion
 
@@ -21,5 +22,6 @@ namespace Deployer
         public static INotify Notify { get; } = new MessageBoxNotify();
         public static IFileBrowser FileBrowser { get; } = new WpfFileBrowser();
         public static IShellContextMenu ShellContextMenu { get; } = new WindowsShellContextMenu();
+        public static SessionFileLogger SessionFileLogger { get; } = LogManager.RegisterLogger(new SessionFileLogger());
     }
 }

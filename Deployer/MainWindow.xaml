@@ -165,79 +165,44 @@
         </Style>
     </Window.Resources>
 
-    <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
+    <xctk:BusyIndicator IsBusy="{Binding ShowLog}">
         <xctk:BusyIndicator.BusyContentTemplate>
             <DataTemplate>
-                <StackPanel Width="{Binding DataContext.BusyIndicatorWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                <Grid Width="{Binding DataContext.LogWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                            Height="{Binding DataContext.LogHeight, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
 
-                    <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis"
-                               Text="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               ToolTip="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="75"/>
+                        <ColumnDefinition Width="75"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Margin="5" TextTrimming="CharacterEllipsis"
-                               Text="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               ToolTip="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
 
-                    <!-- Unhandled error -->
-                    <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
-                               Text="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" 
-                               ToolTip="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" 
-                               Visibility="{c:Binding DataContext.DeployEncounteredUnhandledError, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <xctk:RichTextBox Grid.ColumnSpan="4" Grid.Row="0" Margin="5" ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                      Text="{Binding DataContext.Log, RelativeSource={RelativeSource AncestorType=local:MainWindow}, Mode=OneWay}"
+                                      IsReadOnly="True"
+                                      IsVisibleChanged="LogTextBox_IsVisibleChanged">
+                        <xctk:RichTextBox.TextFormatter>
+                            <xctk:XamlFormatter/>
+                        </xctk:RichTextBox.TextFormatter>
+                    </xctk:RichTextBox>
 
-                    <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredUnhandledError and (DataContext.DeployUnhandledErrorDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding DataContext.DeployUnhandledErrorDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 IsReadOnly="True"/>
-                    </Expander>
+                    <Button Grid.Column="1" Grid.Row="1" Margin="5" BorderBrush="Silver" Background="Transparent"
+                            Command="{Binding DataContext.Commands.ClearLogCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                        <TextBlock Text="{x:Static properties:Resources.Clear}"/>
+                    </Button>
 
-                    <!-- Handled errors -->
-                    <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
-                               Text="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               ToolTip="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               Visibility="{c:Binding DataContext.DeployEncounteredHandledErrors, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                    <Button Grid.Column="2" Grid.Row="1" Margin="5" BorderBrush="Silver" Background="Transparent"
+                            Command="{Binding DataContext.Commands.CloseLogCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                        <TextBlock Text="{x:Static properties:Resources.Close}"/>
+                    </Button>
 
-                    <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredHandledErrors and (DataContext.DeployHandledErrorsDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                 Text="{Binding DataContext.DeployHandledErrorsDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 IsReadOnly="True"/>
-                    </Expander>
-
-                    <ProgressBar IsIndeterminate="{Binding DataContext.IndeterminateProgress, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 Value="{Binding DataContext.DeployProgress, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                 Orientation="Horizontal" Height="20" HorizontalAlignment="Stretch" Margin="5"/>
-
-                    <CheckBox Margin="5"
-                              IsChecked="{Binding DataContext.Configuration.CloseDialogOnErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                        <TextBlock Text="{x:Static properties:Resources.AutomaticallyCloseAfterError}" ToolTip="{x:Static properties:Resources.AutomaticallyCloseAfterErrorTooltip}" TextTrimming="CharacterEllipsis"/>
-                    </CheckBox>
-
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition Width="75"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="35"/>
-                        </Grid.RowDefinitions>
-
-                        <Button Grid.Column="1" Margin="5" BorderBrush="Silver" Background="Transparent"
-                                Command="{Binding DataContext.Commands.CancelDeployCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                Visibility="{c:Binding DataContext.DeployInProgress, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                IsEnabled="{c:Binding '!DataContext.CancelRequested', RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                            <TextBlock Text="{x:Static properties:Resources.Cancel}"/>
-                        </Button>
-
-                        <Button Grid.Column="1" Margin="5" BorderBrush="Silver" Background="Transparent"
-                                Command="{Binding DataContext.Commands.CloseProgressCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                Visibility="{c:Binding '!DataContext.DeployInProgress', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                            <TextBlock Text="{x:Static properties:Resources.Close}"/>
-                        </Button>
-                    </Grid>
-                </StackPanel>
+                </Grid>
             </DataTemplate>
         </xctk:BusyIndicator.BusyContentTemplate>
         <xctk:BusyIndicator.ProgressBarStyle>
@@ -246,241 +211,329 @@
             </Style>
         </xctk:BusyIndicator.ProgressBarStyle>
 
-        <Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition x:Name="ConfigurationColumn" Width="{Binding DataContext.Configuration.ConfigurationItemsWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
+        <xctk:BusyIndicator IsBusy="{Binding IsBusy}">
+            <xctk:BusyIndicator.BusyContentTemplate>
+                <DataTemplate>
+                    <StackPanel Width="{Binding DataContext.BusyIndicatorWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
 
-                <Grid Grid.Column="0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+                        <TextBlock FontWeight="Bold" HorizontalAlignment="Center" Margin="5" TextTrimming="CharacterEllipsis"
+                               Text="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               ToolTip="{Binding DataContext.DeployStep, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
-                    <Grid Grid.Row="0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                            <RowDefinition Height="Auto"/>
-                        </Grid.RowDefinitions>
+                        <TextBlock Margin="5" TextTrimming="CharacterEllipsis"
+                               Text="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               ToolTip="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
-                        <local:SectionHeader Grid.Row="0" HeaderText="{x:Static properties:Resources.Configuration}"/>
+                        <!-- Unhandled error -->
+                        <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
+                               Text="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" 
+                               ToolTip="{Binding DataContext.DeployUnhandledError, RelativeSource={RelativeSource AncestorType=local:MainWindow}}" 
+                               Visibility="{c:Binding DataContext.DeployEncounteredUnhandledError, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
 
-                        <Grid Grid.Row="1">
+                        <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredUnhandledError and (DataContext.DeployUnhandledErrorDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                            <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding DataContext.DeployUnhandledErrorDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 IsReadOnly="True"/>
+                        </Expander>
+
+                        <!-- Handled errors -->
+                        <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
+                               Text="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               ToolTip="{Binding DataContext.DeployHandledErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                               Visibility="{c:Binding DataContext.DeployEncounteredHandledErrors, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+
+                        <Expander Header="View details" Margin="5" Visibility="{c:Binding 'DataContext.DeployEncounteredHandledErrors and (DataContext.DeployHandledErrorsDetails.Length > 0)', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                            <TextBox MaxHeight="{c:Binding 'ActualHeight - 300', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 Text="{Binding DataContext.DeployHandledErrorsDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 IsReadOnly="True"/>
+                        </Expander>
+
+                        <ProgressBar IsIndeterminate="{Binding DataContext.IndeterminateProgress, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 Value="{Binding DataContext.DeployProgress, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                 Orientation="Horizontal" Height="20" HorizontalAlignment="Stretch" Margin="5"/>
+
+                        <CheckBox Margin="5"
+                              IsChecked="{Binding DataContext.Configuration.CloseDialogOnErrors, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                            <TextBlock Text="{x:Static properties:Resources.AutomaticallyCloseAfterError}" ToolTip="{x:Static properties:Resources.AutomaticallyCloseAfterErrorTooltip}" TextTrimming="CharacterEllipsis"/>
+                        </CheckBox>
+
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <local:MyButton Grid.Column="1" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.AddConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="{x:Static properties:Resources.CreateConfiguration}" ImageSource="..\Images\add.png"/>
-
-                            <local:MyButton Grid.Column="2" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.RemoveConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                        ToolTip="{x:Static properties:Resources.DeleteConfiguration}" ImageSource="..\Images\remove.png"/>
-
-                        </Grid>
-
-                        <DockPanel Grid.Row="2">
-                            <local:ConfigurationDataGrid DataContext="{Binding}" Background="White"/>
-                        </DockPanel>
-
-                        <Grid Grid.Row="3">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="75"/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="35"/>
                             </Grid.RowDefinitions>
 
-                            <Canvas Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                            <Button Grid.Column="1" Margin="5" BorderBrush="Silver" Background="Transparent"
+                                Command="{Binding DataContext.Commands.CancelDeployCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                Visibility="{c:Binding DataContext.DeployInProgress, FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                IsEnabled="{c:Binding '!DataContext.CancelRequested', RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                                <TextBlock Text="{x:Static properties:Resources.Cancel}"/>
+                            </Button>
+
+                            <Button Grid.Column="1" Margin="5" BorderBrush="Silver" Background="Transparent"
+                                Command="{Binding DataContext.Commands.CloseProgressCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                Visibility="{c:Binding '!DataContext.DeployInProgress', FalseToVisibility=Collapsed, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                                <TextBlock Text="{x:Static properties:Resources.Close}"/>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </xctk:BusyIndicator.BusyContentTemplate>
+            <xctk:BusyIndicator.ProgressBarStyle>
+                <Style TargetType="ProgressBar">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </xctk:BusyIndicator.ProgressBarStyle>
+
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition x:Name="ConfigurationColumn" Width="{Binding DataContext.Configuration.ConfigurationItemsWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <local:SectionHeader Grid.Row="0" HeaderText="{x:Static properties:Resources.Configuration}"/>
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <local:MyButton Grid.Column="1" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.AddConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                        ToolTip="{x:Static properties:Resources.CreateConfiguration}" ImageSource="..\Images\add.png"/>
+
+                                <local:MyButton Grid.Column="2" Width="35" Height="35" Margin="2.5" Command="{Binding DataContext.Commands.RemoveConfigurationItemCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                        ToolTip="{x:Static properties:Resources.DeleteConfiguration}" ImageSource="..\Images\remove.png"/>
+
+                            </Grid>
+
+                            <DockPanel Grid.Row="2">
+                                <local:ConfigurationDataGrid DataContext="{Binding}" Background="White"/>
+                            </DockPanel>
+
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35"/>
+                                </Grid.RowDefinitions>
+
+                                <Canvas Grid.Column="0" Grid.ColumnSpan="4" VerticalAlignment="Top" HorizontalAlignment="Stretch"
                                     Background="LightGray" Height="2"/>
 
-                            <local:MyButton Grid.Column="1" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                <local:MyButton Grid.Column="1" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ToolTip="{x:Static properties:Resources.MoveConfigurationUp}"
                                             IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex>0', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ImageSource="..\Images\up_arrow.png"/>
 
-                            <local:MyButton Grid.Column="2" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                <local:MyButton Grid.Column="2" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ToolTip="{x:Static properties:Resources.MoveConfigurationDown}"
                                             IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex less DataContext.Configuration.ConfigurationItems.Count-1 and DataContext.Configuration.SelectedConfigurationIndex>=0',
                                                         RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ImageSource="..\Images\down_arrow.png"/>
 
+                            </Grid>
                         </Grid>
-                    </Grid>
 
-                    <Grid x:Name="PathVariableGridContainer" Grid.Row="1"  Margin="0,5,0,0" LostKeyboardFocus="PathVariableGrid_LostKeyboardFocus">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-
-                        <local:SectionHeader Grid.Row="0" HeaderText="{x:Static properties:Resources.PathVariables}"/>
-
-                        <Grid Grid.Row="1">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
+                        <Grid x:Name="PathVariableGridContainer" Grid.Row="1"  Margin="0,5,0,0" LostKeyboardFocus="PathVariableGrid_LostKeyboardFocus">
                             <Grid.RowDefinitions>
-                                <RowDefinition/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
 
-                            <local:MyButton Grid.Column="1" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.AddPathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                            <local:SectionHeader Grid.Row="0" HeaderText="{x:Static properties:Resources.PathVariables}"/>
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <local:MyButton Grid.Column="1" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.AddPathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                         ToolTip="{x:Static properties:Resources.AddPathVariable}" ImageSource="..\Images\plus.png"/>
 
-                            <local:MyButton Grid.Column="2" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.RemovePathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                <local:MyButton Grid.Column="2" Grid.Row="0" Width="25" Height="25" Margin="3" Command="{Binding DataContext.Commands.RemovePathVariableCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                         ToolTip="{x:Static properties:Resources.DeletePathVariable}" ImageSource="..\Images\minus.png"/>
+                            </Grid>
+
+                            <DockPanel Grid.Row="2">
+                                <local:PathVariablesDataGrid x:Name="PathVariableGrid" DataContext="{Binding}" Background="White"/>
+                            </DockPanel>
+
                         </Grid>
 
-                        <DockPanel Grid.Row="2">
-                            <local:PathVariablesDataGrid x:Name="PathVariableGrid" DataContext="{Binding}" Background="White"/>
-                        </DockPanel>
+                        <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="DarkGray"
+                              ShowsPreview="False" Height="5"/>
 
                     </Grid>
 
-                    <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Background="DarkGray"
-                              ShowsPreview="False" Height="5"/>
-
-                </Grid>
-
-                <Grid Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="30"/>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Grid.Column="0" Grid.Row="0">
-                        <local:SectionHeader HeaderText="{x:Static properties:Resources.SourceDirectories}"/>
-                        <local:DirectoryCollectionEditor DataContext="{Binding DataContext.SelectedConfigurationItem.SourceDirectories, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
-                    </StackPanel>
-
-                    <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid Grid.Column="1">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <TabControl Grid.ColumnSpan="2" x:Name="leftTabControl" ItemsSource="{Binding SelectedConfigurationItem.DirectoryPairs}"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Grid.Column="0" Grid.Row="0">
+                            <local:SectionHeader HeaderText="{x:Static properties:Resources.SourceDirectories}"/>
+                            <local:DirectoryCollectionEditor DataContext="{Binding DataContext.SelectedConfigurationItem.SourceDirectories, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                        </StackPanel>
+
+                        <Grid Grid.Column="0" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TabControl Grid.ColumnSpan="2" x:Name="leftTabControl" ItemsSource="{Binding SelectedConfigurationItem.DirectoryPairs}"
                                 SelectedIndex="{Binding TabControlSelectedIndex}" SelectionChanged="TabControl_SelectionChanged" SelectedItem="{Binding LeftSelectedDirectoryPair}"
                                 Style="{DynamicResource LeftTabControlStyle}">
 
-                            <TabControl.ItemContainerStyle>
-                                <Style TargetType="TabItem">
-                                    <Setter Property="Header" Value="{Binding ShortName}"/>
-                                    <Setter Property="ToolTip" Value="{Binding Name}"/>
-                                </Style>
-                            </TabControl.ItemContainerStyle>
+                                <TabControl.ItemContainerStyle>
+                                    <Style TargetType="TabItem">
+                                        <Setter Property="Header" Value="{Binding ShortName}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Name}"/>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
 
-                            <TabControl.ContentTemplate>
-                                <DataTemplate>
-                                    <DockPanel>
-                                        <local:FilesDataGrid ItemsSource="{Binding LeftFileCollection.Files, IsAsync=True}"
+                                <TabControl.ContentTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <local:FilesDataGrid ItemsSource="{Binding LeftFileCollection.Files, IsAsync=True}"
                                                          ScrollChanged="FilesDataGrid_ScrollChanged"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </TabControl.ContentTemplate>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </TabControl.ContentTemplate>
 
-                        </TabControl>
+                            </TabControl>
 
-                        <TextBlock x:Name="leftTabControlCountLabel" Grid.Column="1" Text="{Binding LeftSelectedDirectoryPair.LeftFileCollection.CountLabel}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0"/>
-                    </Grid>
+                            <TextBlock x:Name="leftTabControlCountLabel" Grid.Column="1" Text="{Binding LeftSelectedDirectoryPair.LeftFileCollection.CountLabel}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0"/>
+                        </Grid>
 
 
-                    <StackPanel Grid.Column="1" Grid.Row="0">
-                        <local:SectionHeader HeaderText="{x:Static properties:Resources.DestinationDirectories}"/>
-                        <local:DirectoryCollectionEditor DataContext="{Binding DataContext.SelectedConfigurationItem.DestinationDirectories, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
-                    </StackPanel>
+                        <StackPanel Grid.Column="1" Grid.Row="0">
+                            <local:SectionHeader HeaderText="{x:Static properties:Resources.DestinationDirectories}"/>
+                            <local:DirectoryCollectionEditor DataContext="{Binding DataContext.SelectedConfigurationItem.DestinationDirectories, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                        </StackPanel>
 
-                    <Grid Grid.Column="1" Grid.Row="1">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="1" Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <TabControl Grid.ColumnSpan="2" x:Name="rightTabControl" ItemsSource="{Binding SelectedConfigurationItem.DirectoryPairs}"
+                            <TabControl Grid.ColumnSpan="2" x:Name="rightTabControl" ItemsSource="{Binding SelectedConfigurationItem.DirectoryPairs}"
                                 SelectedIndex="{Binding TabControlSelectedIndex}" SelectionChanged="TabControl_SelectionChanged" SelectedItem="{Binding RightSelectedDirectoryPair}"
                                 Style="{DynamicResource RightTabControlStyle}">
 
-                            <TabControl.ItemContainerStyle>
-                                <Style TargetType="TabItem">
-                                    <Setter Property="Header" Value="{Binding ShortName}"/>
-                                    <Setter Property="ToolTip" Value="{Binding Name}"/>
-                                </Style>
-                            </TabControl.ItemContainerStyle>
+                                <TabControl.ItemContainerStyle>
+                                    <Style TargetType="TabItem">
+                                        <Setter Property="Header" Value="{Binding ShortName}"/>
+                                        <Setter Property="ToolTip" Value="{Binding Name}"/>
+                                    </Style>
+                                </TabControl.ItemContainerStyle>
 
-                            <TabControl.ContentTemplate>
-                                <DataTemplate>
-                                    <DockPanel>
-                                        <local:FilesDataGrid ItemsSource="{Binding RightFileCollection.Files, IsAsync=True}"
+                                <TabControl.ContentTemplate>
+                                    <DataTemplate>
+                                        <DockPanel>
+                                            <local:FilesDataGrid ItemsSource="{Binding RightFileCollection.Files, IsAsync=True}"
                                                          ScrollChanged="FilesDataGrid_ScrollChanged"/>
-                                    </DockPanel>
-                                </DataTemplate>
-                            </TabControl.ContentTemplate>
-                        </TabControl>
+                                        </DockPanel>
+                                    </DataTemplate>
+                                </TabControl.ContentTemplate>
+                            </TabControl>
 
-                        <TextBlock x:Name="rightTabControlCountLabel" Grid.Column="1" Text="{Binding RightSelectedDirectoryPair.RightFileCollection.CountLabel}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0"/>
+                            <TextBlock x:Name="rightTabControlCountLabel" Grid.Column="1" Text="{Binding RightSelectedDirectoryPair.RightFileCollection.CountLabel}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,0"/>
 
-                    </Grid>
+                        </Grid>
 
-                    <Grid Grid.Row="2" Grid.Column="0" Background="RoyalBlue">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="125"/>
-                            <ColumnDefinition Width="{c:Binding 'DeployEncounteredHandledErrors?10:0'}"/>
-                            <ColumnDefinition Width="{c:Binding 'DeployEncounteredHandledErrors?40:0'}"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Row="2" Grid.Column="0" Background="RoyalBlue">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="125"/>
+                                <ColumnDefinition Width="{c:Binding 'DeployEncounteredHandledErrors?10:0'}"/>
+                                <ColumnDefinition Width="{c:Binding 'DeployEncounteredHandledErrors?40:0'}"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Button Grid.Column="1" Background="White"
-                            ToolTip="{Binding DataContext.DeployButtonTooltip, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                            Command="{Binding DataContext.Commands.DeployCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                            Visibility="{c:Binding 'DataContext.SelectedConfigurationItem!=null', RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
-                                </Grid.ColumnDefinitions>
+                            <xctk:SplitButton Grid.Column="1" Background="White" DropDownPosition="Top" x:Name="DeployButton"
+                                              ToolTip="{Binding DataContext.DeployButtonTooltip, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                              Command="{Binding DataContext.Commands.DeployCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
+                                              Visibility="{c:Binding 'DataContext.SelectedConfigurationItem!=null', RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Image Grid.Column="0" Source="..\Images\arrow.png" Margin="-10,2,10,2"/>
+                                    <Image Grid.Column="0" Source="..\Images\arrow.png" Margin="-10,2,10,2"/>
 
-                                <Grid Grid.Column="1" VerticalAlignment="Stretch">
-                                    <TextBlock Text="{x:Static properties:Resources.Deploy}" VerticalAlignment="Center" FontSize="15" Margin="0,-2,0,0"/>
+                                    <Grid Grid.Column="1" VerticalAlignment="Stretch">
+                                        <TextBlock Text="{x:Static properties:Resources.Deploy}" VerticalAlignment="Center" FontSize="15" Margin="0,-2,0,0"/>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </Button>
 
-                        <Button Grid.Column="3" Background="White" ToolTip="{x:Static properties:Resources.ViewLastErrorDetails}"
+                                <xctk:SplitButton.DropDownContent>
+                                    <!-- Need to use event instead of command because binding does not carry down to DropDownContent because it is not in the same visual tree as parent. -->
+                                    <Button Click="ViewLogButton_Click" BorderThickness="0" Background="White">
+                                        <TextBlock Text="{x:Static properties:Resources.ViewSessionLog}" Margin="5"/>
+                                    </Button>
+                                </xctk:SplitButton.DropDownContent>
+                            </xctk:SplitButton>
+
+                            <Button Grid.Column="3" Background="White" ToolTip="{x:Static properties:Resources.ViewLastErrorDetails}"
                                 Command="{Binding Commands.ViewLastErrorCommand}">
-                            <Image Source="..\Images\alert.png" Margin="2"/>
-                        </Button>
-                    </Grid>
+                                <Image Source="..\Images\alert.png" Margin="2"/>
+                            </Button>
+                        </Grid>
 
-                    <Grid Grid.Row="2" Grid.Column="1" Background="RoyalBlue"/>
+                        <Grid Grid.Row="2" Grid.Column="1" Background="RoyalBlue"/>
 
-                    <local:MyGridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"/>
+                        <local:MyGridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3"/>
 
-                    <!--<Button x:Name="DeployButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Width="50" Height="50" 
+                        <!--<Button x:Name="DeployButton" Grid.Row="1" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Width="50" Height="50" 
                         HorizontalAlignment="Center" VerticalAlignment="Bottom"
                         ToolTip="{Binding DataContext.DeployButtonTooltip, RelativeSource={RelativeSource AncestorType=local:MainWindow}}">
                     <StackPanel>
@@ -500,11 +553,11 @@
                                         Duration="0:0:0.1"
                                         From="50" To="100"/>
                                     -->
-                    <!--<ThicknessAnimation
+                        <!--<ThicknessAnimation
                                         Storyboard.TargetProperty="Margin"
                                         Duration="0:0:0.1"
                                         From="-25,0,0,45" To="-50,0,0,25"/>-->
-                    <!--
+                        <!--
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -521,11 +574,11 @@
                                         Duration="0:0:0.1"
                                         From="100" To="50"/>
                                     -->
-                    <!--<ThicknessAnimation
+                        <!--<ThicknessAnimation
                                         Storyboard.TargetProperty="Margin"
                                         Duration="0:0:0.1"
                                         From="-50,0,0,25" To="-25,0,0,45"/>-->
-                    <!--
+                        <!--
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
@@ -554,10 +607,11 @@
                         </Style>
                     </Button.Style>
                 </Button>-->
-                </Grid>
+                    </Grid>
 
-                <local:MyGridSplitter Grid.Column="1"/>
+                    <local:MyGridSplitter Grid.Column="1"/>
+                </Grid>
             </Grid>
-        </Grid>
+        </xctk:BusyIndicator>
     </xctk:BusyIndicator>
 </Window>
