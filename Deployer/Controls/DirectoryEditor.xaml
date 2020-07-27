@@ -9,7 +9,7 @@
              xmlns:properties="clr-namespace:Deployer.Properties"
              mc:Ignorable="d" 
              Height="25" d:DesignWidth="800"
-             ToolTip="{c:Binding 'Path.Length > 0 ? Path : null'}"
+             ToolTip="{Binding Path}"
              x:Name="_this">
     <Grid>
         <Grid.ColumnDefinitions>
