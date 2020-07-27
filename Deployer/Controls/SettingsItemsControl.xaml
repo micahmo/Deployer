@@ -60,7 +60,7 @@
                     <TextBox Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ExtendedDescription}" 
                                                          Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}"    
                                                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
-                                                         AcceptsReturn="True"/>
+                                                         AcceptsReturn="True" Padding="0,5,0,5"/>
                 </Grid>
 
                 <ItemsControl Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemsSource="{Binding DependentSettings}" KeyboardNavigation.IsTabStop="False">
