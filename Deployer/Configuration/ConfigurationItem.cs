@@ -188,7 +188,8 @@ namespace Deployer
         {
             Name = nameof(ExclusionsListSetting), SettingType = SettingType.ExtendedString, DefaultValue = string.Empty,
             Description = Resources.ExclusionsListSettingDescription,
-            ExtendedDescription = Resources.ExclusionsListSettingExtendedDescription
+            ExtendedDescription = Resources.ExclusionsListSettingExtendedDescription,
+            IsOptional = true, OptionSelected = true
         };
 
         public Setting<string> InclusionsListSetting
@@ -201,6 +202,7 @@ namespace Deployer
             Name = nameof(InclusionsListSetting), SettingType = SettingType.ExtendedString, DefaultValue = string.Empty,
             Description = Resources.InclusionsListSettingDescription,
             ExtendedDescription = Resources.InclusionsListSettingExtendedDescription,
+            IsOptional = true, OptionSelected = true
         };
 
         public Setting<LockedFileOptions> LockedFileOptionSetting
@@ -261,7 +263,7 @@ namespace Deployer
             {
                 List<WildcardPattern> exclusionListPatterns = new List<WildcardPattern>();
 
-                if (!string.IsNullOrEmpty(ExclusionsListSetting.Value))
+                if (ExclusionsListSetting.OptionSelected && !string.IsNullOrEmpty(ExclusionsListSetting.Value))
                 {
                     string[] patterns = ExclusionsListSetting.Value.Split(new[] {"\n", "\r\n", "\r"}, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string pattern in patterns)
@@ -281,7 +283,7 @@ namespace Deployer
             {
                 List<WildcardPattern> inclusionsListPatterns = new List<WildcardPattern>();
 
-                if (!string.IsNullOrEmpty(InclusionsListSetting.Value))
+                if (InclusionsListSetting.OptionSelected && !string.IsNullOrEmpty(InclusionsListSetting.Value))
                 {
                     string[] patterns = InclusionsListSetting.Value.Split(new[] { "\n", "\r\n", "\r" }, StringSplitOptions.RemoveEmptyEntries);
                     foreach (string pattern in patterns)

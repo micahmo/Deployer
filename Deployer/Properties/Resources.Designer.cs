@@ -685,6 +685,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Check to enable or uncheck to disable this option.
+        /// </summary>
+        public static string OptionSelectedToolTip {
+            get {
+                return ResourceManager.GetString("OptionSelectedToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path does not exist.
         /// </summary>
         public static string PathDoesNotExist {

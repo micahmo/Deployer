@@ -28,6 +28,19 @@ namespace Deployer
 
         [XmlIgnore]
         public List<DependentSettingCollection> DependentSettings { get; } = new List<DependentSettingCollection>();
+
+        [XmlIgnore]
+        public bool IsOptional { get; set; }
+
+        /// <summary>
+        /// This value is only relevant if <see cref="IsOptional"/> is <see langword="true"/>.
+        /// </summary>
+        public bool OptionSelected
+        {
+            get => InternalOptionSelected ?? default;
+            set => Set(nameof(OptionSelected), ref InternalOptionSelected, value);
+        }
+        internal bool? InternalOptionSelected;
     }
 
     #endregion
@@ -40,6 +53,11 @@ namespace Deployer
         public void Apply(Setting<T> settingToApply)
         {
             Value = settingToApply.Value;
+
+            if (settingToApply.InternalOptionSelected.HasValue)
+            {
+                OptionSelected = settingToApply.OptionSelected;
+            }
         }
 
         public T Value

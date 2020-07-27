@@ -5,6 +5,7 @@
               xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
               xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
               xmlns:local="clr-namespace:Deployer"
+              xmlns:properties="clr-namespace:Deployer.Properties"
               mc:Ignorable="d" 
               
               ItemsSource="{Binding Settings}"
@@ -45,7 +46,13 @@
                 </Grid>
 
                 <Grid Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" ToolTip="{Binding ExtendedDescription}">
-                    <ComboBox SelectedItem="{Binding Value}" ItemsSource="{Binding PossibleValues}" Visibility="{c:Binding 'SettingType == local:SettingType.List', FalseToVisibility=Collapsed}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="30"/>
+                    </Grid.ColumnDefinitions>
+
+                    <ComboBox Grid.Column="0" Grid.ColumnSpan="{c:Binding 'IsOptional?1:2'}"
+                              SelectedItem="{Binding Value}" ItemsSource="{Binding PossibleValues}" Visibility="{c:Binding 'SettingType == local:SettingType.List', FalseToVisibility=Collapsed}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <ContentPresenter Content="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
@@ -53,14 +60,19 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <CheckBox IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}"
-                                                          ToolTip="{Binding ExtendedDescription}"/>
+                    <CheckBox Grid.Column="0" Grid.ColumnSpan="{c:Binding 'IsOptional?1:2'}"
+                              IsChecked="{Binding Value}" Visibility="{c:Binding 'SettingType == local:SettingType.Boolean', FalseToVisibility=Collapsed}"
+                              ToolTip="{Binding ExtendedDescription}"/>
 
                     <!-- AcceptsReturn="True" is what makes it a multi-line TextBox -->
-                    <TextBox Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ExtendedDescription}" 
-                                                         Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}"    
-                                                         ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
-                                                         AcceptsReturn="True" Padding="0,5,0,5"/>
+                    <TextBox Grid.Column="0" Grid.ColumnSpan="{c:Binding 'IsOptional?1:2'}"
+                             Text="{Binding Value, Delay=2000, UpdateSourceTrigger=PropertyChanged}" ToolTip="{Binding ExtendedDescription}" 
+                             Visibility="{c:Binding 'SettingType == local:SettingType.ExtendedString', FalseToVisibility=Collapsed}"    
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" 
+                             AcceptsReturn="True" Padding="0,5,0,5"/>
+
+                    <CheckBox Grid.Column="1" IsChecked="{Binding OptionSelected}" Visibility="{c:Binding IsOptional, FalseToVisibility=Collapsed}"
+                              ToolTip="{x:Static properties:Resources.OptionSelectedToolTip}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 </Grid>
 
                 <ItemsControl Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" ItemsSource="{Binding DependentSettings}" KeyboardNavigation.IsTabStop="False">

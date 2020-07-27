@@ -413,4 +413,7 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="NoOperation" xml:space="preserve">
     <value>Deployment found no files to copy. No operation was performed.</value>
   </data>
+  <data name="OptionSelectedToolTip" xml:space="preserve">
+    <value>Check to enable or uncheck to disable this option</value>
+  </data>
 </root>
