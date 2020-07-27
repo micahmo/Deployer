@@ -410,4 +410,7 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="Clear" xml:space="preserve">
     <value>Clear</value>
   </data>
+  <data name="NoOperation" xml:space="preserve">
+    <value>Deployment found no files to copy. No operation was performed.</value>
+  </data>
 </root>

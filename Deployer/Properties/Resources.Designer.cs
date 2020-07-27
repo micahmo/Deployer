@@ -658,6 +658,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployment found no files to copy. No operation was performed..
+        /// </summary>
+        public static string NoOperation {
+            get {
+                return ResourceManager.GetString("NoOperation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The old configuration file is available at:.
         /// </summary>
         public static string OldConfigurationAvailableAt {

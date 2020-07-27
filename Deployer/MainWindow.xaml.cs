@@ -487,6 +487,8 @@ namespace Deployer
             Model.CancelRequested = false;
             Model.IsBusy = true;
 
+            LogManager.LogBreak();
+
             Configuration.Instance.ReloadCurrentConfiguration();
             
             DeploymentItem deploymentItem = await Configuration.Instance.PrepareDeployment();
@@ -496,7 +498,6 @@ namespace Deployer
                 Model.IndeterminateProgress = false;
                 Model.DeployStep = Resources.CopyingFilesTitle;
 
-                LogManager.LogBreak();
                 LogManager.Log(Resources.BeginningDeployment);
 
                 Progress<DeployProgress> progress = new Progress<DeployProgress>(e =>
@@ -544,10 +545,16 @@ namespace Deployer
                     LogManager.Log(Resources.TheOperationWasCanceled, level: LogLevel.Error);
                 }
 
+                Model.DeployStep = Resources.FinishedDeployment;
+                Model.DeployDetails = string.Empty;
+                LogManager.Log(Resources.FinishedDeployment);
+
                 Configuration.Instance.ReloadCurrentConfiguration();
             }
-
-            LogManager.Log(Resources.FinishedDeployment);
+            else
+            {
+                LogManager.Log(Resources.NoOperation);
+            }
 
             Model.IsBusy = errors > 0 && !Configuration.Instance.CloseDialogOnErrors;
             Model.DeployInProgress = false;
