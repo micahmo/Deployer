@@ -440,11 +440,13 @@ namespace Deployer
             {
                 if (QuestionResult.Yes == Dependencies.Notify.Question(string.Format(Resources.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resources.Question, QuestionOptions.YesNo))
                 {
+                    int previousSelectedIndex = Model.Configuration.SelectedConfigurationIndex;
+                    
                     Model.Configuration.ConfigurationItems.Remove(Model.SelectedConfigurationItem);
 
                     if (Model.Configuration.ConfigurationItems.Any())
                     {
-                        Model.SelectedConfigurationItem = Model.Configuration.ConfigurationItems.ElementAt(0);
+                        Model.Configuration.SelectedConfigurationIndex = Math.Max(0, previousSelectedIndex - 1);
                     }
                 }
             }
