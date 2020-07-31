@@ -12,7 +12,7 @@
               KeyboardNavigation.IsTabStop="False">
 
     <ItemsControl.Resources>
-        <local:EnumDescriptionConverter x:Key="EnumDescriptionConverter"/>
+        <local:ListSettingValueConverter x:Key="ListSettingValueConverter"/>
     </ItemsControl.Resources>
 
     <ItemsControl.ItemTemplate>
@@ -55,7 +55,7 @@
                               SelectedItem="{Binding Value}" ItemsSource="{Binding PossibleValues}" Visibility="{c:Binding 'SettingType == local:SettingType.List', FalseToVisibility=Collapsed}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <ContentPresenter Content="{Binding Converter={StaticResource EnumDescriptionConverter}}"/>
+                                <ContentPresenter Content="{Binding Converter={StaticResource ListSettingValueConverter}}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>

@@ -101,7 +101,7 @@ namespace Deployer
         {
             if (control.DataModel.SelectedConfigurationItem is { })
             {
-                if (_openConfigurationItemSettings.TryGetValue(control.DataModel.SelectedConfigurationItem.Guid, out var configurationItemSettings) && configurationItemSettings.IsVisible)
+                if (_openConfigurationItemSettings.TryGetValue(control.DataModel.SelectedConfigurationItem.GuidInfo.Guid, out var configurationItemSettings) && configurationItemSettings.IsVisible)
                 {
                     if (configurationItemSettings.WindowState == WindowState.Minimized)
                     {
@@ -111,7 +111,7 @@ namespace Deployer
                 }
                 else
                 {
-                    (_openConfigurationItemSettings[control.DataModel.SelectedConfigurationItem.Guid] =
+                    (_openConfigurationItemSettings[control.DataModel.SelectedConfigurationItem.GuidInfo.Guid] =
                         new ConfigurationItemSettings {DataContext = control.DataModel.SelectedConfigurationItem}).Show();
                 }
             }

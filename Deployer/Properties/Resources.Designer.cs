@@ -658,6 +658,33 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next configuration to deploy:.
+        /// </summary>
+        public static string NextConfigurationSettingDescription {
+            get {
+                return ResourceManager.GetString("NextConfigurationSettingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose another configuration to deploy automatically after deploying the current config..
+        /// </summary>
+        public static string NextConfigurationSettingExtendedDescription {
+            get {
+                return ResourceManager.GetString("NextConfigurationSettingExtendedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string None {
+            get {
+                return ResourceManager.GetString("None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deployment found no files to copy. No operation was performed..
         /// </summary>
         public static string NoOperation {

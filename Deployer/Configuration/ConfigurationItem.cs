@@ -38,6 +38,11 @@ namespace Deployer
             CopySettings.Settings.Add(NewerOnRightSetting);
             CopySettings.Settings.Add(ExclusionsListSetting);
             CopySettings.Settings.Add(InclusionsListSetting);
+            CopySettings.Settings.Add(NextConfigurationSetting);
+
+            // Must set the delegate here in the ConfigurationItem constructor (rather than the NextConfigurationSetting constructor)
+            // because we want to filter "this" out of the list of possible values, so we need a reference to "this".
+            NextConfigurationSetting.PossibleValuesDelegate = () => new[] {GuidInfo.Empty}.Union(Configuration.Instance.ConfigurationItems.Where(c => c != this).Select(c => c.GuidInfo));
 
             LockedFileSettings = new SettingsGroup {Name = nameof(LockedFileSettings), Description = Resources.LockedFileSettingsDescription};
             LockedFileSettings.Settings.Add(LockedFileOptionSetting);
@@ -94,10 +99,9 @@ namespace Deployer
         public string Name { get; set; }
 
         /// <summary>
-        /// Globally unique runtime ID (not persisted)
+        /// Globally unique ID
         /// </summary>
-        [XmlIgnore]
-        public Guid Guid { get; } = Guid.NewGuid();
+        public GuidInfo GuidInfo { get; set; } = GuidInfo.NewGuid();
 
         public DirectoryCollection SourceDirectories { get; } = new DirectoryCollection();
 
@@ -205,6 +209,19 @@ namespace Deployer
             IsOptional = true, OptionSelected = true
         };
 
+        public Setting<GuidInfo> NextConfigurationSetting
+        {
+            get => _nextConfigurationSetting;
+            set => _nextConfigurationSetting.Apply(value);
+        }
+        private Setting<GuidInfo> _nextConfigurationSetting = new Setting<GuidInfo>
+        {
+            Name = nameof(NextConfigurationSetting), SettingType = SettingType.List, DefaultValue = GuidInfo.Empty,
+            Description = Resources.NextConfigurationSettingDescription,
+            ExtendedDescription = Resources.NextConfigurationSettingExtendedDescription,
+            IsOptional = true, OptionSelected = false
+        };
+
         public Setting<LockedFileOptions> LockedFileOptionSetting
         {
             get => _lockedFileOptionsSetting;
@@ -238,7 +255,7 @@ namespace Deployer
         {
             Name = nameof(FileViewOptionsSetting),
             Description = Resources.FileViewOptionsSettingDescription,
-            SettingType = SettingType.List, DefaultValue = Deployer.FileViewOptions.ViewAllFiles
+            SettingType = SettingType.List, DefaultValue = FileViewOptions.ViewAllFiles
         };
 
         [XmlIgnore]

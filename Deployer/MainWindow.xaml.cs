@@ -441,9 +441,16 @@ namespace Deployer
                 if (QuestionResult.Yes == Dependencies.Notify.Question(string.Format(Resources.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resources.Question, QuestionOptions.YesNo))
                 {
                     int previousSelectedIndex = Model.Configuration.SelectedConfigurationIndex;
+
+                    // Remove references to this Configuration Item in other items
+                    Model.Configuration.ConfigurationItems
+                        .Where(c => c.NextConfigurationSetting.Value.Equals(Model.SelectedConfigurationItem.GuidInfo))
+                        .ToList().ForEach(c => c.NextConfigurationSetting.Value = c.NextConfigurationSetting.DefaultValue);
                     
+                    // Delete the config
                     Model.Configuration.ConfigurationItems.Remove(Model.SelectedConfigurationItem);
 
+                    // Select the previous item in the list
                     if (Model.Configuration.ConfigurationItems.Any())
                     {
                         Model.Configuration.SelectedConfigurationIndex = Math.Max(0, previousSelectedIndex - 1);
@@ -491,71 +498,82 @@ namespace Deployer
 
             LogManager.LogBreak();
 
-            Configuration.Instance.ReloadCurrentConfiguration();
-            
-            DeploymentItem deploymentItem = await Configuration.Instance.PrepareDeployment();
+            ConfigurationItem configurationToDeploy = Model.SelectedConfigurationItem;
 
-            if (deploymentItem.FilesToCopy.Count > 0)
+            while (configurationToDeploy is { } && _cancellationTokenSource.IsCancellationRequested == false)
             {
-                Model.IndeterminateProgress = false;
-                Model.DeployStep = Resources.CopyingFilesTitle;
-
-                LogManager.Log(Resources.BeginningDeployment);
-
-                Progress<DeployProgress> progress = new Progress<DeployProgress>(e =>
-                {
-                    Model.DeployStep = e.CurrentStep;
-                    Model.DeployDetails = e.Details;
-                    Model.DeployProgress = e.PercentComplete ?? Model.DeployProgress;
-
-                    LogManager.Log(e.Details, e.CurrentStep);
-                });
-
-                Progress<DeployError> errorProgress = new Progress<DeployError>(e =>
-                {
-                    ++errors;
-
-                    Model.DeployEncounteredHandledErrors = true;
-                    Model.DeployHandledErrors = string.Format(Resources.DeployEncounteredErrors, errors);
-                    Model.DeployHandledErrorsDetails += string.Join(Environment.NewLine, e.Details, string.Empty, string.Empty);
-
-                    LogManager.Log(e.Details, Model.DeployStep, LogLevel.Error);
-                });
-
-                try
-                {
-                    await Configuration.Instance.Deploy(deploymentItem, _cancellationTokenSource, progress, errorProgress);
-                }
-                catch (Exception ex)
-                {
-                    ++errors;
-
-                    Model.DeployUnhandledError = string.Format(Resources.Error, ex.Message);
-                    Model.DeployUnhandledErrorDetails = ex.ToString();
-                    Model.DeployInProgress = false;
-                    Model.DeployEncounteredUnhandledError = true;
-
-                    LogManager.Log(ex.ToString(), Resources.UnhandledError, LogLevel.Error);
-                }
-
-                if (_cancellationTokenSource.IsCancellationRequested)
-                {
-                    Model.DeployUnhandledError = Resources.TheOperationWasCanceled;
-                    Model.DeployInProgress = false;
-                    Model.DeployEncounteredUnhandledError = true;
-
-                    LogManager.Log(Resources.TheOperationWasCanceled, level: LogLevel.Error);
-                }
-
-                Model.DeployStep = Resources.FinishedDeployment;
-                Model.DeployDetails = string.Empty;
-                LogManager.Log(Resources.FinishedDeployment);
-
+                Model.SelectedConfigurationItem = configurationToDeploy;
                 Configuration.Instance.ReloadCurrentConfiguration();
-            }
-            else
-            {
-                LogManager.Log(Resources.NoOperation);
+
+                DeploymentItem deploymentItem = await Configuration.Instance.PrepareDeployment();
+
+                if (deploymentItem.FilesToCopy.Count > 0)
+                {
+                    Model.IndeterminateProgress = false;
+                    Model.DeployStep = Resources.CopyingFilesTitle;
+
+                    LogManager.Log(Resources.BeginningDeployment);
+
+                    Progress<DeployProgress> progress = new Progress<DeployProgress>(e =>
+                    {
+                        Model.DeployStep = e.CurrentStep;
+                        Model.DeployDetails = e.Details;
+                        Model.DeployProgress = e.PercentComplete ?? Model.DeployProgress;
+
+                        LogManager.Log(e.Details, e.CurrentStep);
+                    });
+
+                    Progress<DeployError> errorProgress = new Progress<DeployError>(e =>
+                    {
+                        ++errors;
+
+                        Model.DeployEncounteredHandledErrors = true;
+                        Model.DeployHandledErrors = string.Format(Resources.DeployEncounteredErrors, errors);
+                        Model.DeployHandledErrorsDetails += string.Join(Environment.NewLine, e.Details, string.Empty, string.Empty);
+
+                        LogManager.Log(e.Details, Model.DeployStep, LogLevel.Error);
+                    });
+
+                    try
+                    {
+                        await Configuration.Instance.Deploy(deploymentItem, _cancellationTokenSource, progress, errorProgress);
+                    }
+                    catch (Exception ex)
+                    {
+                        ++errors;
+
+                        Model.DeployUnhandledError = string.Format(Resources.Error, ex.Message);
+                        Model.DeployUnhandledErrorDetails = ex.ToString();
+                        Model.DeployInProgress = false;
+                        Model.DeployEncounteredUnhandledError = true;
+
+                        LogManager.Log(ex.ToString(), Resources.UnhandledError, LogLevel.Error);
+                    }
+
+                    if (_cancellationTokenSource.IsCancellationRequested)
+                    {
+                        Model.DeployUnhandledError = Resources.TheOperationWasCanceled;
+                        Model.DeployInProgress = false;
+                        Model.DeployEncounteredUnhandledError = true;
+
+                        LogManager.Log(Resources.TheOperationWasCanceled, level: LogLevel.Error);
+                    }
+
+                    Model.DeployStep = Resources.FinishedDeployment;
+                    Model.DeployDetails = string.Empty;
+                    LogManager.Log(Resources.FinishedDeployment);
+
+                    Configuration.Instance.ReloadCurrentConfiguration();
+                }
+                else
+                {
+                    LogManager.Log(Resources.NoOperation);
+                }
+
+                configurationToDeploy = 
+                    Model.SelectedConfigurationItem.NextConfigurationSetting.OptionSelected 
+                        ? Model.SelectedConfigurationItem.NextConfigurationSetting.Value.GetConfigurationItem() 
+                        : null;
             }
 
             Model.IsBusy = errors > 0 && !Configuration.Instance.CloseDialogOnErrors;

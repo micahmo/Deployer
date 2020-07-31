@@ -416,4 +416,13 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="OptionSelectedToolTip" xml:space="preserve">
     <value>Check to enable or uncheck to disable this option</value>
   </data>
+  <data name="NextConfigurationSettingExtendedDescription" xml:space="preserve">
+    <value>Choose another configuration to deploy automatically after deploying the current config.</value>
+  </data>
+  <data name="NextConfigurationSettingDescription" xml:space="preserve">
+    <value>Next configuration to deploy:</value>
+  </data>
+  <data name="None" xml:space="preserve">
+    <value>None</value>
+  </data>
 </root>

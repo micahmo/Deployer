@@ -75,7 +75,11 @@ namespace Deployer
         {
             get
             {
-                if (typeof(T).IsEnum)
+                if (PossibleValuesDelegate is { })
+                {
+                    return PossibleValuesDelegate?.Invoke()?.ToList();
+                }
+                else if (typeof(T).IsEnum)
                 {
                     return Enum.GetValues(typeof(T)).OfType<T>().ToList();
                 }
@@ -85,6 +89,13 @@ namespace Deployer
                 }
             }
         }
+
+        /// <summary>
+        /// Defines a method which can generate the <see cref="PossibleValues"/> of the setting.
+        /// Leave unassigned for non-list-type settings, Enum settings, or any other setting that does not need custom value list generation
+        /// </summary>
+        [XmlIgnore]
+        public Func<IEnumerable<T>> PossibleValuesDelegate { get; set; }
     }
 
     #endregion
