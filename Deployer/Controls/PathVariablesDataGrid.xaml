@@ -59,6 +59,7 @@
             <DataGridTextColumn.ElementStyle>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                    <Setter Property="ToolTip" Value="{Binding Name}"/>
                 </Style>
             </DataGridTextColumn.ElementStyle>
         </DataGridTextColumn>
@@ -76,6 +77,7 @@
             <DataGridTextColumn.ElementStyle>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                    <Setter Property="ToolTip" Value="{Binding SelectedValue.Value}"/>
                 </Style>
             </DataGridTextColumn.ElementStyle>
         </DataGridTextColumn>
