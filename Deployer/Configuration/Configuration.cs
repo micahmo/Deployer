@@ -65,9 +65,43 @@ namespace Deployer
         public double ConfigurationItemsWidth
         {
             get => _configurationItemsWidth;
-            set => Set(nameof(Configuration), ref _configurationItemsWidth, value);
+            set => Set(nameof(ConfigurationItemsWidth), ref _configurationItemsWidth, value);
         }
         private double _configurationItemsWidth = 200;
+
+        [XmlIgnore]
+        public GridLength ConfigurationItemsHeight
+        {
+            get => new GridLength(ConfigurationItemsHeightValue, ConfigurationItemsHeightGridUnitType);
+            set
+            {
+                _configurationItemsHeightValue = value.Value;
+                _configurationItemsHeightGridUnitType = value.GridUnitType;
+                RaisePropertyChanged(nameof(ConfigurationItemsHeight));
+            }
+        }
+
+        public double ConfigurationItemsHeightValue
+        {
+            get => _configurationItemsHeightValue;
+            set
+            {
+                _configurationItemsHeightValue = value;
+                RaisePropertyChanged(nameof(ConfigurationItemsHeight));
+            }
+        }
+        private double _configurationItemsHeightValue = 1;
+
+        public GridUnitType ConfigurationItemsHeightGridUnitType
+        {
+            get => _configurationItemsHeightGridUnitType;
+            set
+            {
+                _configurationItemsHeightGridUnitType = value;
+                RaisePropertyChanged(nameof(ConfigurationItemsHeight));
+            }
+        }
+        private GridUnitType _configurationItemsHeightGridUnitType = GridUnitType.Star;
 
         public int SelectedConfigurationIndex
         {

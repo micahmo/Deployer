@@ -157,6 +157,7 @@ namespace Deployer
                 Model.Configuration.WindowSize = new Size(ActualWidth, ActualHeight);
                 Model.Configuration.WindowLocation = new Point(Left, Top);
                 Model.Configuration.ConfigurationItemsWidth = ConfigurationColumn.ActualWidth;
+                Model.Configuration.ConfigurationItemsHeight = new GridLength(ConfigurationRow.ActualHeight / PathVariablesRow.ActualHeight, GridUnitType.Star);
 
                 Configuration.Save(Model.Configuration);
             });

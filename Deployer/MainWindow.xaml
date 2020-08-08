@@ -313,8 +313,8 @@
 
                     <Grid Grid.Column="0">
                         <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
+                            <RowDefinition x:Name="ConfigurationRow" Height="{Binding DataContext.Configuration.ConfigurationItemsHeight, RelativeSource={RelativeSource AncestorType=local:MainWindow}, Mode=TwoWay}"/>
+                            <RowDefinition x:Name="PathVariablesRow" Height="*"/>
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0">
