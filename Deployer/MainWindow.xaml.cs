@@ -486,7 +486,7 @@ namespace Deployer
             int errors = 0;
 
             Model.DeployStep = Resources.PreparingToDeploy;
-            Model.DeployDetails = string.Empty;
+            Model.DeployDetails = string.Join(Environment.NewLine, string.Empty, string.Empty, string.Empty);
             Model.IndeterminateProgress = true;
             Model.DeployEncounteredUnhandledError = false;
             Model.DeployUnhandledError = string.Empty;
@@ -517,8 +517,15 @@ namespace Deployer
 
                     Progress<DeployProgress> progress = new Progress<DeployProgress>(e =>
                     {
-                        Model.DeployStep = e.CurrentStep;
                         Model.DeployDetails = e.Details;
+
+                        // Make sure the details text is at least 3 lines
+                        for (int i = e.Details.Lines().Length; i < 3; ++i)
+                        {
+                            Model.DeployDetails += Environment.NewLine;
+                        }
+
+                        Model.DeployStep = e.CurrentStep;
                         Model.DeployProgress = e.PercentComplete ?? Model.DeployProgress;
 
                         LogManager.Log(e.Details, e.CurrentStep);
@@ -561,7 +568,7 @@ namespace Deployer
                     }
 
                     Model.DeployStep = Resources.FinishedDeployment;
-                    Model.DeployDetails = string.Empty;
+                    Model.DeployDetails = string.Join(Environment.NewLine, string.Empty, string.Empty, string.Empty);
                     LogManager.Log(Resources.FinishedDeployment);
 
                     Configuration.Instance.ReloadCurrentConfiguration();
