@@ -14,6 +14,10 @@ namespace Deployer
             ReloadCurrentConfigurationCommand.InputGestures.Add(new KeyGesture(Key.F5));
             HardReloadCurrentConfigurationCommand.InputGestures.Add(new KeyGesture(Key.R, ModifierKeys.Control));
             DeployCurrentConfigurationCommand.InputGestures.Add(new KeyGesture(Key.F6));
+            PreviousConfigurationCommand.InputGestures.Add(new KeyGesture(Key.PageUp, ModifierKeys.Control));
+            NextConfigurationCommand.InputGestures.Add(new KeyGesture(Key.PageDown, ModifierKeys.Control));
+            MoveConfigurationUpCommand.InputGestures.Add(new KeyGesture(Key.PageUp, ModifierKeys.Control | ModifierKeys.Shift));
+            MoveConfigurationDownCommand.InputGestures.Add(new KeyGesture(Key.PageDown, ModifierKeys.Control | ModifierKeys.Shift));
         }
 
         public static RoutedCommand ReloadCurrentConfigurationCommand { get; } = new RoutedCommand();
@@ -21,6 +25,14 @@ namespace Deployer
         public static RoutedCommand HardReloadCurrentConfigurationCommand { get; } = new RoutedCommand();
 
         public static RoutedCommand DeployCurrentConfigurationCommand { get; } = new RoutedCommand();
+
+        public static RoutedCommand PreviousConfigurationCommand { get; } = new RoutedCommand();
+
+        public static RoutedCommand NextConfigurationCommand { get; } = new RoutedCommand();
+
+        public static RoutedCommand MoveConfigurationUpCommand { get; } = new RoutedCommand();
+
+        public static RoutedCommand MoveConfigurationDownCommand { get; } = new RoutedCommand();
 
         #endregion
 

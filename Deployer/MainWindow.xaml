@@ -23,6 +23,10 @@
         <CommandBinding Command="{x:Static local:ShortcutCommands.ReloadCurrentConfigurationCommand}" Executed="ReloadCurrentConfigurationCommand_Executed"/>
         <CommandBinding Command="{x:Static local:ShortcutCommands.HardReloadCurrentConfigurationCommand}" Executed="HardReloadCurrentConfigurationCommand_Executed"/>
         <CommandBinding Command="{x:Static local:ShortcutCommands.DeployCurrentConfigurationCommand}" Executed="DeployCurrentConfigurationCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.PreviousConfigurationCommand}" Executed="PreviousConfigurationCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.NextConfigurationCommand}" Executed="NextConfigurationCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.MoveConfigurationUpCommand}" Executed="MoveConfigurationUpCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.MoveConfigurationDownCommand}" Executed="MoveConfigurationDownCommand_Executed"/>
     </Window.CommandBindings>
 
     <Window.Resources>

@@ -100,6 +100,26 @@ namespace Deployer
             Model.Commands.DeployCommand?.Execute(null);
         }
 
+        private void PreviousConfigurationCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model.Configuration.SelectedConfigurationIndex = Math.Max(Model.Configuration.SelectedConfigurationIndex - 1, 0);
+        }
+
+        private void NextConfigurationCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model.Configuration.SelectedConfigurationIndex = Math.Min(Model.Configuration.SelectedConfigurationIndex + 1, Model.Configuration.ConfigurationItems.Count - 1);
+        }
+
+        private void MoveConfigurationUpCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model.Commands.MoveConfigurationItemUpCommand?.Execute(null);
+        }
+
+        private void MoveConfigurationDownCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model.Commands.MoveConfigurationItemDownCommand?.Execute(null);
+        }
+
         private void TabControl_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             Model.RaisePropertyChanged(nameof(Model.LeftTabControlMaxWidth));
@@ -619,7 +639,7 @@ namespace Deployer
 
         private void MoveConfigurationItemUp()
         {
-            if (Model.Configuration.SelectedConfigurationIndex > 0)
+            if (Model.Configuration.ConfigurationItems.Count > 1 && Model.Configuration.SelectedConfigurationIndex > 0)
             {
                 int selectedConfigurationIndex = Model.Configuration.SelectedConfigurationIndex;
                 ConfigurationItem configurationItem = Model.Configuration.ConfigurationItems[selectedConfigurationIndex];
@@ -633,7 +653,7 @@ namespace Deployer
 
         private void MoveConfigurationItemDown()
         {
-            if (Model.Configuration.SelectedConfigurationIndex < Model.Configuration.ConfigurationItems.Count)
+            if (Model.Configuration.ConfigurationItems.Count > 1 && Model.Configuration.SelectedConfigurationIndex < Model.Configuration.ConfigurationItems.Count)
             {
                 int selectedConfigurationIndex = Model.Configuration.SelectedConfigurationIndex;
                 ConfigurationItem configurationItem = Model.Configuration.ConfigurationItems[selectedConfigurationIndex];
