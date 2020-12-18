@@ -44,14 +44,13 @@ namespace Deployer
             private set
             {
                 _instance = value;
-                if (_instance.PathVariables.Any())
+                
+                // This code is what forces the file lists to initially load upon launch.
+                _instance.ConfigurationItems.ToList().ForEach(c =>
                 {
-                    _instance.ConfigurationItems.ToList().ForEach(c =>
-                    {
-                        c.SourceDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
-                        c.DestinationDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
-                    });
-                }
+                    c.SourceDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
+                    c.DestinationDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
+                });
             }
         }
         private static Configuration _instance;
