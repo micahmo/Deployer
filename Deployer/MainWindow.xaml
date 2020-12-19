@@ -31,6 +31,8 @@
     </Window.CommandBindings>
 
     <Window.Resources>
+        <local:TooltipConverter x:Key="TooltipConverter"/>
+
         <SolidColorBrush x:Key="TabItem.Selected.Background" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="TabItem.Selected.Border" Color="#ACACAC"/>
         <Style x:Key="LeftTabControlStyle" TargetType="{x:Type TabControl}">
@@ -239,7 +241,8 @@
 
                         <TextBlock Margin="5" TextTrimming="CharacterEllipsis"
                                Text="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                               ToolTip="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+                               ToolTip="{Binding DataContext.DeployDetails, RelativeSource={RelativeSource AncestorType=local:MainWindow},
+                                         Converter={StaticResource TooltipConverter}}"/>
 
                         <!-- Unhandled error -->
                         <TextBlock Margin="5" TextTrimming="CharacterEllipsis" Foreground="Red" FontWeight="Bold"
