@@ -252,13 +252,6 @@ namespace Deployer
         }
         private Thickness _destinationDirectoriesMargin;
 
-        public int TabControlSelectedIndex
-        {
-            get => _tabControlSelectedIndex;
-            set => Set(nameof(TabControlSelectedIndex), ref _tabControlSelectedIndex, value);
-        }
-        private int _tabControlSelectedIndex;
-
         public DirectoryPair LeftSelectedDirectoryPair
         {
             get => _leftSelectedDirectoryPair;

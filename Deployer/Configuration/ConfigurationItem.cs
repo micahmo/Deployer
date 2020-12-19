@@ -111,6 +111,13 @@ namespace Deployer
         public ObservableCollection<DirectoryPair> DirectoryPairs => EnabledSetting.Value ? _directoryPairs : new ObservableCollection<DirectoryPair>();
         private ObservableCollection<DirectoryPair> _directoryPairs = new ObservableCollection<DirectoryPair>();
 
+        public int SelectedTabIndex
+        {
+            get => _selectedTabIndex;
+            set => Set(nameof(SelectedTabIndex), ref _selectedTabIndex, value);
+        }
+        private int _selectedTabIndex;
+
         public Setting<bool> EnabledSetting
         {
             get => _enabledSetting;

@@ -445,7 +445,7 @@
                             </Grid.ColumnDefinitions>
 
                             <TabControl Grid.ColumnSpan="2" x:Name="leftTabControl" ItemsSource="{Binding SelectedConfigurationItem.DirectoryPairs}"
-                                SelectedIndex="{Binding TabControlSelectedIndex}" SelectionChanged="TabControl_SelectionChanged" SelectedItem="{Binding LeftSelectedDirectoryPair}"
+                                SelectedIndex="{Binding SelectedConfigurationItem.SelectedTabIndex}" SelectionChanged="TabControl_SelectionChanged" SelectedItem="{Binding LeftSelectedDirectoryPair}"
                                 Style="{DynamicResource LeftTabControlStyle}">
 
                                 <TabControl.ItemContainerStyle>
@@ -482,7 +482,7 @@
                             </Grid.ColumnDefinitions>
 
                             <TabControl Grid.ColumnSpan="2" x:Name="rightTabControl" ItemsSource="{Binding SelectedConfigurationItem.DirectoryPairs}"
-                                SelectedIndex="{Binding TabControlSelectedIndex}" SelectionChanged="TabControl_SelectionChanged" SelectedItem="{Binding RightSelectedDirectoryPair}"
+                                SelectedIndex="{Binding SelectedConfigurationItem.SelectedTabIndex}" SelectionChanged="TabControl_SelectionChanged" SelectedItem="{Binding RightSelectedDirectoryPair}"
                                 Style="{DynamicResource RightTabControlStyle}">
 
                                 <TabControl.ItemContainerStyle>
