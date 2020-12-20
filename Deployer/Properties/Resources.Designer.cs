@@ -268,6 +268,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployer  {0}.
+        /// </summary>
+        public static string DeployerTitle {
+            get {
+                return ResourceManager.GetString("DeployerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deploy ({0}).
         /// </summary>
         public static string DeployTooltip {

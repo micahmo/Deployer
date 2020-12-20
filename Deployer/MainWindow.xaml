@@ -9,7 +9,7 @@
         xmlns:c="clr-namespace:CalcBinding;assembly=CalcBinding"
         xmlns:properties="clr-namespace:Deployer.Properties"
         mc:Ignorable="d"
-        Title="Deployer"
+        Title="{Binding Title}"
         Closing="Window_Closing"
         WindowState="{Binding Configuration.WindowState}"
         Width="{Binding Configuration.WindowSize.Width}"

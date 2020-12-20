@@ -220,6 +220,8 @@ namespace Deployer
 
         #region Observable Properties
 
+        public string Title => string.Format(Resources.DeployerTitle, AppInfo.Version);
+
         public Configuration Configuration
         {
             get => _configuration;
