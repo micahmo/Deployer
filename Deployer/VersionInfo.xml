@@ -4,17 +4,17 @@
   <Version>1.2.0.0</Version>
   <ReleaseDate>2020-12-19</ReleaseDate>
   <!-- Default download -->
-  <DownloadLink>https://github.com/micahmo/Deployer/releases/download/v1.1/Deployer.exe</DownloadLink>
+  <DownloadLink>https://github.com/micahmo/Deployer/releases/download/v1.2/Deployer.exe</DownloadLink>
   <DownloadFileName>Deployer.exe</DownloadFileName>
   <!-- All download options -->
   <Downloads>
     <Download key="portable">
-      <Link>https://github.com/micahmo/Deployer/releases/download/v1.1/Deployer.exe</Link>
+      <Link>https://github.com/micahmo/Deployer/releases/download/v1.2/Deployer.exe</Link>
       <FileName>Deployer.exe</FileName>
       <FileHash></FileHash>
     </Download>
   </Downloads>
   <!-- Release notes -->
-  <VersionNotes>A sample release to test automatic updates.</VersionNotes>
+  <VersionNotes>Added the ability to download updates from within the application.</VersionNotes>
   <ReleaseNotes></ReleaseNotes>
 </AppUpdate>
