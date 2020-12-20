@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<AppUpdate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<AppUpdate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/AppUpdate.xsd">
   <Version>1.2</Version>
   <ReleaseDate>12/19/20</ReleaseDate>
   <!-- Default download -->
@@ -9,7 +10,7 @@
   <Downloads>
     <Download key="portable">
       <Link>https://github.com/micahmo/Deployer/releases</Link>
-      <FileName>Portable.zip</FileName>
+      <FileName>Deployer.exe</FileName>
       <FileHash></FileHash>
     </Download>
   </Downloads>
