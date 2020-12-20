@@ -2,7 +2,7 @@
 <AppUpdate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/AppUpdate.xsd">
   <Version>1.2</Version>
-  <ReleaseDate>12/19/20</ReleaseDate>
+  <ReleaseDate>2020-12-19</ReleaseDate>
   <!-- Default download -->
   <DownloadLink>https://github.com/micahmo/Deployer/releases</DownloadLink>
   <DownloadFileName>Deployer.exe</DownloadFileName>
@@ -16,5 +16,5 @@
   </Downloads>
   <!-- Release notes -->
   <VersionNotes>A sample release to test automatic updates.</VersionNotes>
-  <ReleaseNotes>A sample release to test automatic updates.</ReleaseNotes>
+  <ReleaseNotes></ReleaseNotes>
 </AppUpdate>
