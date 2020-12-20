@@ -17,7 +17,7 @@
         WindowStartupLocation="Manual"
         Left="{Binding Configuration.WindowLocation.X}"
         Top="{Binding Configuration.WindowLocation.Y}"
-        SizeChanged="MainWindow_OnSizeChanged"
+        SizeChanged="MainWindow_OnSizeChanged" Loaded="MainWindow_Loaded"
         d:DataContext="{d:DesignInstance Type=local:MainWindowModel}">
 
     <Window.CommandBindings>

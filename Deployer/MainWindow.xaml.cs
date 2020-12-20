@@ -16,6 +16,7 @@ using System.Timers;
 using System.Windows.Media;
 using System.Threading;
 using System.Windows.Threading;
+using Bluegrams.Application;
 using Deployer.Properties;
 using HTMLConverter;
 using Utilities;
@@ -55,6 +56,15 @@ namespace Deployer
         #endregion
 
         #region Event handlers
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            new WpfUpdateChecker("https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/VersionInfo.xml")
+            {
+                Owner = this,
+                DownloadIdentifier = "portable"
+            }.CheckForUpdates();
+        }
 
         private void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
