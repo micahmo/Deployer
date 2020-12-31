@@ -17,6 +17,7 @@ using System.Windows.Media;
 using System.Threading;
 using System.Windows.Threading;
 using Bluegrams.Application;
+using Bluegrams.Application.WPF;
 using Deployer.Properties;
 using HTMLConverter;
 using Utilities;
@@ -44,6 +45,12 @@ namespace Deployer
             leftTabControl.SizeChanged += TabControl_SizeChanged;
             rightTabControl.SizeChanged += TabControl_SizeChanged;
 
+            UpdateChecker = new MyUpdateChecker("https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/VersionInfo.xml")
+            {
+                Owner = this,
+                DownloadIdentifier = "portable"
+            };
+
             Timer autoSaveTimer = new Timer {Interval = TimeSpan.FromMinutes(1).TotalMilliseconds};
             autoSaveTimer.Elapsed += AutoSaveTimer_Elapsed;
             autoSaveTimer.Start();
@@ -55,15 +62,17 @@ namespace Deployer
 
         #endregion
 
+        #region Public properties
+
+        public WpfUpdateChecker UpdateChecker { get; }
+
+        #endregion
+
         #region Event handlers
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            new MyUpdateChecker("https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/VersionInfo.xml")
-            {
-                Owner = this,
-                DownloadIdentifier = "portable"
-            }.CheckForUpdates();
+            UpdateChecker.CheckForUpdates();
         }
 
         private void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -128,6 +137,11 @@ namespace Deployer
         private void MoveConfigurationDownCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             Model.Commands.MoveConfigurationItemDownCommand?.Execute(null);
+        }
+
+        private void CommandBinding_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            Model.Commands.ShowAboutCommand?.Execute(null);
         }
 
         private void TabControl_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -450,6 +464,9 @@ namespace Deployer
         public ICommand MoveConfigurationItemDownCommand => _moveConfigurationItemDownCommand ??= new RelayCommand(MoveConfigurationItemDown);
         private RelayCommand _moveConfigurationItemDownCommand;
 
+        public ICommand ShowAboutCommand => _showAboutCommand ??= new RelayCommand(ShowAbout);
+        private RelayCommand _showAboutCommand;
+
         #endregion
 
         #region Command implementations
@@ -668,6 +685,15 @@ namespace Deployer
 
                 Model.Configuration.SelectedConfigurationIndex = Model.Configuration.ConfigurationItems.IndexOf(configurationItem);
             }
+        }
+
+        private void ShowAbout()
+        {
+            new AboutBox(MainWindow.Icon)
+            {
+                Owner = MainWindow,
+                UpdateChecker = MainWindow.UpdateChecker
+            }.ShowDialog();
         }
 
         #endregion

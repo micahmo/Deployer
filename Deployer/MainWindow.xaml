@@ -17,6 +17,7 @@
         WindowStartupLocation="Manual"
         Left="{Binding Configuration.WindowLocation.X}"
         Top="{Binding Configuration.WindowLocation.Y}"
+        Icon="/Images/icon.ico"
         SizeChanged="MainWindow_OnSizeChanged" Loaded="MainWindow_Loaded"
         d:DataContext="{d:DesignInstance Type=local:MainWindowModel}">
 
@@ -28,6 +29,7 @@
         <CommandBinding Command="{x:Static local:ShortcutCommands.NextConfigurationCommand}" Executed="NextConfigurationCommand_Executed"/>
         <CommandBinding Command="{x:Static local:ShortcutCommands.MoveConfigurationUpCommand}" Executed="MoveConfigurationUpCommand_Executed"/>
         <CommandBinding Command="{x:Static local:ShortcutCommands.MoveConfigurationDownCommand}" Executed="MoveConfigurationDownCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.ShowAboutCommand}" Executed="CommandBinding_Executed"/>
     </Window.CommandBindings>
 
     <Window.Resources>
