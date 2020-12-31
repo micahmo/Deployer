@@ -59,7 +59,7 @@ namespace Deployer
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            new WpfUpdateChecker("https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/VersionInfo.xml")
+            new MyUpdateChecker("https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/VersionInfo.xml")
             {
                 Owner = this,
                 DownloadIdentifier = "portable"

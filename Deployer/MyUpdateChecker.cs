@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 using Bluegrams.Application;
-using HarmonyLib;
 
 namespace Deployer
 {
-    [HarmonyPatch(typeof(UpdateCheckerBase), nameof(UpdateCheckerBase.ShowUpdateDownload))]
-    public class MyUpdateChecker
+    public class MyUpdateChecker : WpfUpdateChecker
     {
-        // Must be static for Harmony patching.
-        // When using annotated patches, the replacement method name must be identifiable as one of the patch types (in this case, "Prefix")
-        // Based on the class annotation, we know that this method is patching "ShowUpdateDownload" in "UpdateCheckerBase".
-        // Also, parameter name must match exactly.
-        public static bool Prefix(string file)
+        public MyUpdateChecker(string url, Window owner = null, string identifier = null) : base(url, owner, identifier)
+        {
+        }
+
+        public override void ShowUpdateDownload(string file)
         {
             // Instead of showing the file in explorer (as the original method does),
             // we want to kill the current app, copy the file to the original location (with a backup of the original file)
@@ -48,10 +47,6 @@ namespace Deployer
                     Arguments = "/C " + string.Join(" & ", commands)
                 }
             }.Start();
-
-
-            // Return false to prevent execution of the original method
-            return false;
         }
     }
 }

@@ -3,7 +3,6 @@
 using System.Windows;
 using WindowsGuiLibrary;
 using GuiLibraryInterfaces;
-using HarmonyLib;
 using Utilities;
 
 #endregion
@@ -15,11 +14,6 @@ namespace Deployer
     /// </summary>
     public partial class App : Application
     {
-        public App()
-        {
-            // Automatically perform patches based on HarmonyPatch attribute
-            new Harmony("mdm.patch").PatchAll();
-        }
     }
 
     public static class Dependencies
