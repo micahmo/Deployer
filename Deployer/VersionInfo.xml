@@ -1,20 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AppUpdate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/AppUpdate.xsd">
-  <Version>1.3.1.0</Version>
+  <Version>1.3.2.0</Version>
   <ReleaseDate>2020-12-19</ReleaseDate>
   <!-- Default download -->
-  <DownloadLink>https://github.com/micahmo/Deployer/releases/download/v1.3.1/Deployer.exe</DownloadLink>
+  <DownloadLink>https://github.com/micahmo/Deployer/releases/download/v1.3.2/Deployer.exe</DownloadLink>
   <DownloadFileName>Deployer.exe</DownloadFileName>
   <!-- All download options -->
   <Downloads>
     <Download key="portable">
-      <Link>https://github.com/micahmo/Deployer/releases/download/v1.3.1/Deployer.exe</Link>
+      <Link>https://github.com/micahmo/Deployer/releases/download/v1.3.2/Deployer.exe</Link>
       <FileName>Deployer.exe</FileName>
       <FileHash></FileHash>
     </Download>
   </Downloads>
   <!-- Release notes -->
-  <VersionNotes>Added version number to title bar.</VersionNotes>
+  <VersionNotes> - Update Bluegrams/AppHelpers.WPF library
+ - Remove dependency on Harmony patching
+ - Add AboutBox to F1</VersionNotes>
   <ReleaseNotes></ReleaseNotes>
 </AppUpdate>
