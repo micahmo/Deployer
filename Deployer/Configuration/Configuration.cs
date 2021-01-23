@@ -473,7 +473,7 @@ namespace Deployer
                 {
                     using ManagementObject wmiService = new ManagementObject("Win32_Service.Name='" + service.ServiceName + "'");
                     
-                    if (wmiService.GetPropertyValue("ProcessId") is int pid && Process.GetProcessById(pid) is { } process)
+                    if (wmiService.GetPropertyValue("ProcessId") is uint pid && Process.GetProcessById((int)pid) is { } process)
                     {
                         serviceProcess = process;
                     }
@@ -521,7 +521,7 @@ namespace Deployer
                         string.Format(Resources.FoundLockedFile, lockedFileName),
                         string.Format(Resources.StoppingLockingService, serviceController.DisplayName))));
 
-                    if (stopServiceMethod == StopServiceMethods.ShutdownGracefully)
+                    if (stopServiceMethod == StopServiceMethods.ShutdownGracefully || process is null)
                     {
                         serviceController.Stop();
 
@@ -532,7 +532,7 @@ namespace Deployer
                     }
                     else if (stopServiceMethod == StopServiceMethods.Kill)
                     {
-                        process?.Kill();
+                        process.Kill();
 
                         if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
                         {
