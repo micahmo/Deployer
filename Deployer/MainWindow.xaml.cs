@@ -689,7 +689,7 @@ namespace Deployer
 
         private void ShowAbout()
         {
-            new AboutBox(MainWindow.Icon)
+            new AboutBox(MainWindow.Icon, showLanguageSelection: false)
             {
                 Owner = MainWindow,
                 UpdateChecker = MainWindow.UpdateChecker
