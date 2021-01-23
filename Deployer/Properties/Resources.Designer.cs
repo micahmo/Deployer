@@ -508,6 +508,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Wait for graceful shutdown.
+        /// </summary>
+        public static string GracefulShutdown {
+            get {
+                return ResourceManager.GetString("GracefulShutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Include directories:.
         /// </summary>
         public static string IncludeDirectoriesSettingDescription {
@@ -555,6 +564,15 @@ namespace Deployer.Properties {
         public static string Item {
             get {
                 return ResourceManager.GetString("Item", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kill.
+        /// </summary>
+        public static string Kill {
+            get {
+                return ResourceManager.GetString("Kill", resourceCulture);
             }
         }
         
@@ -888,6 +906,24 @@ namespace Deployer.Properties {
         public static string StoppingLockingService {
             get {
                 return ResourceManager.GetString("StoppingLockingService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How to handle locking services:.
+        /// </summary>
+        public static string StopServiceMethodSettingDescription {
+            get {
+                return ResourceManager.GetString("StopServiceMethodSettingDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose how to handle Windows services which are locking the destination file. Note that normal (non-service) processes are never killed gracefully..
+        /// </summary>
+        public static string StopServiceMethodSettingExtendedDescription {
+            get {
+                return ResourceManager.GetString("StopServiceMethodSettingExtendedDescription", resourceCulture);
             }
         }
         

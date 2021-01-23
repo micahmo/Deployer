@@ -300,17 +300,14 @@ namespace Deployer
                                         string.Format(Resources.FoundLockedFile, destinationFileFullName),
                                         string.Format(Resources.StoppingLockingService, service.DisplayName))));
 
-                                    var services = await StopServiceAndDependencies(service, destinationFileFullName, cancellationTokenSource, progress, errorProgress);
+                                    // Shutdown the service and its dependencies
+                                    var services = await StopServiceAndDependencies(service, process, deploymentItem.ConfigurationItem.StopServiceMethodSetting.Value,
+                                        destinationFileFullName, cancellationTokenSource, progress, errorProgress);
                                     if (services is { })
                                     {
                                         stoppedServices.AddRange(services);
                                     }
                                     else
-                                    {
-                                        return;
-                                    }
-
-                                    if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
                                     {
                                         return;
                                     }
@@ -325,11 +322,12 @@ namespace Deployer
 
                                     killedProcesses.Add(process.GetMainModuleFileName());
                                     process.Kill();
+                                }
 
-                                    if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
-                                    {
-                                        return;
-                                    }
+                                // No matter the process type or how we're killing it, wait for it to finally die before moving on.
+                                if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
+                                {
+                                    return;
                                 }
                             }
                         }
@@ -465,18 +463,43 @@ namespace Deployer
             });
         }
 
+        private async Task<Process> GetProcessFromService(ServiceController service)
+        {
+            return await Task.Run(() =>
+            {
+                Process serviceProcess = null;
+
+                try
+                {
+                    using ManagementObject wmiService = new ManagementObject("Win32_Service.Name='" + service.ServiceName + "'");
+                    
+                    if (wmiService.GetPropertyValue("ProcessId") is int pid && Process.GetProcessById(pid) is { } process)
+                    {
+                        serviceProcess = process;
+                    }
+                }
+                catch
+                {
+                    // Don't let an exception kill us. Just return a null process.
+                }
+
+                return serviceProcess;
+            });
+        }
+
         /// <summary>
         /// Gracefully stops the given service and all of its dependencies. Returns all stopped services.
         /// Returns null if the a cancelation is requested via the <paramref name="cancellationTokenSource"/>.
         /// </summary>
-        private async Task<IEnumerable<ServiceController>> StopServiceAndDependencies(ServiceController serviceController, string lockedFileName,
-            CancellationTokenSource cancellationTokenSource = null, IProgress<DeployProgress> progress = null, IProgress<DeployError> errorProgress = null)
+        private async Task<IEnumerable<ServiceController>> StopServiceAndDependencies(ServiceController serviceController, Process process, StopServiceMethods stopServiceMethod,
+            string lockedFileName, CancellationTokenSource cancellationTokenSource = null, IProgress<DeployProgress> progress = null, IProgress<DeployError> errorProgress = null)
         {
             HashSet<ServiceController> allServices = new HashSet<ServiceController>();
 
             foreach (ServiceController dependency in serviceController.DependentServices)
             {
-                var services = await StopServiceAndDependencies(dependency, lockedFileName, cancellationTokenSource, progress, errorProgress);
+                var services = await StopServiceAndDependencies(dependency, await GetProcessFromService(dependency), stopServiceMethod, 
+                    lockedFileName, cancellationTokenSource, progress, errorProgress);
                 if (services is { })
                 {
                     allServices.UnionWith(services);
@@ -498,11 +521,23 @@ namespace Deployer
                         string.Format(Resources.FoundLockedFile, lockedFileName),
                         string.Format(Resources.StoppingLockingService, serviceController.DisplayName))));
 
-                    serviceController.Stop();
-
-                    if (await WaitForServiceToExit(serviceController, cancellationTokenSource) == false)
+                    if (stopServiceMethod == StopServiceMethods.ShutdownGracefully)
                     {
-                        return null;
+                        serviceController.Stop();
+
+                        if (await WaitForServiceToExit(serviceController, cancellationTokenSource) == false)
+                        {
+                            return null;
+                        }
+                    }
+                    else if (stopServiceMethod == StopServiceMethods.Kill)
+                    {
+                        process?.Kill();
+
+                        if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
+                        {
+                            return null;
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -748,6 +783,16 @@ namespace Deployer
 
         [Display(Description = nameof(Resources.ViewExcludedFiles), ResourceType = typeof(Resources))]
         ViewExcludedFiles
+    }
+
+    public enum StopServiceMethods
+    {
+
+        [Display(Description = nameof(Resources.GracefulShutdown), ResourceType = typeof(Resources))]
+        ShutdownGracefully,
+
+        [Display(Description = nameof(Resources.Kill), ResourceType = typeof(Resources))]
+        Kill
     }
 
     #endregion
