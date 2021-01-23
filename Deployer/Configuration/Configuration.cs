@@ -280,13 +280,16 @@ namespace Deployer
                         }
                         else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.WaitForLockingProcesses)
                         {
-                            progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
-                                string.Format(Resources.FoundLockedFile, destinationFileFullName),
-                                string.Format(Resources.WaitingForLockingProcessToStop, process.ProcessName))));
-
-                            if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
+                            if (process.HasExited == false)
                             {
-                                return;
+                                progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
+                                    string.Format(Resources.FoundLockedFile, destinationFileFullName),
+                                    string.Format(Resources.WaitingForLockingProcessToStop, process.ProcessName))));
+
+                                if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
+                                {
+                                    return;
+                                }
                             }
                         }
                         else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses)
