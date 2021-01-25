@@ -674,17 +674,20 @@ namespace Deployer
             {
                 if (fileExistedBeforeFirstRead)
                 {
+                    // Timestamp the backup name so that there can be multiple
+                    string backupName = $"{Path.GetFileNameWithoutExtension(CONFIG_FILE_NAME)}.{DateTime.Now.ToString(@"s").Replace(@":", @".")}.xml";
+
                     // The file exists, but there was a problem deserializing it.
                     // Be sure to back up the existing file before overwriting it with an empty instance.
                     File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
-                              XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_BACKUP_NAME), overwrite: true);
+                              XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName), overwrite: true);
 
                     // Inform the user that there was an error loading the existing configuration.
                     Dependencies.Notify.Warning(string.Join(Environment.NewLine,
                             Resources.ErrorLoadingExistingConfiguration,
                             string.Empty,
                             Resources.OldConfigurationAvailableAt,
-                            XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_BACKUP_NAME)),
+                            XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName)),
                         Resources.Warning);
                 }
 
@@ -704,7 +707,6 @@ namespace Deployer
         }
 
         private const string CONFIG_FILE_NAME = "DeployerConfig.xml";
-        private const string CONFIG_BACKUP_NAME = "DeployerConfig.bak.xml";
 
         #endregion
     }
