@@ -429,4 +429,16 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
     <value>Deployer  {0}</value>
     <comment>{0} is the version number</comment>
   </data>
+  <data name="StopServiceMethodSettingDescription" xml:space="preserve">
+    <value>How to handle locking services:</value>
+  </data>
+  <data name="GracefulShutdown" xml:space="preserve">
+    <value>Wait for graceful shutdown</value>
+  </data>
+  <data name="Kill" xml:space="preserve">
+    <value>Kill</value>
+  </data>
+  <data name="StopServiceMethodSettingExtendedDescription" xml:space="preserve">
+    <value>Choose how to handle Windows services which are locking the destination file. Note that normal (non-service) processes are never killed gracefully.</value>
+  </data>
 </root>

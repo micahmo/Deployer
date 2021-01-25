@@ -46,7 +46,8 @@ namespace Deployer
 
             LockedFileSettings = new SettingsGroup {Name = nameof(LockedFileSettings), Description = Resources.LockedFileSettingsDescription};
             LockedFileSettings.Settings.Add(LockedFileOptionSetting);
-            LockedFileOptionSetting.DependentSettings.Add(new DependentSettingCollection(() => LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses, LockedFileOptionSetting, KilledProcessesSetting));
+            LockedFileOptionSetting.DependentSettings.Add(new DependentSettingCollection(() => LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses,
+                LockedFileOptionSetting, StopServiceMethodSetting, KilledProcessesSetting));
 
             ViewSettings = new SettingsGroup {Name = nameof(ViewSettings), Description = Resources.ViewSettingsDescription};
             ViewSettings.Settings.Add(FileViewOptionsSetting);
@@ -251,6 +252,19 @@ namespace Deployer
             Name = nameof(KilledProcessesSetting),
             Description = Resources.KilledProcessesSettingDescription,
             SettingType = SettingType.Boolean, DefaultValue = true
+        };
+
+        public Setting<StopServiceMethods> StopServiceMethodSetting
+        {
+            get => _stopServiceMethodSetting;
+            set => _stopServiceMethodSetting.Apply(value);
+        }
+        private Setting<StopServiceMethods> _stopServiceMethodSetting = new Setting<StopServiceMethods>
+        {
+            Name = nameof(StopServiceMethodSetting),
+            Description = Resources.StopServiceMethodSettingDescription,
+            ExtendedDescription = Resources.StopServiceMethodSettingExtendedDescription,
+            SettingType = SettingType.List, DefaultValue = StopServiceMethods.ShutdownGracefully
         };
 
         public Setting<FileViewOptions> FileViewOptionsSetting
