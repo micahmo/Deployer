@@ -14,7 +14,11 @@ namespace GuiLibraryInterfaces
 
         void Information(string message, string title);
 
+        NotifyOption Information(string message, string title, NotifyOption firstOption, NotifyOption secondOption);
+
         void Warning(string message, string title);
+
+        NotifyOption Warning(string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption);
     }
 
     #region QuestionOptions enum
@@ -35,6 +39,15 @@ namespace GuiLibraryInterfaces
         OK,
         Cancel,
         None
+    }
+
+    #endregion
+
+    #region NotifyOption class
+
+    public class NotifyOption
+    {
+        public string Text { get; set; }
     }
 
     #endregion

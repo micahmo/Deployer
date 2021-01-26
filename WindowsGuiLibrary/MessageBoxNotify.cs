@@ -21,9 +21,55 @@ namespace WindowsGuiLibrary
             MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        public NotifyOption Information(string message, string title, NotifyOption firstOption, NotifyOption secondOption)
+        {
+            NotifyOption result = default;
+
+            Style style = new Style();
+            style.Setters.Add(new Setter(MessageBox.YesButtonContentProperty, firstOption.Text));
+            style.Setters.Add(new Setter(MessageBox.NoButtonContentProperty, secondOption.Text));
+
+            switch (MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Information, style))
+            {
+                case MessageBoxResult.Yes:
+                    result = firstOption;
+                    break;
+                case MessageBoxResult.No:
+                    result = secondOption;
+                    break;
+            }
+
+            return result;
+        }
+
         public void Warning(string message, string title)
         {
             MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        public NotifyOption Warning(string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption)
+        {
+            NotifyOption result = default;
+
+            Style style = new Style();
+            style.Setters.Add(new Setter(MessageBox.YesButtonContentProperty, firstOption.Text));
+            style.Setters.Add(new Setter(MessageBox.NoButtonContentProperty, secondOption.Text));
+            style.Setters.Add(new Setter(MessageBox.CancelButtonContentProperty, thirdOption.Text));
+
+            switch (MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, style))
+            {
+                case MessageBoxResult.Yes:
+                    result = firstOption;
+                    break;
+                case MessageBoxResult.No:
+                    result = secondOption;
+                    break;
+                case MessageBoxResult.Cancel:
+                    result = thirdOption;
+                    break;
+            }
+
+            return result;
         }
 
         private MessageBoxButton QuestionOptionsToMessageBoxButton(QuestionOptions options)

@@ -124,6 +124,24 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back up config and continue.
+        /// </summary>
+        public static string BackupAndContinue {
+            get {
+                return ResourceManager.GetString("BackupAndContinue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Backup Created.
+        /// </summary>
+        public static string BackupCreated {
+            get {
+                return ResourceManager.GetString("BackupCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Beginning Deployment.
         /// </summary>
         public static string BeginningDeployment {
@@ -196,11 +214,29 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Continue.
+        /// </summary>
+        public static string Continue {
+            get {
+                return ResourceManager.GetString("Continue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string Copy {
             get {
                 return ResourceManager.GetString("Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy details to clipboard.
+        /// </summary>
+        public static string CopyErrorDetails {
+            get {
+                return ResourceManager.GetString("CopyErrorDetails", resourceCulture);
             }
         }
         
@@ -340,7 +376,7 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There was an error loading the existing configuration file. It has been backed up, and a new empty configuration file has been created..
+        ///   Looks up a localized string similar to There was an error loading the existing configuration file..
         /// </summary>
         public static string ErrorLoadingExistingConfiguration {
             get {
@@ -658,6 +694,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to And a new empty configuration has been created..
+        /// </summary>
+        public static string NewConfigCreated {
+            get {
+                return ResourceManager.GetString("NewConfigCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Configuration.
         /// </summary>
         public static string NewConfigurationName {
@@ -721,7 +766,7 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The old configuration file is available at:.
+        ///   Looks up a localized string similar to The old configuration file has been backed up to:.
         /// </summary>
         public static string OldConfigurationAvailableAt {
             get {
@@ -735,6 +780,15 @@ namespace Deployer.Properties {
         public static string Open {
             get {
                 return ResourceManager.GetString("Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open config file location.
+        /// </summary>
+        public static string OpenConfigFileLocation {
+            get {
+                return ResourceManager.GetString("OpenConfigFileLocation", resourceCulture);
             }
         }
         
@@ -780,6 +834,15 @@ namespace Deployer.Properties {
         public static string Question {
             get {
                 return ResourceManager.GetString("Question", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Quit.
+        /// </summary>
+        public static string Quit {
+            get {
+                return ResourceManager.GetString("Quit", resourceCulture);
             }
         }
         

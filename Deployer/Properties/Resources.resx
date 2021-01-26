@@ -390,10 +390,10 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
     <value>Warning</value>
   </data>
   <data name="ErrorLoadingExistingConfiguration" xml:space="preserve">
-    <value>There was an error loading the existing configuration file. It has been backed up, and a new empty configuration file has been created.</value>
+    <value>There was an error loading the existing configuration file.</value>
   </data>
   <data name="OldConfigurationAvailableAt" xml:space="preserve">
-    <value>The old configuration file is available at:</value>
+    <value>The old configuration file has been backed up to:</value>
   </data>
   <data name="ViewSessionLog" xml:space="preserve">
     <value>View session log...</value>
@@ -440,5 +440,26 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   </data>
   <data name="StopServiceMethodSettingExtendedDescription" xml:space="preserve">
     <value>Choose how to handle Windows services which are locking the destination file. Note that normal (non-service) processes are never killed gracefully.</value>
+  </data>
+  <data name="BackupCreated" xml:space="preserve">
+    <value>Backup Created</value>
+  </data>
+  <data name="CopyErrorDetails" xml:space="preserve">
+    <value>Copy details to clipboard</value>
+  </data>
+  <data name="BackupAndContinue" xml:space="preserve">
+    <value>Back up config and continue</value>
+  </data>
+  <data name="Quit" xml:space="preserve">
+    <value>Quit</value>
+  </data>
+  <data name="NewConfigCreated" xml:space="preserve">
+    <value>And a new empty configuration has been created.</value>
+  </data>
+  <data name="OpenConfigFileLocation" xml:space="preserve">
+    <value>Open config file location</value>
+  </data>
+  <data name="Continue" xml:space="preserve">
+    <value>Continue</value>
   </data>
 </root>

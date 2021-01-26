@@ -705,27 +705,79 @@ namespace Deployer
             {
                 return Instance = XmlSerialization.DeserializeObjectFromCustomConfigFile<Configuration>(CONFIG_FILE_NAME, SpecialFolder.ApplicationData);
             }
-            catch
+            catch (Exception rootException)
             {
                 if (fileExistedBeforeFirstRead)
                 {
-                    // Timestamp the backup name so that there can be multiple
-                    string backupName = $"{Path.GetFileNameWithoutExtension(CONFIG_FILE_NAME)}.{DateTime.Now.ToString(@"s").Replace(@":", @".")}.xml";
-
-                    // The file exists, but there was a problem deserializing it.
-                    // Be sure to back up the existing file before overwriting it with an empty instance.
-                    File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
-                              XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName), overwrite: true);
+                    // Find the real exception
+                    Exception innermostException = rootException;
+                    while (innermostException.InnerException is { })
+                    {
+                        innermostException = innermostException.InnerException;
+                    }
 
                     // Inform the user that there was an error loading the existing configuration.
-                    App.ServiceProvider.GetRequiredService<INotify>().Warning(string.Join(Environment.NewLine,
-                            Resources.ErrorLoadingExistingConfiguration,
-                            string.Empty,
-                            Resources.OldConfigurationAvailableAt,
-                            XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName)),
-                        Resources.Warning);
+                    NotifyOption copyDetails = new NotifyOption {Text = Resources.CopyErrorDetails};
+                    NotifyOption backupAndContinue = new NotifyOption {Text = Resources.BackupAndContinue};
+                    NotifyOption quit = new NotifyOption {Text = Resources.Quit};
+
+                    NotifyOption result;
+                    do
+                    {
+                        result = App.ServiceProvider.GetRequiredService<INotify>().Warning(string.Join(Environment.NewLine,
+                                Resources.ErrorLoadingExistingConfiguration,
+                                string.Empty,
+                                innermostException.Message),
+                            Resources.Warning, copyDetails, backupAndContinue, quit);
+
+                        // How do they want to proceed
+                        if (result == copyDetails)
+                        {
+                            Clipboard.SetText(rootException.ToString());
+                        }
+                        else if (result == quit)
+                        {
+                            Environment.Exit(1);
+                        }
+                        else if (result == backupAndContinue)
+                        {
+                            // Timestamp the backup name so that there can be multiple
+                            string backupName = $"{Path.GetFileNameWithoutExtension(CONFIG_FILE_NAME)}.{DateTime.Now.ToString(@"s").Replace(@":", @".")}.xml";
+
+                            // Make the backup
+                            File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
+                                      XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName), overwrite: true);
+
+                            // Notify the user where the backup is
+                            NotifyOption openConfigLocation = new NotifyOption {Text = Resources.OpenConfigFileLocation};
+                            NotifyOption cont = new NotifyOption {Text = Resources.Continue};
+
+                            do
+                            {
+                                result = App.ServiceProvider.GetRequiredService<INotify>().Information(string.Join(Environment.NewLine,
+                                        Resources.OldConfigurationAvailableAt,
+                                        string.Empty,
+                                        XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName),
+                                        string.Empty,
+                                        Resources.NewConfigCreated),
+                                    Resources.BackupCreated, openConfigLocation, cont);
+
+                                if (result == openConfigLocation)
+                                {
+                                    Process.Start(Path.GetDirectoryName(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName)));
+                                }
+                                else if (result == cont)
+                                {
+                                    // Save an empty config and load it
+                                    Save(new Configuration());
+                                    return Load();
+                                }
+                            } while (result == openConfigLocation);
+                        }
+                    } while (result == copyDetails);
                 }
 
+                // If we haven't done anything else, save an empty config and load it
                 Save(new Configuration());
                 return Load();
             }
