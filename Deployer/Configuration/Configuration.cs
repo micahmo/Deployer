@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -15,10 +14,11 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 using System.Xml.Serialization;
 using Deployer.Properties;
+using GuiLibraryInterfaces;
 using Humanizer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualBasic.Devices;
 using Utilities;
 using Point = System.Windows.Point;
@@ -718,7 +718,7 @@ namespace Deployer
                               XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName), overwrite: true);
 
                     // Inform the user that there was an error loading the existing configuration.
-                    Dependencies.Notify.Warning(string.Join(Environment.NewLine,
+                    App.ServiceProvider.GetRequiredService<INotify>().Warning(string.Join(Environment.NewLine,
                             Resources.ErrorLoadingExistingConfiguration,
                             string.Empty,
                             Resources.OldConfigurationAvailableAt,

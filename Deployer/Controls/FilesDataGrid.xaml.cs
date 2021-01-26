@@ -4,11 +4,13 @@ using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using GuiLibraryInterfaces;
+using Microsoft.Extensions.DependencyInjection;
+using Point = System.Windows.Point;
 
 #endregion
 
@@ -65,7 +67,8 @@ namespace Deployer
             if (sender is DataGrid dataGrid && dataGrid.SelectedItems.OfType<FileItem>().Any())
             {
                 Point mousePosition = Mouse.GetPosition(Window.GetWindow(this));
-                Dependencies.ShellContextMenu.Show(dataGrid.SelectedItems.OfType<FileItem>().Select(f => f.FileInfo).ToArray(), new GuiLibraryInterfaces.Point(mousePosition.X, mousePosition.Y));
+                App.ServiceProvider.GetRequiredService<IShellContextMenu>()
+                    .Show(dataGrid.SelectedItems.OfType<FileItem>().Select(f => f.FileInfo).ToArray(), new GuiLibraryInterfaces.Point(mousePosition.X, mousePosition.Y));
             }
         }
 

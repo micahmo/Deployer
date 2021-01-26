@@ -20,6 +20,7 @@ using Bluegrams.Application;
 using Bluegrams.Application.WPF;
 using Deployer.Properties;
 using HTMLConverter;
+using Microsoft.Extensions.DependencyInjection;
 using Utilities;
 using Timer = System.Timers.Timer;
 using Xctk = Xceed.Wpf.Toolkit;
@@ -305,7 +306,7 @@ namespace Deployer
         }
         private bool _showLog;
 
-        public string Log => HtmlToXamlConverter.ConvertHtmlToXaml(File.ReadAllText(Dependencies.SessionFileLogger.Path), false);
+        public string Log => HtmlToXamlConverter.ConvertHtmlToXaml(File.ReadAllText(App.ServiceProvider.GetRequiredService<SessionFileLogger>().Path), false);
 
         public bool IsBusy
         {
@@ -481,7 +482,8 @@ namespace Deployer
         {
             if (Model.SelectedConfigurationItem is { })
             {
-                if (QuestionResult.Yes == Dependencies.Notify.Question(string.Format(Resources.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resources.Question, QuestionOptions.YesNo))
+                if (QuestionResult.Yes == App.ServiceProvider.GetRequiredService<INotify>()
+                    .Question(string.Format(Resources.ConfirmDeleteConfiguration, Model.SelectedConfigurationItem.Name), Resources.Question, QuestionOptions.YesNo))
                 {
                     int previousSelectedIndex = Model.Configuration.SelectedConfigurationIndex;
 
@@ -644,7 +646,7 @@ namespace Deployer
 
         private void ClearLog()
         {
-            Dependencies.SessionFileLogger.Clear();
+            App.ServiceProvider.GetRequiredService<SessionFileLogger>().Clear();
             Model.RaisePropertyChanged(nameof(Model.Log));
         }
 

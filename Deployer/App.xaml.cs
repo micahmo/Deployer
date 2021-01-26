@@ -3,6 +3,7 @@
 using System.Windows;
 using WindowsGuiLibrary;
 using GuiLibraryInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Utilities;
 
 #endregion
@@ -14,14 +15,14 @@ namespace Deployer
     /// </summary>
     public partial class App : Application
     {
-    }
+        internal static ServiceProvider ServiceProvider => _serviceProvider ??=
+            new ServiceCollection()
+                .AddSingleton<INotify, MessageBoxNotify>()
+                .AddSingleton<IFileBrowser, WpfFileBrowser>()
+                .AddSingleton<IShellContextMenu, WindowsShellContextMenu>()
+                .AddSingleton(LogManager.RegisterLogger(new SessionFileLogger()))
+                .BuildServiceProvider();
 
-    public static class Dependencies
-    {
-        // TODO: Do some better version of DI
-        public static INotify Notify { get; } = new MessageBoxNotify();
-        public static IFileBrowser FileBrowser { get; } = new WpfFileBrowser();
-        public static IShellContextMenu ShellContextMenu { get; } = new WindowsShellContextMenu();
-        public static SessionFileLogger SessionFileLogger { get; } = LogManager.RegisterLogger(new SessionFileLogger());
+        private static ServiceProvider _serviceProvider;
     }
 }

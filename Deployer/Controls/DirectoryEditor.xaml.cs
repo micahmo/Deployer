@@ -9,6 +9,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using GuiLibraryInterfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 #endregion
 
@@ -211,7 +213,7 @@ namespace Deployer
 
         private void BrowseForDirectory(DirectoryEditor control)
         {
-            if (Dependencies.FileBrowser.BrowseForDirectory(control.CurrentDirectory) is { } directory)
+            if (App.ServiceProvider.GetRequiredService<IFileBrowser>().BrowseForDirectory(control.CurrentDirectory) is { } directory)
             {
                 control.CurrentDirectory = directory;
             }
