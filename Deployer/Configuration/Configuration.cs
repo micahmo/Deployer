@@ -235,115 +235,115 @@ namespace Deployer
             double i = 1;
             foreach (FileCopyPair fileCopyPair in deploymentItem.FilesToCopy)
             {
-                if (cancellationTokenSource?.IsCancellationRequested == true)
+                try
                 {
-                    return;
-                }
-
-                string fileOrFolder = (fileCopyPair.SourceFile.FileInfo is FileInfo ? Resources.File : fileCopyPair.SourceFile.FileInfo is DirectoryInfo ? Resources.Folder : Resources.Item)
-                                      .Transform(To.SentenceCase);
-                string sourceFolder = Path.GetDirectoryName(fileCopyPair.SourceFile.FullName);
-                string sourceFileFullName = fileCopyPair.SourceFile.FullName;
-                string destinationFileFullName = Path.Combine(fileCopyPair.DestinationPath, fileCopyPair.SourceFile.Name);
-                double percentComplete = (i / deploymentItem.FilesToCopy.Count) * 100;
-
-                progress?.Report(new DeployProgress(
-                    Resources.CopyingFilesTitle, string.Join(Environment.NewLine,
-                        string.Format(Resources.FromSource, sourceFolder),
-                        string.Format(Resources.ToDestination, fileCopyPair.DestinationPath),
-                        string.Format(Resources.AtoB, fileOrFolder, fileCopyPair.SourceFile.Name)),
-                        percentComplete));
-
-                bool skipFile = false;
-                if (File.Exists(destinationFileFullName))
-                {
-                    // Destination file exists and is on UNC path.
-                    // Tell the user that we can't detect locking processes.
-                    if (FileSystem.IsUncPath(destinationFileFullName, out _))
+                    if (cancellationTokenSource?.IsCancellationRequested == true)
                     {
-                        progress?.Report(new DeployProgress(
-                            Resources.CopyingFilesTitle, string.Join(Environment.NewLine,
-                                string.Format(Resources.FromSource, sourceFolder),
-                                string.Format(Resources.ToDestination, fileCopyPair.DestinationPath),
-                                string.Format(Resources.AtoB, fileOrFolder, fileCopyPair.SourceFile.Name),
-                                string.Empty,
-                                Resources.UnableToDetectRemoteLockingProcesses),
-                            percentComplete));
+                        return;
                     }
 
-                    foreach (Process process in Native.GetLockingProcesses(destinationFileFullName))
-                    {
-                        if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.Skip)
-                        {
-                            skipFile = true;
-                            break;
-                        }
-                        else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.WaitForLockingProcesses)
-                        {
-                            if (process.HasExited == false)
-                            {
-                                progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
-                                    string.Format(Resources.FoundLockedFile, destinationFileFullName),
-                                    string.Format(Resources.WaitingForLockingProcessToStop, process.ProcessName))));
+                    string fileOrFolder = (fileCopyPair.SourceFile.FileInfo is FileInfo ? Resources.File : fileCopyPair.SourceFile.FileInfo is DirectoryInfo ? Resources.Folder : Resources.Item)
+                                          .Transform(To.SentenceCase);
+                    string sourceFolder = Path.GetDirectoryName(fileCopyPair.SourceFile.FullName);
+                    string sourceFileFullName = fileCopyPair.SourceFile.FullName;
+                    string destinationFileFullName = Path.Combine(fileCopyPair.DestinationPath, fileCopyPair.SourceFile.Name);
+                    double percentComplete = (i / deploymentItem.FilesToCopy.Count) * 100;
 
-                                if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses)
+                    progress?.Report(new DeployProgress(
+                        Resources.CopyingFilesTitle, string.Join(Environment.NewLine,
+                            string.Format(Resources.FromSource, sourceFolder),
+                            string.Format(Resources.ToDestination, fileCopyPair.DestinationPath),
+                            string.Format(Resources.AtoB, fileOrFolder, fileCopyPair.SourceFile.Name)),
+                        percentComplete));
+
+                    bool skipFile = false;
+                    if (File.Exists(destinationFileFullName))
+                    {
+                        // Destination file exists and is on UNC path.
+                        // Tell the user that we can't detect locking processes.
+                        if (FileSystem.IsUncPath(destinationFileFullName, out _))
                         {
-                            if (process.HasExited == false)
+                            progress?.Report(new DeployProgress(
+                                Resources.CopyingFilesTitle, string.Join(Environment.NewLine,
+                                    string.Format(Resources.FromSource, sourceFolder),
+                                    string.Format(Resources.ToDestination, fileCopyPair.DestinationPath),
+                                    string.Format(Resources.AtoB, fileOrFolder, fileCopyPair.SourceFile.Name),
+                                    string.Empty,
+                                    Resources.UnableToDetectRemoteLockingProcesses),
+                                percentComplete));
+                        }
+
+                        foreach (Process process in Native.GetLockingProcesses(destinationFileFullName))
+                        {
+                            if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.Skip)
                             {
-                                // Check if it's a service
-                                if (await GetServiceFromProcess(process) is { } service)
+                                skipFile = true;
+                                break;
+                            }
+                            else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.WaitForLockingProcesses)
+                            {
+                                if (process.HasExited == false)
                                 {
                                     progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
                                         string.Format(Resources.FoundLockedFile, destinationFileFullName),
-                                        string.Format(Resources.StoppingLockingService, service.DisplayName))));
+                                        string.Format(Resources.WaitingForLockingProcessToStop, process.ProcessName))));
 
-                                    // Shutdown the service and its dependencies
-                                    var services = await StopServiceAndDependencies(service, process, deploymentItem.ConfigurationItem.StopServiceMethodSetting.Value,
-                                        destinationFileFullName, cancellationTokenSource, progress, errorProgress);
-                                    if (services is { })
-                                    {
-                                        stoppedServices.AddRange(services);
-                                    }
-                                    else
+                                    if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
                                     {
                                         return;
                                     }
                                 }
-
-                                // Otherwise, it's a regular process
-                                else
+                            }
+                            else if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.StopLockingProcesses)
+                            {
+                                if (process.HasExited == false)
                                 {
-                                    progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
-                                        string.Format(Resources.FoundLockedFile, destinationFileFullName),
-                                        string.Format(Resources.KillingLockingProcess, process.ProcessName))));
+                                    // Check if it's a service
+                                    if (await GetServiceFromProcess(process) is { } service)
+                                    {
+                                        progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
+                                            string.Format(Resources.FoundLockedFile, destinationFileFullName),
+                                            string.Format(Resources.StoppingLockingService, service.DisplayName))));
 
-                                    killedProcesses.Add(process.GetMainModuleFileName());
-                                    process.Kill();
-                                }
+                                        // Shutdown the service and its dependencies
+                                        var services = await StopServiceAndDependencies(service, process, deploymentItem.ConfigurationItem.StopServiceMethodSetting.Value,
+                                            destinationFileFullName, cancellationTokenSource, progress, errorProgress);
+                                        if (services is { })
+                                        {
+                                            stoppedServices.AddRange(services);
+                                        }
+                                        else
+                                        {
+                                            return;
+                                        }
+                                    }
 
-                                // No matter the process type or how we're killing it, wait for it to finally die before moving on.
-                                if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
-                                {
-                                    return;
+                                    // Otherwise, it's a regular process
+                                    else
+                                    {
+                                        progress?.Report(new DeployProgress(Resources.StoppingLockingProcessesTitle, string.Join(Environment.NewLine,
+                                            string.Format(Resources.FoundLockedFile, destinationFileFullName),
+                                            string.Format(Resources.KillingLockingProcess, process.ProcessName))));
+
+                                        killedProcesses.Add(process.GetMainModuleFileName());
+                                        process.Kill();
+                                    }
+
+                                    // No matter the process type or how we're killing it, wait for it to finally die before moving on.
+                                    if (await WaitForProcessToExit(process, cancellationTokenSource) == false)
+                                    {
+                                        return;
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                if (skipFile)
-                {
-                    continue;
-                }
+                    if (skipFile)
+                    {
+                        continue;
+                    }
 
-                try
-                {
                     if (fileCopyPair.SourceFile.IsDirectory == false && File.Exists(destinationFileFullName))
                     {
                         if (await WaitForFileToHaveAttributes(destinationFileFullName, FileAttributes.Normal, cancellationTokenSource) == false)
@@ -378,7 +378,7 @@ namespace Deployer
                 }
                 catch (Exception ex)
                 {
-                    errorProgress?.Report(new DeployError(string.Join(Environment.NewLine, 
+                    errorProgress?.Report(new DeployError(string.Join(Environment.NewLine,
                         string.Format(Resources.ErrorCopyingSourceToDestination, fileCopyPair.SourceFile.FullName, fileCopyPair.DestinationPath),
                         ex.ToString()), ex));
                 }
