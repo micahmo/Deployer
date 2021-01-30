@@ -49,11 +49,11 @@ namespace Deployer
                 if (keyGesture.Modifiers != ModifierKeys.None)
                 {
                     string modifierKeys = string.Join("+", GetFlagsWithExclusion((ModifierKeysMapping)keyGesture.Modifiers, ModifierKeysMapping.None));
-                    shortcutKeys.Add($"{modifierKeys}+{keyGesture.Key}");
+                    shortcutKeys.Add($"{modifierKeys}+{ToString(keyGesture.Key)}");
                 }
                 else
                 {
-                    shortcutKeys.Add(keyGesture.Key.ToString());
+                    shortcutKeys.Add(ToString(keyGesture.Key));
                 }
             }
 
@@ -90,6 +90,27 @@ namespace Deployer
             Ctrl = 0x2,
             Shift = 0x4,
             Win = 0x8
+        }
+
+        /// <summary>
+        /// <see cref="Key"/> has duplicate values.
+        /// This method returns the preferred string representation for duplicate values, if any. Otherwise, it just returns <see cref="Key.ToString()"/>.
+        /// </summary>
+        /// <remarks>
+        /// Key.ToString always returns the name of the first enum for a given value. Use nameof to get the preferred name.
+        /// </remarks>
+        private static string ToString(Key key)
+        {
+            string result = key.ToString();
+            
+            switch (key)
+            {
+                case Key.Next:
+                    result = nameof(Key.PageDown);
+                    break;
+            }
+
+            return result;
         }
 
 		#endregion

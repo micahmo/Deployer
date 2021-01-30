@@ -604,6 +604,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string KeyboardShortcutFormat {
+            get {
+                return ResourceManager.GetString("KeyboardShortcutFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kill.
         /// </summary>
         public static string Kill {

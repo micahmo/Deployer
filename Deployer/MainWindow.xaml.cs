@@ -299,6 +299,14 @@ namespace Deployer
 
         public string DeployButtonTooltip => string.Format(Resources.DeployTooltip, ShortcutCommands.GetShortcutKey(ShortcutCommands.DeployCurrentConfigurationCommand).FirstOrDefault());
 
+        public string MoveConfigurationUpTooltip => string.Format(Resources.KeyboardShortcutFormat, 
+            Resources.MoveConfigurationUp, 
+            ShortcutCommands.GetShortcutKey(ShortcutCommands.MoveConfigurationUpCommand).FirstOrDefault());
+
+        public string MoveConfigurationDownTooltip => string.Format(Resources.KeyboardShortcutFormat,
+            Resources.MoveConfigurationDown,
+            ShortcutCommands.GetShortcutKey(ShortcutCommands.MoveConfigurationDownCommand).FirstOrDefault());
+
         public bool ShowLog
         {
             get => _showLog;

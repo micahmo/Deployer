@@ -373,12 +373,12 @@
                                     Background="LightGray" Height="2"/>
 
                                 <local:MyButton Grid.Column="1" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemUpCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                            ToolTip="{x:Static properties:Resources.MoveConfigurationUp}"
+                                            ToolTip="{Binding DataContext.MoveConfigurationUpTooltip, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex>0', RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ImageSource="..\Images\up_arrow.png"/>
 
                                 <local:MyButton Grid.Column="2" Width="25" Height="25" Command="{Binding DataContext.Commands.MoveConfigurationItemDownCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
-                                            ToolTip="{x:Static properties:Resources.MoveConfigurationDown}"
+                                                ToolTip="{Binding DataContext.MoveConfigurationDownTooltip, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             IsEnabled="{c:Binding 'DataContext.Configuration.SelectedConfigurationIndex less DataContext.Configuration.ConfigurationItems.Count-1 and DataContext.Configuration.SelectedConfigurationIndex>=0',
                                                         RelativeSource={RelativeSource AncestorType=local:MainWindow}}"
                                             ImageSource="..\Images\down_arrow.png"/>

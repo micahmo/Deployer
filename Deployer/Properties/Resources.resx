@@ -462,4 +462,8 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="Continue" xml:space="preserve">
     <value>Continue</value>
   </data>
+  <data name="KeyboardShortcutFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>{0} is the standard text (probably another resource) {1} is the keyboard shortcut</comment>
+  </data>
 </root>
