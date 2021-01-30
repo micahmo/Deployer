@@ -677,7 +677,7 @@ namespace Deployer
 
         private void MoveConfigurationItemDown()
         {
-            if (Model.Configuration.ConfigurationItems.Count > 1 && Model.Configuration.SelectedConfigurationIndex < Model.Configuration.ConfigurationItems.Count)
+            if (Model.Configuration.ConfigurationItems.Count > 1 && Model.Configuration.SelectedConfigurationIndex < Model.Configuration.ConfigurationItems.Count - 1)
             {
                 int selectedConfigurationIndex = Model.Configuration.SelectedConfigurationIndex;
                 ConfigurationItem configurationItem = Model.Configuration.ConfigurationItems[selectedConfigurationIndex];

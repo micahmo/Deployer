@@ -14,6 +14,13 @@
              BorderThickness="0" GridLinesVisibility="None"
              x:Name="_this"
              PreviewKeyDown="_this_PreviewKeyDown">
+    
+    <DataGrid.CommandBindings>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.PreviousConfigurationCommand}" Executed="PreviousConfigurationCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.NextConfigurationCommand}" Executed="NextConfigurationCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.MoveConfigurationUpCommand}" Executed="MoveConfigurationUpCommand_Executed"/>
+        <CommandBinding Command="{x:Static local:ShortcutCommands.MoveConfigurationDownCommand}" Executed="MoveConfigurationDownCommand_Executed"/>
+    </DataGrid.CommandBindings>
 
     <DataGrid.Resources>
         <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" 

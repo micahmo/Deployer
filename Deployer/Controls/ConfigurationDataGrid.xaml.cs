@@ -40,6 +40,26 @@ namespace Deployer
             }
         }
 
+        private void PreviousConfigurationCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            DataModel.Configuration.SelectedConfigurationIndex = Math.Max(DataModel.Configuration.SelectedConfigurationIndex - 1, 0);
+        }
+
+        private void NextConfigurationCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            DataModel.Configuration.SelectedConfigurationIndex = Math.Min(DataModel.Configuration.SelectedConfigurationIndex + 1, DataModel.Configuration.ConfigurationItems.Count - 1);
+        }
+
+        private void MoveConfigurationUpCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            DataModel.Commands.MoveConfigurationItemUpCommand?.Execute(null);
+        }
+
+        private void MoveConfigurationDownCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            DataModel.Commands.MoveConfigurationItemDownCommand?.Execute(null);
+        }
+
         #endregion
     }
 
