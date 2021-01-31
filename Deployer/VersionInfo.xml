@@ -1,22 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <AppUpdate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/micahmo/Deployer/master/Deployer/AppUpdate.xsd">
-  <Version>1.3.2.0</Version>
-  <ReleaseDate>2020-12-31</ReleaseDate>
+  <Version>1.3.3.0</Version>
+  <ReleaseDate>2021-01-30</ReleaseDate>
   <!-- Default download -->
-  <DownloadLink>https://github.com/micahmo/Deployer/releases/download/v1.3.2/Deployer.exe</DownloadLink>
+  <DownloadLink>https://github.com/micahmo/Deployer/releases/download/v1.3.3/Deployer.exe</DownloadLink>
   <DownloadFileName>Deployer.exe</DownloadFileName>
   <!-- All download options -->
   <Downloads>
     <Download key="portable">
-      <Link>https://github.com/micahmo/Deployer/releases/download/v1.3.2/Deployer.exe</Link>
+      <Link>https://github.com/micahmo/Deployer/releases/download/v1.3.3/Deployer.exe</Link>
       <FileName>Deployer.exe</FileName>
       <FileHash></FileHash>
     </Download>
   </Downloads>
   <!-- Release notes -->
-  <VersionNotes> - Update Bluegrams/AppHelpers.WPF library
- - Remove dependency on Harmony patching
- - Add AboutBox to F1</VersionNotes>
+  <VersionNotes> - Add option to kill services
+ - Improve handling corrupted configurations
+ - Improve file copy error handling
+ - Always run Deployer as admin
+ - Bugfixes</VersionNotes>
   <ReleaseNotes></ReleaseNotes>
 </AppUpdate>
