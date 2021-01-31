@@ -68,6 +68,14 @@ namespace Deployer
 
         #endregion
 
+        #region Overrides
+
+        /// <inheritdoc/>
+        /// <remarks>For debugging</remarks>
+        public override string ToString() => Name;
+
+        #endregion
+
         #region Event handlers
 
         private void Directories_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

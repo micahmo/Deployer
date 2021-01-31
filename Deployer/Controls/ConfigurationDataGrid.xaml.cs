@@ -20,14 +20,26 @@ namespace Deployer
     /// </summary>
     public partial class ConfigurationDataGrid : DataGrid
     {
+        #region Constructor
+
         public ConfigurationDataGrid()
         {
             InitializeComponent();
         }
 
+        #endregion
+
+        #region Public properties
+
         public ConfigurationDataGridModel ViewModel { get; } = new ConfigurationDataGridModel();
 
+        #endregion
+
+        #region Internal properties
+
         internal MainWindowModel DataModel => DataContext as MainWindowModel;
+
+        #endregion
 
         #region Event handlers
 
