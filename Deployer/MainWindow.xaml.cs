@@ -73,7 +73,7 @@ namespace Deployer
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateChecker.CheckForUpdates();
+            UpdateChecker.CheckForUpdates(UpdateNotifyMode.Auto);
         }
 
         private void AutoSaveTimer_Elapsed(object sender, ElapsedEventArgs e)
