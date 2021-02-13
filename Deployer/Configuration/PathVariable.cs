@@ -73,8 +73,8 @@ namespace Deployer
                 firstValue.IsSelected = true;
             }
 
-            Configuration.Instance?.ConfigurationItems[Configuration.Instance.SelectedConfigurationIndex].SourceDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
-            Configuration.Instance?.ConfigurationItems[Configuration.Instance.SelectedConfigurationIndex].DestinationDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
+            Configuration.Instance?.ConfigurationItems.ElementAtOrDefault(Configuration.Instance.SelectedConfigurationIndex)?.SourceDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
+            Configuration.Instance?.ConfigurationItems.ElementAtOrDefault(Configuration.Instance.SelectedConfigurationIndex)?.DestinationDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
         }
 
         private void PossiblePathVariable_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -90,8 +90,8 @@ namespace Deployer
                             PossibleValues.Where(p => p != changedValue).ToList().ForEach(p => p.IsSelected = false);
                             RaisePropertyChanged(nameof(SelectedValue));
                             
-                            Configuration.Instance?.ConfigurationItems[Configuration.Instance.SelectedConfigurationIndex].SourceDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
-                            Configuration.Instance?.ConfigurationItems[Configuration.Instance.SelectedConfigurationIndex].DestinationDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
+                            Configuration.Instance?.ConfigurationItems.ElementAtOrDefault(Configuration.Instance.SelectedConfigurationIndex)?.SourceDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
+                            Configuration.Instance?.ConfigurationItems.ElementAtOrDefault(Configuration.Instance.SelectedConfigurationIndex)?.DestinationDirectories.ToList().ForEach(d => d.RaisePropertyChanged(nameof(d.Path)));
                         }
                         break;
                 }
