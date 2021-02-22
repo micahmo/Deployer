@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800"
              
              ItemsSource="{Binding Configuration.PathVariables}" SelectedItem="{Binding SelectedPathVariable, UpdateSourceTrigger=PropertyChanged}" 
-             AutoGenerateColumns="False" HeadersVisibility="None" ColumnWidth="*" SelectionMode="Single" CanUserAddRows="False"
+             AutoGenerateColumns="False" HeadersVisibility="None" ColumnWidth="*" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False"
              BorderThickness="0" GridLinesVisibility="None"
              x:Name="_this"
              PreviewKeyDown="_this_PreviewKeyDown">

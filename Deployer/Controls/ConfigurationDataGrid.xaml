@@ -11,7 +11,7 @@
              
              ItemsSource="{Binding Configuration.ConfigurationItems}" SelectedItem="{Binding SelectedConfigurationItem, UpdateSourceTrigger=PropertyChanged}" 
              SelectedIndex="{Binding Configuration.SelectedConfigurationIndex}"
-             AutoGenerateColumns="False" HeadersVisibility="None" ColumnWidth="*" SelectionMode="Single" CanUserAddRows="False"
+             AutoGenerateColumns="False" HeadersVisibility="None" ColumnWidth="*" SelectionMode="Single" CanUserAddRows="False" CanUserDeleteRows="False"
              BorderThickness="0" GridLinesVisibility="None"
              x:Name="_this"
              PreviewKeyDown="_this_PreviewKeyDown">
