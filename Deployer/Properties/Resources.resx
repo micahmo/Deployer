@@ -425,6 +425,9 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="None" xml:space="preserve">
     <value>None</value>
   </data>
+  <data name="Deployer" xml:space="preserve">
+    <value>Deployer</value>
+  </data>
   <data name="DeployerTitle" xml:space="preserve">
     <value>Deployer  {0}</value>
     <comment>{0} is the version number</comment>
@@ -465,5 +468,41 @@ If a file matches both inclusions and exclusions list, it will be excluded.</val
   <data name="KeyboardShortcutFormat" xml:space="preserve">
     <value>{0} ({1})</value>
     <comment>{0} is the standard text (probably another resource) {1} is the keyboard shortcut</comment>
+  </data>
+  <data name="Import" xml:space="preserve">
+    <value>Import</value>
+  </data>
+  <data name="Export" xml:space="preserve">
+    <value>Export</value>
+  </data>
+  <data name="About" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="Menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="ConfigurationExported" xml:space="preserve">
+    <value>Configuration was exported to:</value>
+  </data>
+  <data name="ConfigurationImported" xml:space="preserve">
+    <value>Configuration imported successfully.</value>
+  </data>
+  <data name="ImportError" xml:space="preserve">
+    <value>There was an error importing the configuration.</value>
+  </data>
+  <data name="ExportError" xml:space="preserve">
+    <value>There was an error exporting the configuration.</value>
+  </data>
+  <data name="ChooseImportMode" xml:space="preserve">
+    <value>Existing configuration items and/or path variables were detected. How do you want to apply the imported configuration?</value>
+  </data>
+  <data name="ReplaceConfigurationDescription" xml:space="preserve">
+    <value>Deletes all existing configuration items and path variables, and replaces them with the imported items.</value>
+  </data>
+  <data name="Append" xml:space="preserve">
+    <value>Append</value>
+  </data>
+  <data name="AppendConfigurationDescription" xml:space="preserve">
+    <value>All existing items remain intact while imported items are appended. Note that there is no protection against "duplicate" pre-existing and imported items.</value>
   </data>
 </root>

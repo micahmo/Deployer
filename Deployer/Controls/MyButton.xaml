@@ -13,6 +13,7 @@
         <Style TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
 
+            <!-- This is needed to allow the trigger to change the background color -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">

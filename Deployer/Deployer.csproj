@@ -23,11 +23,16 @@
     <None Remove="Images\alert_white.png" />
     <None Remove="Images\arrow.png" />
     <None Remove="Images\arrow_shadow.png" />
+    <None Remove="Images\back.png" />
     <None Remove="Images\down_arrow.png" />
+    <None Remove="Images\export.png" />
     <None Remove="Images\gear.png" />
     <None Remove="Images\gear_border.png" />
     <None Remove="Images\gear_light.png" />
     <None Remove="Images\icon.ico" />
+    <None Remove="Images\import.png" />
+    <None Remove="Images\info.png" />
+    <None Remove="Images\menu.png" />
     <None Remove="Images\minus.png" />
     <None Remove="Images\more.png" />
     <None Remove="Images\more_light.png" />
@@ -58,6 +63,8 @@
     <PackageReference Include="MvvmLightLibs" Version="5.4.1.1" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.0-preview.6.20305.6" />
     <PackageReference Include="System.Management.Automation.dll" Version="10.0.10586" />
+    <PackageReference Include="ToastNotifications" Version="2.5.1" />
+    <PackageReference Include="ToastNotifications.Messages" Version="2.5.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,10 +81,15 @@
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
     <Resource Include="Images\arrow_shadow.png" />
+    <Resource Include="Images\back.png" />
     <Resource Include="Images\down_arrow.png" />
+    <Resource Include="Images\export.png" />
     <Resource Include="Images\gear.png" />
     <Resource Include="Images\gear_light.png" />
     <Resource Include="Images\icon.ico" />
+    <Resource Include="Images\import.png" />
+    <Resource Include="Images\info.png" />
+    <Resource Include="Images\menu.png" />
     <Resource Include="Images\minus.png" />
     <Resource Include="Images\more.png" />
     <Resource Include="Images\more_light.png" />

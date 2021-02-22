@@ -20,6 +20,9 @@ using GuiLibraryInterfaces;
 using Humanizer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualBasic.Devices;
+using ToastNotifications;
+using ToastNotifications.Core;
+using ToastNotifications.Messages;
 using Utilities;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
@@ -59,7 +62,7 @@ namespace Deployer
 
         #region Data members (public properties)
 
-        public ObservableCollection<ConfigurationItem> ConfigurationItems { get; } = new ObservableCollection<ConfigurationItem>();
+        public ObservableCollection<ConfigurationItem> ConfigurationItems { get; private set; } = new ObservableCollection<ConfigurationItem>();
 
         public double ConfigurationItemsWidth
         {
@@ -136,7 +139,7 @@ namespace Deployer
         }
         private Point _windowLocation = new Point(100, 100);
 
-        public ObservableCollection<PathVariable> PathVariables { get; } = new ObservableCollection<PathVariable>();
+        public ObservableCollection<PathVariable> PathVariables { get; private set; } = new ObservableCollection<PathVariable>();
 
         public bool CloseDialogOnErrors
         {
@@ -742,7 +745,7 @@ namespace Deployer
                         else if (result == backupAndContinue)
                         {
                             // Timestamp the backup name so that there can be multiple
-                            string backupName = $"{Path.GetFileNameWithoutExtension(CONFIG_FILE_NAME)}.{DateTime.Now.ToString(@"s").Replace(@":", @".")}.xml";
+                            string backupName = GetTimeStampedConfigFileName();
 
                             // Make the backup
                             File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
@@ -783,9 +786,66 @@ namespace Deployer
             }
         }
 
+        public static Configuration Load(string importedConfigurationFullPath, LoadMode loadMode)
+        {
+            // Always make a backup before importing
+            string backupName = GetTimeStampedConfigFileName();
+
+            // Make the backup
+            File.Copy(XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, CONFIG_FILE_NAME),
+                      XmlSerialization.GetCustomConfigFilePath(SpecialFolder.ApplicationData, backupName), overwrite: true);
+
+            // First, try to deserialize the imported configuration. If it fails, we'll stop
+            Configuration importedConfiguration = XmlSerialization.DeserializeObjectFromCustomConfigFile<Configuration>(importedConfigurationFullPath);
+
+            // Don't do any error checking on the imported configuration. If there is anything wrong (e.g., null), an exception will be thrown,
+            // which will be caught at the higher level and properly displayed to the user.
+
+            // If we get here, it deserialized correctly. Now try to apply it, depending on the mode.
+            if (loadMode == LoadMode.Replace)
+            {
+                // Easy case, just replace the current instance.
+                // But only replace ConfigurationItems and PathVariables. Everything else is a "global" setting.
+
+                Instance.ConfigurationItems = importedConfiguration.ConfigurationItems;
+                Instance.RaisePropertyChanged(nameof(Instance.ConfigurationItems));
+
+                Instance.PathVariables = importedConfiguration.PathVariables;
+                Instance.RaisePropertyChanged(nameof(Instance.PathVariables));
+
+                // Also bring over the selected index
+                Instance.SelectedConfigurationIndex = importedConfiguration.SelectedConfigurationIndex;
+            }
+            else if (loadMode == LoadMode.Append)
+            {
+                // Maintain the existing lists and add new items.
+                // Since we can't AddRange to ObservableCollection, and we don't want an event for every item added,
+                //  we'll copy the items here, append to a local list, and reassign a new ObservableCollection back.
+
+                List<ConfigurationItem> existingConfigurationItems = Instance.ConfigurationItems.ToList();
+                existingConfigurationItems.AddRange(importedConfiguration.ConfigurationItems);
+                Instance.ConfigurationItems = new ObservableCollection<ConfigurationItem>(existingConfigurationItems);
+                Instance.RaisePropertyChanged(nameof(Instance.ConfigurationItems));
+
+                List<PathVariable> existingPathVariables = Instance.PathVariables.ToList();
+                existingPathVariables.AddRange(importedConfiguration.PathVariables);
+                Instance.PathVariables = new ObservableCollection<PathVariable>(existingPathVariables);
+                Instance.RaisePropertyChanged(nameof(Instance.PathVariables));
+
+                // In this case, no need to bring over the selected index, since the existing selected index is still valid.
+            }
+
+            return Instance;
+        }
+
         public static void Save(Configuration configuration)
         {
             XmlSerialization.SerializeObjectToCustomConfigFile(CONFIG_FILE_NAME, configuration, SpecialFolder.ApplicationData);
+        }
+
+        public static void Save(Configuration configuration, string configFileFullPath)
+        {
+            XmlSerialization.SerializeObjectToCustomConfigFile(configFileFullPath, configuration);
         }
 
         public static ConfigurationItem GetConfigurationItem(DirectoryItem directoryItem)
@@ -793,12 +853,25 @@ namespace Deployer
             return Instance.ConfigurationItems.FirstOrDefault(i => i.SourceDirectories.Contains(directoryItem) || i.DestinationDirectories.Contains(directoryItem));
         }
 
+        public static string GetTimeStampedConfigFileName(string extension = null) => $"{Path.GetFileNameWithoutExtension(CONFIG_FILE_NAME)}.{DateTime.Now.ToString(@"s").Replace(@":", @".")}{extension ?? ".xml"}";
+
+        public static string UserConfigFileFilter { get; } = "Deployer Config Files|*.dcfg";
+
         private const string CONFIG_FILE_NAME = "DeployerConfig.xml";
 
         #endregion
     }
 
-    #region Enums 
+    #region Enums
+
+    /// <summary>
+    /// Defines the types of modes that can be used when importing a configuration
+    /// </summary>
+    public enum LoadMode
+    {
+        Append,
+        Replace
+    }
 
     public enum NonExistingFileOptions
     {

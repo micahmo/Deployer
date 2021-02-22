@@ -11,6 +11,7 @@ using Point = System.Windows.Point;
 using System.Windows.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Timers;
 using System.Windows.Media;
@@ -21,6 +22,9 @@ using Bluegrams.Application.WPF;
 using Deployer.Properties;
 using HTMLConverter;
 using Microsoft.Extensions.DependencyInjection;
+using ToastNotifications;
+using ToastNotifications.Core;
+using ToastNotifications.Messages;
 using Utilities;
 using Timer = System.Timers.Timer;
 using Xctk = Xceed.Wpf.Toolkit;
@@ -55,6 +59,18 @@ namespace Deployer
             Timer autoSaveTimer = new Timer {Interval = TimeSpan.FromMinutes(1).TotalMilliseconds};
             autoSaveTimer.Elapsed += AutoSaveTimer_Elapsed;
             autoSaveTimer.Start();
+
+            // Add our menu items
+            Model.MenuItems.Add(new MainWindowMenuItem {ImageSource = "../Images/back.png", Command = Model.Commands.OpenCloseMenu});
+            Model.MenuItems.Add(MainWindowMenuItem.Separator);
+            Model.MenuItems.Add(new MainWindowMenuItem {Name = Properties.Resources.Import, ImageSource = "../Images/import.png", Command = Model.Commands.Import});
+            Model.MenuItems.Add(new MainWindowMenuItem {Name = Properties.Resources.Export, ImageSource = "../Images/export.png", Command = Model.Commands.Export});
+            Model.MenuItems.Add(MainWindowMenuItem.Separator);
+            Model.MenuItems.Add(new MainWindowMenuItem
+            {
+                Name = Properties.Resources.About, ImageSource = "../Images/info.png", Command = Model.Commands.ShowAbout,
+                Description = string.Format(Properties.Resources.KeyboardShortcutFormat, Properties.Resources.About, ShortcutCommands.GetShortcutKey(ShortcutCommands.ShowAboutCommand).FirstOrDefault())
+            });
         }
 
         #region Private fields/properties
@@ -411,6 +427,15 @@ namespace Deployer
 
         public double LogHeight => _mainWindow.ActualHeight - 300;
 
+        public bool IsMenuOpen
+        {
+            get => _isMenuOpen;
+            set => Set(nameof(IsMenuOpen), ref _isMenuOpen, value);
+        }
+        private bool _isMenuOpen;
+
+        public List<MainWindowMenuItem> MenuItems { get; } = new List<MainWindowMenuItem>();
+
         #endregion
     }
 
@@ -475,6 +500,15 @@ namespace Deployer
 
         public ICommand ShowAboutCommand => _showAboutCommand ??= new RelayCommand(ShowAbout);
         private RelayCommand _showAboutCommand;
+
+        public ICommand OpenCloseMenuCommand => _openCloseMenuCommand ??= new RelayCommand(OpenCloseMenu);
+        private RelayCommand _openCloseMenuCommand;
+
+        public ICommand ExportCommand => _exportCommand ??= new RelayCommand(Export);
+        private RelayCommand _exportCommand;
+
+        public ICommand ImportCommand => _importCommand ??= new RelayCommand(Import);
+        private RelayCommand _importCommand;
 
         #endregion
 
@@ -697,13 +731,116 @@ namespace Deployer
             }
         }
 
-        private void ShowAbout()
+        internal void ShowAbout()
         {
             new AboutBox(MainWindow.Icon, showLanguageSelection: false)
             {
                 Owner = MainWindow,
                 UpdateChecker = MainWindow.UpdateChecker
             }.ShowDialog();
+        }
+
+        internal void OpenCloseMenu()
+        {
+            Model.IsMenuOpen = !Model.IsMenuOpen;
+        }
+
+        internal void Export()
+        {
+            if (App.ServiceProvider.GetRequiredService<IFileBrowser>().SaveFile(string.Empty, Configuration.GetTimeStampedConfigFileName(".dcfg"), out string savedFileName))
+            {
+                try
+                {
+                    Configuration.Save(Configuration.Instance, savedFileName);
+
+                    App.ServiceProvider.GetRequiredService<Notifier>().ShowSuccess(
+                        string.Join(Environment.NewLine, Resources.ConfigurationExported, $"'{savedFileName}'"),
+                        new MessageOptions
+                        {
+                            NotificationClickAction = n =>
+                            {
+                                n.Close();
+                                Process.Start("explorer.exe", $"/select, \"{savedFileName}\"");
+                            },
+                            UnfreezeOnMouseLeave = true
+                        });
+                }
+                catch (Exception ex)
+                {
+                    App.ServiceProvider.GetRequiredService<Notifier>().ShowError(
+                        string.Join(Environment.NewLine, Resources.ExportError, string.Empty, ex.Message),
+                        new MessageOptions
+                        {
+                            NotificationClickAction = n =>
+                            {
+                                n.Close();
+                                Clipboard.SetText(ex.ToString());
+                            },
+                            UnfreezeOnMouseLeave = true
+                        });
+                }
+            }
+        }
+
+        internal void Import()
+        {
+            if (App.ServiceProvider.GetRequiredService<IFileBrowser>().OpenFile(string.Empty, Configuration.UserConfigFileFilter, out string openedFileName))
+            {
+                // Check if the user wants to overwrite or merge
+                NotifyOption replace = new NotifyOption {Text = Resources.Replace, Description = Resources.ReplaceConfigurationDescription};
+                NotifyOption append = new NotifyOption {Text = Resources.Append, Description = Resources.AppendConfigurationDescription};
+                NotifyOption cancel = new NotifyOption {Text = Resources.Cancel};
+
+                NotifyOption result;
+
+                if (Model.Configuration.ConfigurationItems.Any() == false && Model.Configuration.PathVariables.Any() == false)
+                {
+                    // No need to prompt if the current config is "empty"
+                    result = replace;
+                }
+                else
+                {
+                    result = App.ServiceProvider.GetRequiredService<INotify>().Question(Resources.ChooseImportMode, Resources.Question, replace, append, cancel);
+                }
+
+                if (result != cancel)
+                {
+                    App.ImportInProgress = true;
+                    using (new WaitCursor(DispatcherPriority.Background, restoreCursorToNull: true))
+                    {
+                        try
+                        {
+                            Configuration.Load(openedFileName, result == replace ? LoadMode.Replace : LoadMode.Append);
+
+                            App.ServiceProvider.GetRequiredService<Notifier>().ShowSuccess(Resources.ConfigurationImported,
+                                new MessageOptions
+                                {
+                                    NotificationClickAction = n =>
+                                    {
+                                        n.Close();
+                                    },
+                                    UnfreezeOnMouseLeave = true
+                                });
+                        }
+                        catch (Exception ex)
+                        {
+                            App.ServiceProvider.GetRequiredService<Notifier>().ShowError(
+                                string.Join(Environment.NewLine, Resources.ImportError, string.Empty, ex.Message),
+                                new MessageOptions
+                                {
+                                    NotificationClickAction = n =>
+                                    {
+                                        n.Close();
+                                        Clipboard.SetText(ex.ToString());
+                                    },
+                                    UnfreezeOnMouseLeave = true
+                                });
+                        }
+
+                        App.ImportInProgress = false;
+                    }
+                }
+            }
         }
 
         #endregion

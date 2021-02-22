@@ -61,6 +61,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About.
+        /// </summary>
+        public static string About {
+            get {
+                return ResourceManager.GetString("About", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add directory.
         /// </summary>
         public static string AddDirectory {
@@ -84,6 +93,24 @@ namespace Deployer.Properties {
         public static string AddValue {
             get {
                 return ResourceManager.GetString("AddValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Append.
+        /// </summary>
+        public static string Append {
+            get {
+                return ResourceManager.GetString("Append", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All existing items remain intact while imported items are appended. Note that there is no protection against &quot;duplicate&quot; pre-existing and imported items..
+        /// </summary>
+        public static string AppendConfigurationDescription {
+            get {
+                return ResourceManager.GetString("AppendConfigurationDescription", resourceCulture);
             }
         }
         
@@ -169,6 +196,15 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Existing configuration items and/or path variables were detected. How do you want to apply the imported configuration?.
+        /// </summary>
+        public static string ChooseImportMode {
+            get {
+                return ResourceManager.GetString("ChooseImportMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose value(s).
         /// </summary>
         public static string ChooseValues {
@@ -201,6 +237,24 @@ namespace Deployer.Properties {
         public static string Configuration {
             get {
                 return ResourceManager.GetString("Configuration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration was exported to:.
+        /// </summary>
+        public static string ConfigurationExported {
+            get {
+                return ResourceManager.GetString("ConfigurationExported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration imported successfully..
+        /// </summary>
+        public static string ConfigurationImported {
+            get {
+                return ResourceManager.GetString("ConfigurationImported", resourceCulture);
             }
         }
         
@@ -300,6 +354,15 @@ namespace Deployer.Properties {
         public static string DeployEncounteredErrors {
             get {
                 return ResourceManager.GetString("DeployEncounteredErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployer.
+        /// </summary>
+        public static string Deployer {
+            get {
+                return ResourceManager.GetString("Deployer", resourceCulture);
             }
         }
         
@@ -436,6 +499,24 @@ namespace Deployer.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Export.
+        /// </summary>
+        public static string Export {
+            get {
+                return ResourceManager.GetString("Export", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error exporting the configuration..
+        /// </summary>
+        public static string ExportError {
+            get {
+                return ResourceManager.GetString("ExportError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
         public static string File {
@@ -549,6 +630,24 @@ namespace Deployer.Properties {
         public static string GracefulShutdown {
             get {
                 return ResourceManager.GetString("GracefulShutdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import.
+        /// </summary>
+        public static string Import {
+            get {
+                return ResourceManager.GetString("Import", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There was an error importing the configuration..
+        /// </summary>
+        public static string ImportError {
+            get {
+                return ResourceManager.GetString("ImportError", resourceCulture);
             }
         }
         
@@ -681,6 +780,15 @@ namespace Deployer.Properties {
         public static string LockedFileSettingsDescription {
             get {
                 return ResourceManager.GetString("LockedFileSettingsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Menu.
+        /// </summary>
+        public static string Menu {
+            get {
+                return ResourceManager.GetString("Menu", resourceCulture);
             }
         }
         
@@ -888,6 +996,15 @@ namespace Deployer.Properties {
         public static string Replace {
             get {
                 return ResourceManager.GetString("Replace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deletes all existing configuration items and path variables, and replaces them with the imported items..
+        /// </summary>
+        public static string ReplaceConfigurationDescription {
+            get {
+                return ResourceManager.GetString("ReplaceConfigurationDescription", resourceCulture);
             }
         }
         

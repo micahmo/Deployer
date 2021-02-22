@@ -12,6 +12,8 @@ namespace GuiLibraryInterfaces
     {
         QuestionResult Question(string message, string title, QuestionOptions options);
 
+        NotifyOption Question(string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption);
+
         void Information(string message, string title);
 
         NotifyOption Information(string message, string title, NotifyOption firstOption, NotifyOption secondOption);
@@ -48,6 +50,8 @@ namespace GuiLibraryInterfaces
     public class NotifyOption
     {
         public string Text { get; set; }
+
+        public string Description { get; set; }
     }
 
     #endregion
@@ -59,6 +63,10 @@ namespace GuiLibraryInterfaces
     public interface IFileBrowser
     {
         string BrowseForDirectory(string initialDirectory = null);
+
+        bool SaveFile(string initialDirectory, string initialFileName, out string savedFileName);
+
+        bool OpenFile(string initialDirectory, string filter, out string openedFileName);
     }
 
     #endregion

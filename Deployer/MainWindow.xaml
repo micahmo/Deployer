@@ -317,11 +317,67 @@
             <Grid>
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition x:Name="ConfigurationColumn" Width="{Binding DataContext.Configuration.ConfigurationItemsWidth, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Column="0">
+                    <Grid Grid.Column="0" Width="150" Visibility="{c:Binding IsMenuOpen, FalseToVisibility=Collapsed}" Background="RoyalBlue">
+                        <ItemsControl ItemsSource="{Binding MenuItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button BorderThickness="0" Command="{Binding ClickedCommand}" ToolTip="{Binding Description}">
+                                        <!-- Put the content in a template so that it fills. -->
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Grid>
+                                                    <!-- Separator grid -->
+                                                    <Grid Height="20" Visibility="{c:Binding IsSeparator, FalseToVisibility=Collapsed}">
+                                                        <Canvas Height="1" Background="LightGray" Margin="20,0,25,0"/>
+                                                    </Grid>
+
+                                                    <!-- Normal layout -->
+                                                    <Grid Height="40" Visibility="{c:Binding '!IsSeparator', FalseToVisibility=Collapsed}">
+                                                        <Grid.Style>
+                                                            <Style TargetType="Grid">
+                                                                <Setter Property="Background" Value="Transparent"/>
+
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="MidnightBlue"/>
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Grid.Style>
+
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="20"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="10"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <Image Grid.Column="1" Source="{Binding ImageSource}" Width="17" Height="17"/>
+
+                                                        <!-- Wrap text in Border for vertical alignment -->
+                                                        <Border Grid.Column="3">
+                                                            <TextBlock Text="{Binding Name}" FontSize="13" Foreground="White" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </Grid>
+                                                </Grid>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+
+                    <Canvas Grid.Column="0" Background="DarkGray" Width="5" HorizontalAlignment="Right" VerticalAlignment="Stretch" 
+                            Visibility="{c:Binding IsMenuOpen, FalseToVisibility=Collapsed}"/>
+
+                    <Grid Grid.Column="1">
                         <Grid.RowDefinitions>
                             <RowDefinition x:Name="ConfigurationRow" Height="{Binding DataContext.Configuration.ConfigurationItemsHeight, RelativeSource={RelativeSource AncestorType=local:MainWindow}, Mode=TwoWay}"/>
                             <RowDefinition x:Name="PathVariablesRow" Height="*"/>
@@ -426,7 +482,11 @@
 
                     </Grid>
 
-                    <Grid Grid.Column="1">
+                    <local:MyButton Grid.Column="1" Height="25" Width="25" HorizontalAlignment="Left" VerticalAlignment="Top"
+                                    ImageSource="../Images/menu.png" ToolTip="{x:Static properties:Resources.Menu}"
+                                    Command="{Binding DataContext.Commands.OpenCloseMenuCommand, RelativeSource={RelativeSource AncestorType=local:MainWindow}}"/>
+
+                    <Grid Grid.Column="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
@@ -631,7 +691,7 @@
                 </Button>-->
                     </Grid>
 
-                    <local:MyGridSplitter Grid.Column="1"/>
+                    <local:MyGridSplitter Grid.Column="2"/>
                 </Grid>
             </Grid>
         </xctk:BusyIndicator>

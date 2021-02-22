@@ -61,7 +61,7 @@ namespace Deployer
 
         private void UpdateFileCollection()
         {
-            using (new WaitCursor(DispatcherPriority.ApplicationIdle, restoreCursorToNull: true))
+            using (App.ImportInProgress ? null : new WaitCursor(DispatcherPriority.ApplicationIdle, restoreCursorToNull: true))
             {
                 if (Configuration.Instance is { } && _configurationItem.EnabledSetting.Value)
                 {
@@ -254,9 +254,15 @@ namespace Deployer
 
         private void EnabledSetting_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (Configuration.Instance is { } && IsLeft) // Only one of our FileCollections should handle this event, otherwise we'll reload twice
+            // Only one of our FileCollections should handle this event, otherwise we'll reload twice
+            if (Configuration.Instance is { } && IsLeft)
             {
-                Configuration.Instance.ReloadCurrentConfiguration();
+                // This is the only one I'm concerned about checking IsSelected,
+                // because it's the only one that reloads the current (i.e., selected) config, rather than itself
+                if (_configurationItem?.IsSelected() == true)
+                {
+                    Configuration.Instance.ReloadCurrentConfiguration();
+                }
             }
         }
 

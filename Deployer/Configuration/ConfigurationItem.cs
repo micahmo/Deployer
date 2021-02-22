@@ -66,6 +66,11 @@ namespace Deployer
             return this;
         }
 
+        public bool IsSelected() =>
+            Configuration.Instance is { } // We have a config loaded
+            && Configuration.Instance.SelectedConfigurationIndex >= 0 // Some item is selected
+            && Configuration.Instance.SelectedConfigurationIndex == Configuration.Instance.ConfigurationItems.IndexOf(this); // The selected item is us
+
         #endregion
 
         #region Overrides

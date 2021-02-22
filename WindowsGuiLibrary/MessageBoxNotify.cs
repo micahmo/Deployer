@@ -16,6 +16,11 @@ namespace WindowsGuiLibrary
             return MessageBoxResultToQuestionResult(result);
         }
 
+        public NotifyOption Question(string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption)
+        {
+            return ThreeOptionMessage(MessageBoxImage.Question, message, title, firstOption, secondOption, thirdOption);
+        }
+
         public void Information(string message, string title)
         {
             MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -23,13 +28,44 @@ namespace WindowsGuiLibrary
 
         public NotifyOption Information(string message, string title, NotifyOption firstOption, NotifyOption secondOption)
         {
+            return TwoOptionMessage(MessageBoxImage.Information, message, title, firstOption, secondOption);
+        }
+
+        public void Warning(string message, string title)
+        {
+            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+
+        public NotifyOption Warning(string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption)
+        {
+            return ThreeOptionMessage(MessageBoxImage.Warning, message, title, firstOption, secondOption, thirdOption);
+        }
+
+        private NotifyOption TwoOptionMessage(MessageBoxImage image, string message, string title, NotifyOption firstOption, NotifyOption secondOption)
+        {
             NotifyOption result = default;
 
+            // Set the button text
             Style style = new Style();
             style.Setters.Add(new Setter(MessageBox.YesButtonContentProperty, firstOption.Text));
             style.Setters.Add(new Setter(MessageBox.NoButtonContentProperty, secondOption.Text));
 
-            switch (MessageBox.Show(message, title, MessageBoxButton.YesNo, MessageBoxImage.Information, style))
+            // Add descriptions as tooltips, if given
+            if (string.IsNullOrEmpty(firstOption.Description) == false)
+            {
+                Style firstButtonStyle = new Style();
+                firstButtonStyle.Setters.Add(new Setter(FrameworkElement.ToolTipProperty, firstOption.Description));
+                style.Setters.Add(new Setter(MessageBox.YesButtonStyleProperty, firstButtonStyle));
+            }
+
+            if (string.IsNullOrEmpty(secondOption.Description) == false)
+            {
+                Style secondButtonStyle = new Style();
+                secondButtonStyle.Setters.Add(new Setter(FrameworkElement.ToolTipProperty, secondOption.Description));
+                style.Setters.Add(new Setter(MessageBox.NoButtonStyleProperty, secondButtonStyle));
+            }
+
+            switch (MessageBox.Show(message, title, MessageBoxButton.YesNo, image, style))
             {
                 case MessageBoxResult.Yes:
                     result = firstOption;
@@ -42,21 +78,39 @@ namespace WindowsGuiLibrary
             return result;
         }
 
-        public void Warning(string message, string title)
-        {
-            MessageBox.Show(message, title, MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
-
-        public NotifyOption Warning(string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption)
+        private NotifyOption ThreeOptionMessage(MessageBoxImage image, string message, string title, NotifyOption firstOption, NotifyOption secondOption, NotifyOption thirdOption)
         {
             NotifyOption result = default;
 
+            // Set the button text
             Style style = new Style();
             style.Setters.Add(new Setter(MessageBox.YesButtonContentProperty, firstOption.Text));
             style.Setters.Add(new Setter(MessageBox.NoButtonContentProperty, secondOption.Text));
             style.Setters.Add(new Setter(MessageBox.CancelButtonContentProperty, thirdOption.Text));
 
-            switch (MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, MessageBoxImage.Warning, style))
+            // Add descriptions as tooltips, if given
+            if (string.IsNullOrEmpty(firstOption.Description) == false)
+            {
+                Style firstButtonStyle = new Style();
+                firstButtonStyle.Setters.Add(new Setter(FrameworkElement.ToolTipProperty, firstOption.Description));
+                style.Setters.Add(new Setter(MessageBox.YesButtonStyleProperty, firstButtonStyle));
+            }
+
+            if (string.IsNullOrEmpty(secondOption.Description) == false)
+            {
+                Style secondButtonStyle = new Style();
+                secondButtonStyle.Setters.Add(new Setter(FrameworkElement.ToolTipProperty, secondOption.Description));
+                style.Setters.Add(new Setter(MessageBox.NoButtonStyleProperty, secondButtonStyle));
+            }
+
+            if (string.IsNullOrEmpty(thirdOption.Description) == false)
+            {
+                Style thirdButtonStyle = new Style();
+                thirdButtonStyle.Setters.Add(new Setter(FrameworkElement.ToolTipProperty, thirdOption.Description));
+                style.Setters.Add(new Setter(MessageBox.CancelButtonStyleProperty, thirdButtonStyle));
+            }
+
+            switch (MessageBox.Show(message, title, MessageBoxButton.YesNoCancel, image, style))
             {
                 case MessageBoxResult.Yes:
                     result = firstOption;

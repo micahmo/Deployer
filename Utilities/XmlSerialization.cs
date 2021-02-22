@@ -24,23 +24,26 @@ namespace Utilities
         /// </param>
         public static void SerializeObjectToCustomConfigFile<T>(string configFileName, T objectToSerialize, Environment.SpecialFolder specialFolder = Environment.SpecialFolder.CommonDocuments)
         {
-            string customConfigFilePath = GetCustomConfigFilePath(specialFolder, configFileName);
+            string configFileFullPath = GetCustomConfigFilePath(specialFolder, configFileName);
+            SerializeObjectToCustomConfigFile(configFileFullPath, objectToSerialize);
+        }
+
+        public static void SerializeObjectToCustomConfigFile<T>(string configFileFullPath, T objectToSerialize)
+        {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
 
-            using (var mutex = new Mutex(false, customConfigFilePath.GetHashCode().ToString()))
+            using var mutex = new Mutex(false, configFileFullPath.GetHashCode().ToString());
+            try
             {
-                try
+                if (mutex.WaitOne())
                 {
-                    if (mutex.WaitOne())
-                    {
-                        using Stream reader = new FileStream(customConfigFilePath, FileMode.Create);
-                        serializer.Serialize(reader, objectToSerialize);
-                    }
+                    using Stream reader = new FileStream(configFileFullPath, FileMode.Create);
+                    serializer.Serialize(reader, objectToSerialize);
                 }
-                finally
-                {
-                    mutex.ReleaseMutex();
-                }
+            }
+            finally
+            {
+                mutex.ReleaseMutex();
             }
         }
 
@@ -58,12 +61,17 @@ namespace Utilities
         /// <exception cref="System.InvalidOperationException">Thrown when there is an error deserializing the XML document</exception>
         public static T DeserializeObjectFromCustomConfigFile<T>(string configFileName, Environment.SpecialFolder specialFolder = Environment.SpecialFolder.CommonDocuments)
         {
-            string customConfigFilePath = GetCustomConfigFilePath(specialFolder, configFileName);
+            string configFileFullPath = GetCustomConfigFilePath(specialFolder, configFileName);
+            return DeserializeObjectFromCustomConfigFile<T>(configFileFullPath);
+        }
+
+        public static T DeserializeObjectFromCustomConfigFile<T>(string configFileFullPath)
+        {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(T));
 
-            using FileStream configFile = File.Open(customConfigFilePath, FileMode.Open, FileAccess.Read);
+            using FileStream configFile = File.Open(configFileFullPath, FileMode.Open, FileAccess.Read);
             using StreamReader streamReader = new StreamReader(configFile);
-            
+
             return (T)xmlSerializer.Deserialize(streamReader);
         }
 
