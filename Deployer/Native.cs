@@ -344,6 +344,82 @@ namespace Deployer
         private const uint SHGSI_LARGEICON = 0x0;
         private const uint SHGSI_SMALLICON = 0x1;
 
-            #endregion
+        #endregion
+
+        #region CsWin32 generated
+
+        internal readonly partial struct HANDLE : IEquatable<HANDLE>
+        {
+            internal readonly IntPtr Value;
+            internal HANDLE(IntPtr value) => this.Value = value;
+            public static implicit operator IntPtr(HANDLE value) => value.Value;
+            public static explicit operator HANDLE(IntPtr value) => new HANDLE(value);
+            public bool Equals(HANDLE other) => this.Value == other.Value;
+            public override bool Equals(object obj) => obj is HANDLE other && this.Equals(other);
+            public override int GetHashCode() => this.Value.GetHashCode();
+        }
+
+        internal readonly partial struct BOOL
+        {
+            private readonly int value;
+            internal bool Value => this.value != 0;
+            internal BOOL(bool value) => this.value = value ? 1 : 0;
+            public static implicit operator bool(BOOL value) => value.Value;
+            public static implicit operator BOOL(bool value) => new BOOL(value);
+        }
+
+        /// <summary>Closes an open object handle.</summary>
+        /// <param name = "hObject">A valid handle to an open object.</param>
+        /// <returns>
+        /// <para>If the function succeeds, the return value is nonzero.</para>
+        /// <para>If the function fails, the return value is zero. To get extended error information, call <a href = "/windows/desktop/api/errhandlingapi/nf-errhandlingapi-getlasterror">GetLastError</a>.</para>
+        /// <para>If the application is running under a debugger,  the function will throw an exception if it receives either a  handle value that is not valid  or a pseudo-handle value. This can happen if you close a handle twice, or if you  call <b>CloseHandle</b> on a handle returned by the <a href = "/windows/desktop/api/fileapi/nf-fileapi-findfirstfilea">FindFirstFile</a> function instead of calling the <a href = "/windows/desktop/api/fileapi/nf-fileapi-findclose">FindClose</a> function.</para>
+        /// </returns>
+        /// <remarks>
+        /// <para><see href = "https://docs.microsoft.com/windows/win32/api//handleapi/nf-handleapi-closehandle">Learn more about this API from docs.microsoft.com</see>.</para>
+        /// </remarks>
+        [DllImport("Kernel32", ExactSpelling = true, SetLastError = true)]
+        internal static extern BOOL CloseHandle(HANDLE hObject);
+        /// <inheritdoc cref = "CheckRemoteDebuggerPresent(HANDLE, bool *)"/>
+        internal static unsafe bool CheckRemoteDebuggerPresent(SafeHandle hProcess, out bool pbDebuggerPresent)
+        {
+            bool hProcessAddRef = false;
+            try
+            {
+                fixed (bool* pbDebuggerPresentLocal = &pbDebuggerPresent)
+                {
+                    HANDLE hProcessLocal;
+                    if (hProcess is object)
+                    {
+                        hProcess.DangerousAddRef(ref hProcessAddRef);
+                        hProcessLocal = (HANDLE)hProcess.DangerousGetHandle();
+                    }
+                    else
+                        hProcessLocal = default(HANDLE);
+                    bool __result = CheckRemoteDebuggerPresent(hProcessLocal, pbDebuggerPresentLocal);
+                    return __result;
+                }
+            }
+            finally
+            {
+                if (hProcessAddRef)
+                    hProcess.DangerousRelease();
+            }
+        }
+
+        /// <summary>Determines whether the specified process is being debugged.</summary>
+        /// <param name = "hProcess">A handle to the process.</param>
+        /// <param name = "pbDebuggerPresent">A pointer to a variable that the function sets to <b>TRUE</b> if the specified process is being debugged, or <b>FALSE</b> otherwise.</param>
+        /// <returns>
+        /// <para>If the function succeeds, the return value is nonzero.</para>
+        /// <para>If the function fails, the return value is zero. To get  extended error information, call <a href = "/windows/desktop/api/errhandlingapi/nf-errhandlingapi-getlasterror">GetLastError</a>.</para>
+        /// </returns>
+        /// <remarks>
+        /// <para><see href = "https://docs.microsoft.com/windows/win32/api//debugapi/nf-debugapi-checkremotedebuggerpresent">Learn more about this API from docs.microsoft.com</see>.</para>
+        /// </remarks>
+        [DllImport("Kernel32", ExactSpelling = true, SetLastError = true)]
+        internal static extern unsafe bool CheckRemoteDebuggerPresent(HANDLE hProcess, [Out] bool* pbDebuggerPresent);
+
+        #endregion
     }
 }

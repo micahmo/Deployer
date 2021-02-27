@@ -276,7 +276,17 @@ namespace Deployer
                                 percentComplete));
                         }
 
-                        foreach (Process process in Native.GetLockingProcesses(destinationFileFullName))
+                        List<Process> lockingProcesses = Native.GetLockingProcesses(destinationFileFullName);
+
+                        // Check if any processes are being debugged
+                        if (lockingProcesses.Any(p => Native.CheckRemoteDebuggerPresent(p.SafeHandle, out bool isBeingDebugged) && isBeingDebugged))
+                        {
+                            // Then remove Visual Studio from the list of processes to handle, since it's likely the one doing the debugging
+                            lockingProcesses.RemoveAll(p => p.ProcessName == "devenv");
+                        }
+
+                        // Now proceed to handle the processes
+                        foreach (Process process in lockingProcesses)
                         {
                             if (deploymentItem.ConfigurationItem.LockedFileOptionSetting.Value == LockedFileOptions.Skip)
                             {
