@@ -7,8 +7,8 @@
     <ApplicationIcon>Images\icon.ico</ApplicationIcon>
     <Platforms>AnyCPU</Platforms>
     <LangVersion>8</LangVersion>
-    <AssemblyVersion>1.3.4</AssemblyVersion>
-    <FileVersion>1.3.4</FileVersion>
+    <AssemblyVersion>1.3.5</AssemblyVersion>
+    <FileVersion>1.3.5</FileVersion>
     <Authors>Micah Morrison</Authors>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
