@@ -153,6 +153,21 @@ namespace Deployer
         #region Public methods
 
         /// <summary>
+        /// Performs any necessary upgrades/migrations on the current Configuration instance,
+        /// for example, to fix issues with old versions of config files.
+        /// Should be safe to call on any instance.
+        /// </summary>
+        public void Upgrade()
+        {
+            // Do ConfigurationItem GUID fixup
+            foreach (var duplicates in ConfigurationItems.GroupBy(item => item.GuidInfo))
+            {
+                // Give every config item, except for the first, a new GUID
+                duplicates.Skip(1).ToList().ForEach(duplicateItem => duplicateItem.GuidInfo = GuidInfo.NewGuid());
+            }
+        }
+
+        /// <summary>
         /// Checks all of the <see cref="ConfigurationItems"/> for default-named items.
         /// Returns the value of the highest default name, or 0 if no items have the default name.
         /// </summary>

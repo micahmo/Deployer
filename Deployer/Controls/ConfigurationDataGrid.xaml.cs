@@ -124,6 +124,7 @@ namespace Deployer
                 ConfigurationItem duplicatedConfigurationItem = (ConfigurationItem)serializer.Deserialize(stringReader);
 
                 duplicatedConfigurationItem.Name = control.DataModel.Configuration.GenerateDuplicateConfigurationName(duplicatedConfigurationItem.Name);
+                duplicatedConfigurationItem.GuidInfo = GuidInfo.NewGuid();
                 control.DataModel.Configuration.ConfigurationItems.Insert(control.DataModel.Configuration.SelectedConfigurationIndex + 1, duplicatedConfigurationItem);
                 control.DataModel.Configuration.SelectedConfigurationIndex++;
             }

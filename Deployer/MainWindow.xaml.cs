@@ -46,6 +46,7 @@ namespace Deployer
             InitializeComponent();
             DataContext = Model ??= new MainWindowModel(this);
             Model.Configuration = Configuration.Load();
+            Model.Configuration.Upgrade();
 
             leftTabControl.SizeChanged += TabControl_SizeChanged;
             rightTabControl.SizeChanged += TabControl_SizeChanged;
